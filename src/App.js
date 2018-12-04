@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
+import ReactDependentScript from "react-dependent-script";
+import apiKeys from "./data/secrets";
 import LocationSearchInput from './LocationSearchInput';
 
 class App extends Component {
@@ -19,7 +21,7 @@ class App extends Component {
     // })
     axios
       .get(
-        "https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/07b4604d016bdc5d5a0f1a893639c687/43.6532,-79.3832,1544443200",
+        `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${apiKeys.darkSky}/43.6532,-79.3832,1544443200`,
         {
           method: "GET",
           contentType: "json"
@@ -32,7 +34,7 @@ class App extends Component {
   getMap = () => {
     axios
     .get(
-      "https://cors-anywhere.herokuapp.com/https://www.google.com/maps/embed/v1/directions?key=AIzaSyAwLJ7Hzo0t_a9H7-_2gUN4BbQJ3noHuvA&origin=Oslo+Norway&destination=Telemark+Norway&avoid=tolls|highways",
+      `https://cors-anywhere.herokuapp.com/https://www.google.com/maps/embed/v1/directions?key=${apiKeys.googleMaps}&origin=Oslo+Norway&destination=Telemark+Norway&avoid=tolls|highways`,
       {
         method: "GET",
         contentType: "jsonp"
@@ -46,8 +48,12 @@ class App extends Component {
     return <div className="App">
         <header className="App-header" />
         <main>
-          <LocationSearchInput />
-          <iframe src={`https://www.google.com/maps/embed/v1/directions?key=AIzaSyAwLJ7Hzo0t_a9H7-_2gUN4BbQJ3noHuvA&origin=${this.state.origin}&destination=${this.state.destination}&avoid=tolls|highways`} frameBorder="0" width="600" height="400" title="My map" />
+          <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places`]}>
+            <LocationSearchInput />
+            <iframe src={`https://www.google.com/maps/embed/v1/directions?key=${apiKeys.googleMaps}&origin=${this.state.origin}&destination=${this.state.destination}&avoid=tolls|highways`} frameBorder="0" width="600" height="400" title="My map" />
+          </ReactDependentScript>
+
+
           <div className="App">
             <button onClick={this.getWeather}>Get weather</button>
           </div>
