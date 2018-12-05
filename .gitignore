@@ -26,3 +26,5 @@ yarn.lock
 
 #keys
 src/data
+
+src/pseudocode.js

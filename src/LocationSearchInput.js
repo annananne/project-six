@@ -17,11 +17,20 @@ class LocationSearchInput extends Component {
   handleSelect = (address) => {
     geocodeByAddress(address)
       .then((results) => {
+        const dataObject = {
+          placeID: results[0].place_id,
+          address: results[0].formatted_address
+        };
+        this.setState({
+          originData: dataObject
+        })
         console.log(results);
+        console.log('place ID', results[0].place_id)
+        console.log('address', results[0].formatted_address);
         return getLatLng(results[0]);
       })
-      .then((latLng) => console.log("Success", latLng))
-      .catch((error) => console.error("Error", error));
+      .then((latLng) => console.log("Success", latLng)) // Add latitude and longitude to state data object here
+      .catch((error) => console.error("Error", error)); 
   };
 
   render() {
