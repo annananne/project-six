@@ -3,7 +3,7 @@ import axios from "axios";
 import "./App.css";
 import ReactDependentScript from "react-dependent-script";
 import apiKeys from "./data/secrets";
-import LocationSearchInput from './LocationSearchInput';
+import LocationSearchInput from './components/LocationSearchInput';
 
 class App extends Component {
   constructor() {
