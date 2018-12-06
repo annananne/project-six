@@ -14,9 +14,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      address: "", //Stores address string on user input
-      originData: {},//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      destinationData: {}, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      originData: {
+        address: ''
+      },//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      destinationData: {
+        address: ''
+      }, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // desinationDataObject: {}
     };
   }
@@ -46,6 +49,7 @@ class App extends Component {
     // console.log('address inside of handleChange', address);
     //Continuously update this.state.address to match what is put into input box (just text)
     // console.log(address);
+    console.log("handling change")
     const currentId = id;
     // console.log(currentId);
     // const tempObj = {};
@@ -60,6 +64,7 @@ class App extends Component {
   handleSelect = (address, placeId, id) => {
     //Store displayed text value of address (properly formatted)
     // console.log('id inside of handleSelect', id);
+    console.log('handleSelect address', address);
     const currentId = id;
     const tempObj = this.state[currentId];
     tempObj.address = address;
@@ -77,7 +82,7 @@ class App extends Component {
         const dataObject = {
           placeID: results[0].place_id,
           address: results[0].formatted_address,
-          displayAddress: this.state.address
+          // displayAddress: this.state.address
         };
 
         this.setState({ [currentId]: dataObject });
