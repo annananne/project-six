@@ -10,8 +10,9 @@ class LocationSearchInput extends Component {
   render() {
     return <PlacesAutocomplete id={this.props.id} value={this.props.address} onChange={this.props.handleChange} onSelect={this.props.handleSelect}>
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => <div>
+
             <input {...getInputProps({
-                placeholder: "Search Places ...",
+                placeholder: "Search a location...",
                 className: "location-search-input",
                 id: `${this.props.id}`
               })} />

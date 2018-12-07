@@ -36,7 +36,7 @@ const MyMapComponent = compose(
       })} */}
     {props.isMarkerShown && (
       <Marker
-        position={{ lat: 43.6532, lng: -79.3832 }}
+        position={{ lat: props.originLat, lng: props.originLong }}
         onClick={props.onMarkerClick}
       />
     )}
