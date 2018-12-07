@@ -115,10 +115,11 @@ const MapWithADirectionsRenderer = compose(
             this.props.destinationLat,
             this.props.destinationLong
           ),
-          travelMode: window.google.maps.TravelMode.DRIVING
+          travelMode: window.google.maps.TravelMode["DRIVING"]
         },
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
+            console.log(result);
             this.setState({ directions: result });
           } else {
             console.error(`error fetching directions ${result}`);
