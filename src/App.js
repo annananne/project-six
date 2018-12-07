@@ -2,13 +2,9 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 import ReactDependentScript from "react-dependent-script";
-import {
-  geocodeByAddress,
-  getLatLng
-} from "react-places-autocomplete";
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
-// import Map from "./components/Map.js";
-import LocationSearchInput from './components/LocationSearchInput';
+import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
@@ -21,7 +17,9 @@ class App extends Component {
     super();
     this.state = { 
       hasUserSubmitted: false,
-      originData: { address: "" },
+      originData: {
+        address: ""
+      },
       // originData: {
       //   address:"Toronto, ON, Canada",
       //   latitude: 43.653226,
@@ -29,7 +27,9 @@ class App extends Component {
       //   placeID: "ChIJpTvG15DL1IkRd8S0KlBVNTI"
       // },
       //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      destinationData: { address: "" }, // desinationDataObject: {} //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      destinationData: {
+        address: ""
+      }, // desinationDataObject: {} //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       destinationData: {}, // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // use moment.js (https://momentjs.com/ to format user inputs)
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), 
@@ -40,33 +40,6 @@ class App extends Component {
         // middleThree
         destination: null 
       },
-      // need this:
-      /*
-      weatherData: [
-        {
-          type: 'origin',
-          lat: 1234,
-          long: 1234,
-          // when weather request comes back,
-          // save it here
-        },
-        {
-          type: 'middleOne',
-          lat: 1234,
-          long: 1234,
-          // when weather request comes back,
-          // save it here
-        },
-        {
-          type: 'destination',
-          lat: 1234,
-          long: 1234,
-          // when weather request comes back,
-          // save it here
-        },
-      ]
-      */
-      // }, 
     }
   }
 
@@ -143,7 +116,7 @@ class App extends Component {
     // console.log('address inside of handleChange', address);
     //Continuously update this.state.address to match what is put into input box (just text)
     // console.log(address);
-    console.log("handling change")
+    console.log("handling change");
     const currentId = id;
     // console.log(currentId);
     // const tempObj = {};
@@ -158,7 +131,7 @@ class App extends Component {
   handleSelect = (address, placeId, id) => {
     //Store displayed text value of address (properly formatted)
     // console.log('id inside of handleSelect', id);
-    console.log('handleSelect address', address);
+    console.log("handleSelect address", address);
     const currentId = id;
     const tempObj = this.state[currentId];
     tempObj.address = address;
@@ -175,7 +148,7 @@ class App extends Component {
         console.log("handleSelect results", results);
         const dataObject = {
           placeID: results[0].place_id,
-          address: results[0].formatted_address,
+          address: results[0].formatted_address
           // displayAddress: this.state.address
         };
 
@@ -203,12 +176,25 @@ class App extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     {
-      if (this.state.originData.latitude && this.state.originData.longitude && this.state.destinationData.latitude && this.state.destinationData.longitude) {
+      if (
+        this.state.originData.latitude &&
+        this.state.originData.longitude &&
+        this.state.destinationData.latitude &&
+        this.state.destinationData.longitude
+      ) {
         this.setState({
-          hasUserSubmitted: true,
-        })
+          hasUserSubmitted: true
+        });
       }
     }
+  };
+
+  handleReset = () =>{
+    this.setState({
+      originData: {},
+      destinationData: {},
+      hasUserSubmitted: false
+    })
   }
 
   render() {
@@ -216,28 +202,53 @@ class App extends Component {
       <div className="App">
         <header className="App-header" />
         <main>
-          {
-          this.state.hasUserSubmitted ?
-            (< MapWithADirectionsRenderer originLat={this.state.originData.latitude} originLong={this.state.originData.longitude} destinationLat={this.state.destinationData.latitude} destinationLong={this.state.destinationData.longitude}/>) : (<form action="" onSubmit={this.handleSubmit}>
-              <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places,geometry,drawing`]}>
-
+          {this.state.hasUserSubmitted ? (
+            <div>
+              <MapWithADirectionsRenderer
+                originLat={this.state.originData.latitude}
+                originLong={this.state.originData.longitude}
+                destinationLat={this.state.destinationData.latitude}
+                destinationLong={this.state.destinationData.longitude}
+              />{" "}
+              <button onClick={this.handleReset}>Reset</button>
+            </div>
+          ) : (
+            <form action="" onSubmit={this.handleSubmit}>
+              <ReactDependentScript
+                scripts={[
+                  `https://maps.googleapis.com/maps/api/js?key=${
+                    apiKeys.googleMaps
+                  }&libraries=places,geometry,drawing`
+                ]}
+              >
                 {/* Input for origin point search */}
-                <LocationSearchInput id="originData" address={this.state.originData.address} originData={this.state.originData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
+                <LocationSearchInput
+                  id="originData"
+                  address={this.state.originData.address}
+                  originData={this.state.originData}
+                  handleChange={this.handleChange}
+                  handleSelect={this.handleSelect}
+                />
 
                 {/* Input for destination point search */}
-                <LocationSearchInput id="destinationData" address={this.state.destinationData.address} destinationData={this.state.destinationData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
+                <LocationSearchInput 
+                  id="destinationData" 
+                  address={this.state.destinationData.address} 
+                  destinationData={this.state.destinationData} 
+                  handleChange={this.handleChange} 
+                  handleSelect={this.handleSelect} 
+                />
 
-                  <DateTimeInput 
-                    dateString={this.state.originDateTime}
-                    handleDateTimeChange={this.handleDateTimeChange}
-                  />
+                <DateTimeInput 
+                  dateString={this.state.originDateTime}
+                  handleDateTimeChange={this.handleDateTimeChange}
+                />
 
 
                 <input type="submit" value="Get recommendation" />
-
               </ReactDependentScript>
-            </form>)
-          }
+            </form>
+          )}
           {/* { !this.state.hasUserSubmitted && <SearchForm /> }
             { this.state.hasUserSubmitted && <Map /> }
 
@@ -247,7 +258,8 @@ class App extends Component {
             <button onClick={this.getWeather}>Get weather</button>
           </div>
         </main>
-      </div>)
+      </div>
+    );
   }
 }
 
