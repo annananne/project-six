@@ -24,7 +24,7 @@ const MyMapComponent = compose(
   withGoogleMap
 )(props => (
   <GoogleMap defaultZoom={8} defaultCenter={{ lat: 43.6532, lng: -79.3832 }}>
-      {/* {props.markers.map(item => {
+    {/* {props.markers.map(item => {
         item.isMarkerShown ? (
           <Marker
             position={{ lat: `${marker.latitude}`, lng: `${marker.longitude}` }}
@@ -36,7 +36,7 @@ const MyMapComponent = compose(
       })} */}
     {props.isMarkerShown && (
       <Marker
-        position={{ lat: 43.6532, lng: -79.3832 }}
+        position={{ lat: props.originLat, lng: props.originLong }}
         onClick={props.onMarkerClick}
       />
     )}

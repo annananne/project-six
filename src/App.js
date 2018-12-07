@@ -8,19 +8,33 @@ import {
 } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from './components/LocationSearchInput';
-import Map from "./components/Map.js";
+// import Map from "./components/Map.js";
+import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
+      hasUserSubmitted: false,
       originData: {
         address: ''
-      },//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      },
+      // originData: {
+      //   address:"Toronto, ON, Canada",
+      //   latitude: 43.653226,
+      //   longitude: -79.38318429999998,
+      //   placeID: "ChIJpTvG15DL1IkRd8S0KlBVNTI"
+      // },//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
       destinationData: {
         address: ''
-      }, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      // desinationDataObject: {}
+      },
+      // destinationData: {
+      //   address:"Montreal, QC, Canada",
+      //   latitude: 45.5016889,
+      //   longitude: -73.56725599999999,
+      //   placeID: "ChIJDbdkHFQayUwR7-8fITgxTmU"
+      // }, 
+      //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
     };
   }
 
@@ -100,21 +114,40 @@ class App extends Component {
       .catch(error => console.error("Error", error));
   };
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    {
+      if (this.state.originData.latitude && this.state.originData.longitude && this.state.destinationData.latitude && this.state.destinationData.longitude) {
+        this.setState({
+          hasUserSubmitted: true,
+        })
+      }
+    }
+  }
   render() {
     return <div className="App">
         <header className="App-header" />
         <main>
-          <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places`]}>
-            {/* Input for origin point search */}
-            <LocationSearchInput id="originData" address={this.state.originData.address} originData={this.state.originData} handleChange={this.handleChange} handleSelect={this.handleSelect}/>
+          {
+          this.state.hasUserSubmitted ?
+            (< MapWithADirectionsRenderer originLat={this.state.originData.latitude} originLong={this.state.originData.longitude} destinationLat={this.state.destinationData.latitude} destinationLong={this.state.destinationData.longitude}/>) : (<form action="" onSubmit={this.handleSubmit}>
+              <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places,geometry,drawing`]}>
 
-            {/* Input for destination point search */}
-            <LocationSearchInput id="destinationData" address={this.state.destinationData.address} destinationData={this.state.destinationData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
-          </ReactDependentScript>
+                {/* Input for origin point search */}
+                <LocationSearchInput id="originData" address={this.state.originData.address} originData={this.state.originData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
 
-          {/* Google Map embed*/}
-          <Map originData={this.state.originData} destinationData={this.state.destinationData} />
+                {/* Input for destination point search */}
+                <LocationSearchInput id="destinationData" address={this.state.destinationData.address} destinationData={this.state.destinationData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
+                <input type="submit" value="Get recommendation" />
 
+              </ReactDependentScript>
+            </form>)
+          }
+          {/* { !this.state.hasUserSubmitted && <SearchForm /> }
+            { this.state.hasUserSubmitted && <Map /> }
+
+            { !this.state.isDataLoaded && <div>Loading...</div>}
+            { this.state.isOnMap && <div>{this.state.data}</div>} */}
           <div className="App">
             <button onClick={this.getWeather}>Get weather</button>
           </div>
