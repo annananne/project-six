@@ -4,6 +4,13 @@ import "./App.css";
 import ReactDependentScript from "react-dependent-script";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from './components/LocationSearchInput';
+import firebase from "./firebase.js"
+import LandingPage from "./components/LandingPage.js"
+import Trip from "./components/TripList.js";
+
+// Google provider & auth module
+const provider = new firebase.auth.GoogleAuthProvider();
+const auth = firebase.auth();
 
 class App extends Component {
   constructor() {
@@ -15,6 +22,7 @@ class App extends Component {
       destination: 'Montreal+Quebec'
     }
   }
+
   getWeather = () => {
     axios
       .get(
@@ -47,8 +55,12 @@ class App extends Component {
     console.log(e);
   }
   render() {
-    return <div className="App">
-        <header className="App-header" />
+    return (
+      <div className="App">
+
+        <LandingPage/>
+
+        <Trip />
         <main>
           <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places`]}>
             {/* Input for origin point search */}
@@ -65,7 +77,8 @@ class App extends Component {
             <button onClick={this.getWeather}>Get weather</button>
           </div>
         </main>
-      </div>;
+      </div>
+    )
   }
 }
 
