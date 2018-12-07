@@ -7,7 +7,7 @@ import {
   getLatLng
 } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
-import Map from "./components/Map.js";
+// import Map from "./components/Map.js";
 import LocationSearchInput from './components/LocationSearchInput';
 // import Map from "./components/Map.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
@@ -19,39 +19,78 @@ import moment from 'moment';
 class App extends Component {
   constructor() {
     super();
-    this.state = {
+    this.state = { 
       hasUserSubmitted: false,
-      originData: {
-        address: ''
-      },
+      originData: { address: "" },
       // originData: {
       //   address:"Toronto, ON, Canada",
       //   latitude: 43.653226,
       //   longitude: -79.38318429999998,
       //   placeID: "ChIJpTvG15DL1IkRd8S0KlBVNTI"
-      // },//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      destinationData: {
-        address: ''
-      }, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      // desinationDataObject: {}
-      destinationData: {}, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      // we get this from user inputs
+      // },
+      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      destinationData: { address: "" }, // desinationDataObject: {} //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      destinationData: {}, // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // use moment.js (https://momentjs.com/ to format user inputs)
-      userDateTime: moment(new Date()).format('YYYY-MM-DDTHH:mm'),
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), 
+      destinationDateTime: '', // to be set when directions are calculated 
+      weatherResults: { 
+        origin: null, // middleOne
+        // middleTwo (actual half of distance)
+        // middleThree
+        destination: null 
+      },
+      // need this:
+      /*
+      weatherData: [
+        {
+          type: 'origin',
+          lat: 1234,
+          long: 1234,
+          // when weather request comes back,
+          // save it here
+        },
+        {
+          type: 'middleOne',
+          lat: 1234,
+          long: 1234,
+          // when weather request comes back,
+          // save it here
+        },
+        {
+          type: 'destination',
+          lat: 1234,
+          long: 1234,
+          // when weather request comes back,
+          // save it here
+        },
+      ]
+      */
+      // }, 
     }
   }
 
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
   // change the hardcoded long & lat below, prob this will receive parameters with the location info
   getWeather = () => {
+    const dateTime = `${this.state.originDateTime}:00`;
+    const originDateTime = `${this.state.originDateTime}:00`;
+    // find out destinationDateTime
+
+    const originWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
+      apiKeys.darkSky
+      }/${this.state.originData.latitude},${this.state.originData.longitude},${dateTime}`;
+
+    const destinationWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
+      apiKeys.darkSky
+      }/${this.state.destinationData.latitude},${this.state.destinationData.longitude},${dateTime}`;
     // DarkSky Time & date format
     // [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone]
-    const dateTime = `${this.state.userDateTime}:00`;
-    axios
-      .get(
-        `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
-          apiKeys.darkSky
-        }/${this.state.originData.latitude},${this.state.originData.longitude},${dateTime}`,
+
+    // for now - later refactor
+
+    // this gets origin
+    axios.get(originWeatherURL,
         {
           method: "GET",
           contentType: "json"
@@ -59,6 +98,33 @@ class App extends Component {
       )
       .then(res => {
         console.log(res);
+        // cons
+        this.setState({
+          weatherResults: {
+            ...this.state.weatherResults,
+            origin: res.data,
+          }
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+      // this gets destination
+    axios.get(destinationWeatherURL,
+        {
+          method: "GET",
+          contentType: "json"
+        }
+      )
+      .then(res => {
+        console.log(res);
+        this.setState({
+          weatherResults: {
+            ...this.state.weatherResults,
+            destination: res.data,
+          }
+        })
       })
       .catch(error => {
         console.log(error);
@@ -130,7 +196,7 @@ class App extends Component {
 
   handleDateTimeChange = (e) => {
     this.setState({
-      userDateTime: e.target.value
+      originDateTime: e.target.value
     })
   }
 
@@ -160,6 +226,13 @@ class App extends Component {
 
                 {/* Input for destination point search */}
                 <LocationSearchInput id="destinationData" address={this.state.destinationData.address} destinationData={this.state.destinationData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
+
+                  <DateTimeInput 
+                    dateString={this.state.originDateTime}
+                    handleDateTimeChange={this.handleDateTimeChange}
+                  />
+
+
                 <input type="submit" value="Get recommendation" />
 
               </ReactDependentScript>
