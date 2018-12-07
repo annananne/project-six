@@ -18,6 +18,77 @@ import {
 // } = require("react-google-maps");
 
 // const myMap = withScriptjs(withGoogleMap(props => <GoogleMap />));
+const stylesArray = [
+  {
+    "featureType": "landscape.natural",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "visibility": "on"
+      },
+      {
+        "color": "#e0efef"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "visibility": "on"
+      },
+      {
+        "hue": "#1900ff"
+      },
+      {
+        "color": "#c0e8e8"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "lightness": 100
+      },
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "visibility": "on"
+      },
+      {
+        "lightness": 700
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "all",
+    "stylers": [
+      {
+        "color": "#7dcdcd"
+      }
+    ]
+  }
+]
 
 const MapWithADirectionsRenderer = compose(
   withProps({
@@ -26,7 +97,7 @@ const MapWithADirectionsRenderer = compose(
     }&v=3.exp&libraries=geometry,drawing,places'goo`,
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100%` }} />
+    mapElement: <div style={{ height: `100vh`, minHeight: `650px`, width: `40%` }} />
   }),
   withScriptjs,
   withGoogleMap,
@@ -60,6 +131,7 @@ const MapWithADirectionsRenderer = compose(
   <GoogleMap
     defaultZoom={7}
     defaultCenter={new window.google.maps.LatLng(41.85073, -87.65126)}
+    defaultOptions={{styles: stylesArray}}
   >
     {props.directions && <DirectionsRenderer directions={props.directions} />}
   </GoogleMap>
