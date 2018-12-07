@@ -11,9 +11,9 @@ import markers from "../markers";
 
 const MyMapComponent = compose(
   withProps({
-    googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&key=${
-      apiKeys.googleMaps
-    }&libraries=geometry,drawing,places`,
+    // googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&key=${
+    //   apiKeys.googleMaps
+    // }&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: (
       <div style={{ height: `400px`, width: `80%`, margin: `0 auto` }} />

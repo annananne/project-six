@@ -7,11 +7,15 @@ import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
+import DateTimeInput from "./components/DateTimeInput";
+// import CurrentTripInfo from './components/CurrentTripInfo';
+import moment from 'moment';
+
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
+    this.state = { 
       hasUserSubmitted: false,
       originData: {
         address: ""
@@ -21,27 +25,45 @@ class App extends Component {
       //   latitude: 43.653226,
       //   longitude: -79.38318429999998,
       //   placeID: "ChIJpTvG15DL1IkRd8S0KlBVNTI"
-      // },//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      // },
+      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
       destinationData: {
         address: ""
-      }
-      // destinationData: {
-      //   address:"Montreal, QC, Canada",
-      //   latitude: 45.5016889,
-      //   longitude: -73.56725599999999,
-      //   placeID: "ChIJDbdkHFQayUwR7-8fITgxTmU"
-      // },
-      //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-    };
+      }, // desinationDataObject: {} //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      destinationData: {}, // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      // use moment.js (https://momentjs.com/ to format user inputs)
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), 
+      destinationDateTime: '', // to be set when directions are calculated 
+      weatherResults: { 
+        origin: null, // middleOne
+        // middleTwo (actual half of distance)
+        // middleThree
+        destination: null 
+      },
+    }
   }
 
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
+  // change the hardcoded long & lat below, prob this will receive parameters with the location info
   getWeather = () => {
-    axios
-      .get(
-        `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
-          apiKeys.darkSky
-        }/${this.state.originData.latitude},${this.state.originData.longitude}`,
+    const dateTime = `${this.state.originDateTime}:00`;
+    const originDateTime = `${this.state.originDateTime}:00`;
+    // find out destinationDateTime
+
+    const originWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
+      apiKeys.darkSky
+      }/${this.state.originData.latitude},${this.state.originData.longitude},${dateTime}`;
+
+    const destinationWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
+      apiKeys.darkSky
+      }/${this.state.destinationData.latitude},${this.state.destinationData.longitude},${dateTime}`;
+    // DarkSky Time & date format
+    // [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone]
+
+    // for now - later refactor
+
+    // this gets origin
+    axios.get(originWeatherURL,
         {
           method: "GET",
           contentType: "json"
@@ -49,11 +71,45 @@ class App extends Component {
       )
       .then(res => {
         console.log(res);
+        // cons
+        this.setState({
+          weatherResults: {
+            ...this.state.weatherResults,
+            origin: res.data,
+          }
+        })
       })
       .catch(error => {
         console.log(error);
       });
-  };
+
+      // this gets destination
+    axios.get(destinationWeatherURL,
+        {
+          method: "GET",
+          contentType: "json"
+        }
+      )
+      .then(res => {
+        console.log(res);
+        this.setState({
+          weatherResults: {
+            ...this.state.weatherResults,
+            destination: res.data,
+          }
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  //Method to handle change in Google Places autocomplete entry field
+  // handleChange = address => {
+  //   console.log(address);
+  //   //Continuously update this.state.address to match what is put into input box
+  //   this.setState({ address });
+  // };
 
   //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
@@ -111,7 +167,13 @@ class App extends Component {
       .catch(error => console.error("Error", error));
   };
 
-  handleSubmit = e => {
+  handleDateTimeChange = (e) => {
+    this.setState({
+      originDateTime: e.target.value
+    })
+  }
+
+  handleSubmit = (e) => {
     e.preventDefault();
     {
       if (
@@ -134,6 +196,7 @@ class App extends Component {
       hasUserSubmitted: false
     })
   }
+
   render() {
     return (
       <div className="App">
@@ -168,13 +231,20 @@ class App extends Component {
                 />
 
                 {/* Input for destination point search */}
-                <LocationSearchInput
-                  id="destinationData"
-                  address={this.state.destinationData.address}
-                  destinationData={this.state.destinationData}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
+                <LocationSearchInput 
+                  id="destinationData" 
+                  address={this.state.destinationData.address} 
+                  destinationData={this.state.destinationData} 
+                  handleChange={this.handleChange} 
+                  handleSelect={this.handleSelect} 
                 />
+
+                <DateTimeInput 
+                  dateString={this.state.originDateTime}
+                  handleDateTimeChange={this.handleDateTimeChange}
+                />
+
+
                 <input type="submit" value="Get recommendation" />
               </ReactDependentScript>
             </form>
