@@ -228,7 +228,7 @@ class PlacesAutocomplete extends React.Component {
 
   handleInputChange = (event, id) => {
     // **** CONSOLE LOG EVENT TARGET TO FIGURE OUT WHAT IS BEING LOGGED HERE - IDEALLY SHOULD BE GETTING AN ID
-    console.log('target', event.target, 'id', id, );
+    console.log('target', event.target, 'id', id);
 
     // Pre-existing code continues
     const { value } = event.target;

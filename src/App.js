@@ -18,8 +18,12 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      address: "", //Stores address string on user input
-      originData: {}, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      originData: {
+        address: ''
+      },//Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      destinationData: {
+        address: ''
+      }, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // desinationDataObject: {}
       destinationData: {}, //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // we get this from user inputs
@@ -38,7 +42,7 @@ class App extends Component {
       .get(
         `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
           apiKeys.darkSky
-        }/${this.state.originData.latitude},${this.state.originData.longitude}`,
+        }/${this.state.originData.latitude},${this.state.originData.longitude},${dateTime}`,
         {
           method: "GET",
           contentType: "json"
@@ -53,17 +57,18 @@ class App extends Component {
   }
 
   //Method to handle change in Google Places autocomplete entry field
-  handleChange = address => {
-    console.log(address);
-    //Continuously update this.state.address to match what is put into input box
-    this.setState({ address });
-  };
+  // handleChange = address => {
+  //   console.log(address);
+  //   //Continuously update this.state.address to match what is put into input box
+  //   this.setState({ address });
+  // };
 
   //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
     // console.log('address inside of handleChange', address);
     //Continuously update this.state.address to match what is put into input box (just text)
     // console.log(address);
+    console.log("handling change")
     const currentId = id;
     // console.log(currentId);
     // const tempObj = {};
@@ -78,6 +83,7 @@ class App extends Component {
   handleSelect = (address, placeId, id) => {
     //Store displayed text value of address (properly formatted)
     // console.log('id inside of handleSelect', id);
+    console.log('handleSelect address', address);
     const currentId = id;
     const tempObj = this.state[currentId];
     tempObj.address = address;
@@ -95,7 +101,7 @@ class App extends Component {
         const dataObject = {
           placeID: results[0].place_id,
           address: results[0].formatted_address,
-          displayAddress: this.state.address
+          // displayAddress: this.state.address
         };
 
         this.setState({ [currentId]: dataObject });
