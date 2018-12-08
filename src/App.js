@@ -6,8 +6,12 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
+import firebase from "./firebase.js";
+import LandingPage from "./components/LandingPage.js";
+import TripList from "./components/TripList.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
+import PointWeatherDisplay from "./components/PointWeatherDisplay";
 // import CurrentTripInfo from './components/CurrentTripInfo';
 import moment from "moment";
 
@@ -25,12 +29,15 @@ class App extends Component {
         avoidTolls: false
       },
       tripData: {},
-      destinationData: {}, // use moment.js (https://momentjs.com/ to format user inputs) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      originDateTimeInSec: (new Date()).getTime(),
+      // use moment.js (https://momentjs.com/ to format user inputs) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      originDateTimeInSec: new Date().getTime(),
+      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      // use moment.js (https://momentjs.com/ to format user inputs)
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-      destinationDateTime: "",
+      destinationDateTime: "", // to be set when directions are calculated
       weatherResults: {
-        origin: null, // middleTwo (actual half of distance) // to be set when directions are calculated // middleOne
+        origin: null, // middleOne
+        // middleTwo (actual half of distance)
         // middleThree
         destination: null
       }
@@ -164,14 +171,14 @@ class App extends Component {
   };
 
   handleDateTimeChange = e => {
-    const unixDate = (new Date(e.target.value)).getTime();
+    const unixDate = new Date(e.target.value).getTime();
     this.setState({
       originDateTimeInSec: unixDate,
       originDateTime: e.target.value
     });
   };
 
-  saveSearchResults = (result) => {
+  saveSearchResults = result => {
     // Get duration of trip in seconds from returned results object
     const tripInSeconds = result.routes[0].legs[0].duration.value;
     // Get origin time (Unix) from state
@@ -186,7 +193,7 @@ class App extends Component {
       tripData: result,
       destinationDateTime: destinationTime
     });
-  }
+  };
 
   handleSubmit = e => {
     e.preventDefault();
@@ -208,7 +215,11 @@ class App extends Component {
     this.setState({
       originData: {},
       destinationData: {},
-      hasUserSubmitted: false
+      hasUserSubmitted: false,
+      weatherResults: {
+        origin: null,
+        destination: null
+      }
     });
   };
 
@@ -234,6 +245,9 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header" />
+        <LandingPage />
+
+        <TripList />
         <main>
           {this.state.hasUserSubmitted ? (
             <div>
@@ -333,13 +347,20 @@ class App extends Component {
               </ReactDependentScript>
             </form>
           )}
-          {/* { !this.state.hasUserSubmitted && <SearchForm /> }
-            { this.state.hasUserSubmitted && <Map /> }
 
-            { !this.state.isDataLoaded && <div>Loading...</div>}
-            { this.state.isOnMap && <div>{this.state.data}</div>} */}
           <div className="App">
             <button onClick={this.getWeather}>Get weather</button>
+
+            {this.state.weatherResults.origin !== null &&
+              this.state.weatherResults.destination !== null && (
+                <PointWeatherDisplay
+                  originWeatherData={this.state.weatherResults.origin}
+                  destinationWeatherData={this.state.weatherResults.destination}
+                  originAddress={this.state.originData.address}
+                  destinationAddress={this.state.destinationData.address}
+                  // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
+                />
+              )}
           </div>
         </main>
       </div>
