@@ -8,6 +8,7 @@ import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
+import PointWeatherDisplay from "./components/PointWeatherDisplay";
 // import CurrentTripInfo from './components/CurrentTripInfo';
 import moment from 'moment';
 
@@ -30,7 +31,7 @@ class App extends Component {
       destinationData: {
         address: ""
       }, // desinationDataObject: {} //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      destinationData: {}, // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      // destinationData: {}, // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // use moment.js (https://momentjs.com/ to format user inputs)
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), 
       destinationDateTime: '', // to be set when directions are calculated 
@@ -189,78 +190,57 @@ class App extends Component {
     }
   };
 
-  handleReset = () =>{
+  handleReset = () => {
     this.setState({
       originData: {},
       destinationData: {},
-      hasUserSubmitted: false
+      hasUserSubmitted: false,
+      weatherResults: {
+        origin: null, 
+        destination: null
+      },
     })
   }
 
   render() {
-    return (
-      <div className="App">
+    return <div className="App">
         <header className="App-header" />
         <main>
-          {this.state.hasUserSubmitted ? (
-            <div>
-              <MapWithADirectionsRenderer
-                originLat={this.state.originData.latitude}
-                originLong={this.state.originData.longitude}
-                destinationLat={this.state.destinationData.latitude}
-                destinationLong={this.state.destinationData.longitude}
-              />{" "}
+          {this.state.hasUserSubmitted ? <div>
+              <MapWithADirectionsRenderer originLat={this.state.originData.latitude} originLong={this.state.originData.longitude} destinationLat={this.state.destinationData.latitude} destinationLong={this.state.destinationData.longitude} />
               <button onClick={this.handleReset}>Reset</button>
-            </div>
-          ) : (
-            <form action="" onSubmit={this.handleSubmit}>
-              <ReactDependentScript
-                scripts={[
-                  `https://maps.googleapis.com/maps/api/js?key=${
-                    apiKeys.googleMaps
-                  }&libraries=places,geometry,drawing`
-                ]}
-              >
+            </div> : <form action="" onSubmit={this.handleSubmit}>
+              <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places,geometry,drawing`]}>
                 {/* Input for origin point search */}
-                <LocationSearchInput
-                  id="originData"
-                  address={this.state.originData.address}
-                  originData={this.state.originData}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
-                />
+                <LocationSearchInput id="originData" address={this.state.originData.address} originData={this.state.originData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
 
                 {/* Input for destination point search */}
-                <LocationSearchInput 
-                  id="destinationData" 
-                  address={this.state.destinationData.address} 
-                  destinationData={this.state.destinationData} 
-                  handleChange={this.handleChange} 
-                  handleSelect={this.handleSelect} 
-                />
+                <LocationSearchInput id="destinationData" address={this.state.destinationData.address} destinationData={this.state.destinationData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
 
-                <DateTimeInput 
-                  dateString={this.state.originDateTime}
-                  handleDateTimeChange={this.handleDateTimeChange}
-                />
-
+                <DateTimeInput dateString={this.state.originDateTime} handleDateTimeChange={this.handleDateTimeChange} />
 
                 <input type="submit" value="Get recommendation" />
               </ReactDependentScript>
-            </form>
-          )}
-          {/* { !this.state.hasUserSubmitted && <SearchForm /> }
-            { this.state.hasUserSubmitted && <Map /> }
+            </form>}
 
-            { !this.state.isDataLoaded && <div>Loading...</div>}
-            { this.state.isOnMap && <div>{this.state.data}</div>} */}
           <div className="App">
             <button onClick={this.getWeather}>Get weather</button>
+
+            {
+              this.state.weatherResults.origin !== null && this.state.weatherResults.destination !== null && 
+              <PointWeatherDisplay 
+                originWeatherData={this.state.weatherResults.origin}
+                destinationWeatherData={this.state.weatherResults.destination}
+                originAddress={this.state.originData.address} 
+                destinationAddress={this.state.destinationData.address} 
+                // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature} 
+              />
+            }
           </div>
         </main>
-      </div>
-    );
+      </div>;
   }
 }
+
 
 export default App;
