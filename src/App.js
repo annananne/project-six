@@ -6,6 +6,9 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
+import firebase from "./firebase.js"
+import LandingPage from "./components/LandingPage.js"
+import TripList from "./components/TripList.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
@@ -205,6 +208,9 @@ class App extends Component {
   render() {
     return <div className="App">
         <header className="App-header" />
+        <LandingPage />
+
+        <TripList />
         <main>
           {this.state.hasUserSubmitted ? <div>
               <MapWithADirectionsRenderer originLat={this.state.originData.latitude} originLong={this.state.originData.longitude} destinationLat={this.state.destinationData.latitude} destinationLong={this.state.destinationData.longitude} />
