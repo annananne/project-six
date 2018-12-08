@@ -6,45 +6,42 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
-import firebase from "./firebase.js"
-import LandingPage from "./components/LandingPage.js"
+import firebase from "./firebase.js";
+import LandingPage from "./components/LandingPage.js";
 import TripList from "./components/TripList.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
 // import CurrentTripInfo from './components/CurrentTripInfo';
-import moment from 'moment';
-
+import moment from "moment";
 
 class App extends Component {
   constructor() {
     super();
-    this.state = { 
+    this.state = {
       hasUserSubmitted: false,
-      originData: {
-        address: ""
+      originData: { address: "" },
+      destinationData: { address: "" },
+      userTripPreferences: {
+        travelMode: "DRIVING",
+        avoidFerries: false,
+        avoidHighways: false,
+        avoidTolls: false
       },
-      // originData: {
-      //   address:"Toronto, ON, Canada",
-      //   latitude: 43.653226,
-      //   longitude: -79.38318429999998,
-      //   placeID: "ChIJpTvG15DL1IkRd8S0KlBVNTI"
-      // },
+      tripData: {},
+      // use moment.js (https://momentjs.com/ to format user inputs) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      originDateTimeInSec: new Date().getTime(),
       //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      destinationData: {
-        address: ""
-      }, // desinationDataObject: {} //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      // destinationData: {}, // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // use moment.js (https://momentjs.com/ to format user inputs)
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), 
-      destinationDateTime: '', // to be set when directions are calculated 
-      weatherResults: { 
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      destinationDateTime: "", // to be set when directions are calculated
+      weatherResults: {
         origin: null, // middleOne
         // middleTwo (actual half of distance)
         // middleThree
-        destination: null 
-      },
-    }
+        destination: null
+      }
+    };
   }
 
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
@@ -56,57 +53,59 @@ class App extends Component {
 
     const originWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
       apiKeys.darkSky
-      }/${this.state.originData.latitude},${this.state.originData.longitude},${dateTime}`;
+    }/${this.state.originData.latitude},${
+      this.state.originData.longitude
+    },${dateTime}`;
 
     const destinationWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
       apiKeys.darkSky
-      }/${this.state.destinationData.latitude},${this.state.destinationData.longitude},${dateTime}`;
+    }/${this.state.destinationData.latitude},${
+      this.state.destinationData.longitude
+    },${dateTime}`;
     // DarkSky Time & date format
     // [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone]
 
     // for now - later refactor
 
     // this gets origin
-    axios.get(originWeatherURL,
-        {
-          method: "GET",
-          contentType: "json"
-        }
-      )
+    axios
+      .get(originWeatherURL, {
+        method: "GET",
+        contentType: "json"
+      })
       .then(res => {
         console.log(res);
         // cons
         this.setState({
           weatherResults: {
             ...this.state.weatherResults,
-            origin: res.data,
+            origin: res.data
           }
-        })
+        });
       })
       .catch(error => {
         console.log(error);
       });
 
-      // this gets destination
-    axios.get(destinationWeatherURL,
-        {
-          method: "GET",
-          contentType: "json"
-        }
-      )
+    // this gets destination
+    axios
+      .get(destinationWeatherURL, {
+        method: "GET",
+        contentType: "json"
+      })
       .then(res => {
         console.log(res);
         this.setState({
           weatherResults: {
             ...this.state.weatherResults,
-            destination: res.data,
+            destination: res.data
           }
-        })
+        });
       })
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
   //Method to handle change in Google Places autocomplete entry field
   // handleChange = address => {
@@ -171,13 +170,32 @@ class App extends Component {
       .catch(error => console.error("Error", error));
   };
 
-  handleDateTimeChange = (e) => {
+  handleDateTimeChange = e => {
+    const unixDate = new Date(e.target.value).getTime();
     this.setState({
+      originDateTimeInSec: unixDate,
       originDateTime: e.target.value
-    })
-  }
+    });
+  };
 
-  handleSubmit = (e) => {
+  saveSearchResults = result => {
+    // Get duration of trip in seconds from returned results object
+    const tripInSeconds = result.routes[0].legs[0].duration.value;
+    // Get origin time (Unix) from state
+    const originTime = this.state.originDateTimeInSec;
+    // Add two times together
+    const time = tripInSeconds + originTime;
+    // Get destination time in correct format using moment.js
+    const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
+
+    // Set trip data and destination date/time in state
+    this.setState({
+      tripData: result,
+      destinationDateTime: destinationTime
+    });
+  };
+
+  handleSubmit = e => {
     e.preventDefault();
     {
       if (
@@ -199,54 +217,155 @@ class App extends Component {
       destinationData: {},
       hasUserSubmitted: false,
       weatherResults: {
-        origin: null, 
+        origin: null,
         destination: null
-      },
-    })
-  }
+      }
+    });
+  };
+
+  handleRadioChange = e => {
+    // console.log(e.target);
+    const newObj = this.state.userTripPreferences;
+    this.state.userTripPreferences[e.target.name] = e.target.value;
+    this.setState({
+      userTripPreferences: newObj
+    });
+  };
+
+  handleCheckboxChange = e => {
+    const newObj = this.state.userTripPreferences;
+    this.state.userTripPreferences[e.target.name] = !this.state
+      .userTripPreferences[e.target.name];
+    this.setState({
+      userTripPreferences: newObj
+    });
+  };
 
   render() {
-    return <div className="App">
+    return (
+      <div className="App">
         <header className="App-header" />
         <LandingPage />
 
         <TripList />
         <main>
-          {this.state.hasUserSubmitted ? <div>
-              <MapWithADirectionsRenderer originLat={this.state.originData.latitude} originLong={this.state.originData.longitude} destinationLat={this.state.destinationData.latitude} destinationLong={this.state.destinationData.longitude} />
-              <button onClick={this.handleReset}>Reset</button>
-            </div> : <form action="" onSubmit={this.handleSubmit}>
-              <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places,geometry,drawing`]}>
+          {this.state.hasUserSubmitted ? (
+            <div>
+              <div>
+                <MapWithADirectionsRenderer
+                  originLat={this.state.originData.latitude}
+                  originLong={this.state.originData.longitude}
+                  destinationLat={this.state.destinationData.latitude}
+                  destinationLong={this.state.destinationData.longitude}
+                  userTripPreferences={this.state.userTripPreferences}
+                  originDateTime={this.state.originDateTime}
+                  saveSearchResults={this.saveSearchResults}
+                />
+                <button onClick={this.handleReset}>Reset</button>
+              </div>{" "}
+            </div>
+          ) : (
+            <form action="" onSubmit={this.handleSubmit}>
+              <ReactDependentScript
+                scripts={[
+                  `https://maps.googleapis.com/maps/api/js?key=${
+                    apiKeys.googleMaps
+                  }&libraries=places,geometry,drawing`
+                ]}
+              >
                 {/* Input for origin point search */}
-                <LocationSearchInput id="originData" address={this.state.originData.address} originData={this.state.originData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
-
+                <LocationSearchInput
+                  id="originData"
+                  address={this.state.originData.address}
+                  originData={this.state.originData}
+                  handleChange={this.handleChange}
+                  handleSelect={this.handleSelect}
+                />
                 {/* Input for destination point search */}
-                <LocationSearchInput id="destinationData" address={this.state.destinationData.address} destinationData={this.state.destinationData} handleChange={this.handleChange} handleSelect={this.handleSelect} />
+                <LocationSearchInput
+                  id="destinationData"
+                  address={this.state.destinationData.address}
+                  destinationData={this.state.destinationData}
+                  handleChange={this.handleChange}
+                  handleSelect={this.handleSelect}
+                />
+                <DateTimeInput
+                  dateString={this.state.originDateTime}
+                  handleDateTimeChange={this.handleDateTimeChange}
+                />
+                <fieldset>
+                  <label htmlFor="driving">Driving</label>
+                  <input
+                    type="radio"
+                    id="driving"
+                    name="travelMode"
+                    value="DRIVING"
+                    onChange={this.handleRadioChange} // className="no-display"
+                    checked={
+                      this.state.userTripPreferences.travelMode === "DRIVING"
+                    }
+                  />
 
-                <DateTimeInput dateString={this.state.originDateTime} handleDateTimeChange={this.handleDateTimeChange} />
+                  <label htmlFor="bicycling">Bicycling</label>
+                  <input
+                    type="radio"
+                    id="bicycling"
+                    name="travelMode"
+                    value="BICYCLING"
+                    onChange={this.handleRadioChange}
+                    checked={
+                      this.state.userTripPreferences.travelMode === "BICYCLING"
+                    }
+                  />
+                </fieldset>
+                <fieldset>
+                  <label htmlFor="ferries">Avoid ferries</label>
+                  <input
+                    type="checkbox"
+                    id="ferries"
+                    name="avoidFerries"
+                    onChange={this.handleCheckboxChange}
+                  />
 
+                  <label htmlFor="highways">Avoid highways</label>
+                  <input
+                    type="checkbox"
+                    id="highways"
+                    name="avoidHighways"
+                    onChange={this.handleCheckboxChange}
+                  />
+
+                  <label htmlFor="tolls">Avoid tolls</label>
+                  <input
+                    type="checkbox"
+                    id="tolls"
+                    name="avoidTolls"
+                    onChange={this.handleCheckboxChange}
+                  />
+                </fieldset>
                 <input type="submit" value="Get recommendation" />
               </ReactDependentScript>
-            </form>}
+            </form>
+          )}
 
           <div className="App">
             <button onClick={this.getWeather}>Get weather</button>
 
-            {
-              this.state.weatherResults.origin !== null && this.state.weatherResults.destination !== null && 
-              <PointWeatherDisplay 
-                originWeatherData={this.state.weatherResults.origin}
-                destinationWeatherData={this.state.weatherResults.destination}
-                originAddress={this.state.originData.address} 
-                destinationAddress={this.state.destinationData.address} 
-                // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature} 
-              />
-            }
+            {this.state.weatherResults.origin !== null &&
+              this.state.weatherResults.destination !== null && (
+                <PointWeatherDisplay
+                  originWeatherData={this.state.weatherResults.origin}
+                  destinationWeatherData={this.state.weatherResults.destination}
+                  originAddress={this.state.originData.address}
+                  destinationAddress={this.state.destinationData.address}
+                  // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
+                />
+              )}
           </div>
         </main>
-      </div>;
+      </div>
+    );
   }
 }
-
 
 export default App;
