@@ -5,8 +5,10 @@ import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  DirectionsRenderer
+  DirectionsRenderer,
+  DirectionsRendererOptions
 } from "react-google-maps";
+import Directions from './Directions.js'
 // import markers from "../markers";
 
 // const { compose, withProps, lifecycle } = require("recompose");
@@ -97,7 +99,9 @@ const MapWithADirectionsRenderer = compose(
     }&v=3.exp&libraries=geometry,drawing,places'goo`,
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100vh`, minHeight: `650px`, width: `40%` }} />
+    mapElement: (
+      <div style={{ height: `100vh`, minHeight: `650px`, width: `40%` }} />
+    )
   }),
   withScriptjs,
   withGoogleMap,
@@ -105,6 +109,7 @@ const MapWithADirectionsRenderer = compose(
     componentDidMount() {
       const DirectionsService = new window.google.maps.DirectionsService();
 
+      console.log(new Date(this.props.originDateTime));
       DirectionsService.route(
         {
           origin: new window.google.maps.LatLng(
@@ -115,11 +120,17 @@ const MapWithADirectionsRenderer = compose(
             this.props.destinationLat,
             this.props.destinationLong
           ),
-          travelMode: window.google.maps.TravelMode["DRIVING"]
+          travelMode: window.google.maps.TravelMode["DRIVING"],
+          drivingOptions: {departureTime: new Date(this.props.originDateTime)},
+          provideRouteAlternatives: true,
+          avoidFerries: this.props.userTripPreferences.avoidFerries,
+          avoidHighways: this.props.userTripPreferences.avoidHighways,
+          avoidTolls: this.props.userTripPreferences.avoidTolls
         },
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             console.log(result);
+            this.props.saveSearchResults(result);
             this.setState({ directions: result });
           } else {
             console.error(`error fetching directions ${result}`);
@@ -129,13 +140,21 @@ const MapWithADirectionsRenderer = compose(
     }
   })
 )(props => (
-  <GoogleMap
-    defaultZoom={7}
-    defaultCenter={new window.google.maps.LatLng(41.85073, -87.65126)}
-    defaultOptions={{styles: stylesArray}}
-  >
-    {props.directions && <DirectionsRenderer directions={props.directions} />}
-  </GoogleMap>
+  <div>
+    <GoogleMap
+      defaultZoom={7}
+      defaultCenter={new window.google.maps.LatLng(41.85073, -87.65126)}
+      defaultOptions={{ styles: stylesArray }}
+    >
+      {props.directions && props.directions.routes.map((item, i) => {
+        return <div>
+            <DirectionsRenderer directions={props.directions} routeIndex={i} />
+            <Directions directions={props.directions} routeIndex={i} />
+          </div>;
+      })
+    }
+    </GoogleMap>
+  </div>
 ));
 
 {/* <MapWithADirectionsRenderer />; */}
