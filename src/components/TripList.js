@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import firebase from "../firebase.js";
+import firebase, { auth, provider } from "../firebase.js";
 
 
 class TripList extends Component {
@@ -9,7 +9,7 @@ class TripList extends Component {
             tripName: "",
             startPoint: "",
             endPoint: "",
-            trips: {},
+            trips: [],
         }  
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -40,15 +40,49 @@ class TripList extends Component {
     componentDidMount() {
         const tripRef = firebase.database().ref("trips");
         tripRef.on('value', (snapshot) => {
+            let trips = snapshot.val();
+            let newState = [];
+            for (let tripList in trips) {
+                newState.push({
+                    id: tripList,
+                    title: trips[tripList].title,
+                    origin: trips[tripList].origin,
+                    destination: trips[tripList].destination
+                })
+            }
             this.setState({
-                trips: snapshot.val()  
+                trips: newState 
             })
         });
     
     }
 
-    removeItem(tripsId) {
-        const tripRef = firebase.database().ref(`/trips/${tripsId}`);
+    // componentDidUpdate(prevProps) {
+    //     if (this.state.trips != prevProps.trips) { 
+            
+    //         const tripRef = firebase.database().ref("trips");
+    //         tripRef.on('value', (snapshot) => {
+    //             let trips = snapshot.val();
+    //             let newState = [];
+    //             for (let tripList in trips) {
+    //                 newState.push({
+    //                     id: tripList,
+    //                     title: trips[tripList].title,
+    //                     origin: trips[tripList].origin,
+    //                     destination: trips[tripList].destination
+    //                 })
+    //             }
+    //             this.setState({
+    //                 trips: newState
+    //             })
+    //         });
+    //     }
+
+    // }
+
+    removeTrip = (e) => {
+        console.log(e.target.id);
+        const tripRef = firebase.database().ref(`/trips/${e.target.id}`);
         tripRef.remove();
     }
 
@@ -69,16 +103,34 @@ class TripList extends Component {
                 </section>
                 <section>
                     <ul>
-                        {Object.entries(this.state.trips).map((tripList) => {
+                        {this.state.trips.map(item => {
+                            return <li key={item.id}>
+                                <h3>
+                                  {item.title}
+                                </h3>
+                                <p>
+                                  Origin:{" "}
+                                  {item.origin}
+                                </p>
+                                <p>
+                                  Destination:{" "}
+                                  {item.destination}
+                                </p>
+                                <button id={item.id} onClick={this.removeTrip}>
+                                  Remove Trip!
+                                </button>
+                              </li>;
+                        })}
+                        {/* {Object.entries(this.state.trips).map((item, i) => {
                             return (
-                                <li key={tripList.id}>
-                                    <h3>{tripList[1].title}</h3>
-                                    <p>Origin: {tripList[1].origin}</p>
-                                    <p>Destination: {tripList[1].destination}</p>
-                                    <button onClick={() => this.removeItem(tripList.title)}>Remove Trip!</button>
+                                <li key={item.id}>
+                                    <h3>{item[1].title}</h3>
+                                    <p>Origin: {item[1].origin}</p>
+                                    <p>Destination: {item[1].destination}</p>
+                                    <button id={item.id} onClick={this.removeTrip}>Remove Trip!</button>
                                 </li>
                             )
-                        })}
+                        })} */}
                     </ul>
                 </section>
 
