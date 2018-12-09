@@ -6,8 +6,8 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
-import firebase from "./firebase.js"
-import LandingPage from "./components/LandingPage.js"
+import firebase, { auth, provider } from "./firebase.js";
+// import LandingPage from "./components/LandingPage.js"
 import TripList from "./components/TripList.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
@@ -19,6 +19,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = { 
+      user: null,
       hasUserSubmitted: false,
       originData: {
         address: ""
@@ -45,6 +46,56 @@ class App extends Component {
       },
     }
   }
+
+  //
+  componentDidMount(){
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({
+          user:user 
+        },
+        () => {
+          // create reference specific to user
+          this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+          // attaching our event listener to firebase
+          // this.dbRef.on('value', (snapshot) => {
+
+          // })
+        }
+        )
+      }
+    })
+  };
+
+  logIn = () => {
+    auth.signInWithPopup(provider).then((result) => {
+      console.log(result);
+      this.setState({
+        user: result.user
+      }, () => {
+        // create reference specific to user
+        const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+        // attaching our event listener to firebase
+        dbRef.on('value', (snapshot) => {
+          console.log(snapshot.val());
+        });
+      }
+      );
+
+    });
+  };
+
+  logOut = () => {
+    auth.signOut().then(() => {
+      this.setState({
+        user: null
+      });
+    });
+  };
+
+
+
+
 
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
   // change the hardcoded long & lat below, prob this will receive parameters with the location info
@@ -204,7 +255,13 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header" />
-        <LandingPage />
+        {this.state.user ?
+          <button onClick={this.logOut}>Log Out</button>
+          :
+          <button onClick={this.logIn}>Log In</button>
+          // <button>Continue As Guest</button>
+        }
+        {/* <LandingPage /> */}
 
         <TripList />
         <main>
