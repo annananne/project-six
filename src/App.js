@@ -18,34 +18,9 @@ import moment from "moment";
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      hasUserSubmitted: false,
-      originData: { address: "" },
-      destinationData: { address: "" },
-      directions: null,
-      userTripPreferences: {
-        travelMode: "DRIVING",
-        avoidFerries: false,
-        avoidHighways: false,
-        avoidTolls: false
-      },
-      // tripData: {},
-      tripData: null,
-      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      originDateTimeInSec: new Date().getTime(),
-      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      // use moment.js (https://momentjs.com/ to format user inputs)
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-      destinationDateTime: "", // to be set when directions are calculated
-      weatherResults: {
-        origin: null, 
-        // middleOne: null,
-        // (actual half of distance)
-        // middleTwo: null, 
-        // middleThree: null,
-        destination: null
-      }
-    };
+    this.state = { hasUserSubmitted: false, originData: { address: "" }, destinationData: { address: "" }, directions: null, userTripPreferences: { travelMode: "DRIVING", avoidFerries: false, avoidHighways: false, avoidTolls: false }, tripData: null, originDateTimeInSec: new Date().getTime() / 1000, originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), destinationDateTime: "", weatherResults: { origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
+      destination: null
+    }, markers: [{ title: "Kingston", latitude: 44.2312, longitude: -76.486, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }, { title: "Brockville", latitude: 44.5895, longitude: -75.6843, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }, { title: "Ottawa", latitude: 45.4215, longitude: -75.6972, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }] };
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -99,7 +74,6 @@ class App extends Component {
       })
       .then(res => {
         console.log(res);
-        // cons
         this.setState({
           weatherResults: {
             ...this.state.weatherResults,
@@ -143,51 +117,31 @@ class App extends Component {
     
   }
   //Method to handle change in Google Places autocomplete entry field
-  // handleChange = address => {
-  //   console.log(address);
-  //   //Continuously update this.state.address to match what is put into input box
-  //   this.setState({ address });
-  // };
-
-  //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
-    // console.log('address inside of handleChange', address);
     //Continuously update this.state.address to match what is put into input box (just text)
-    // console.log(address);
-    console.log("handling change");
     const currentId = id;
-    // console.log(currentId);
-    // const tempObj = {};
     const tempObj = {};
     tempObj.address = address;
-    // console.log(tempObj);
-    // this.setState({ [currentId]: tempObj });
     this.setState({ [currentId]: tempObj });
   };
 
   //Method to handle select of suggested value
   handleSelect = (address, placeId, id) => {
     //Store displayed text value of address (properly formatted)
-    // console.log('id inside of handleSelect', id);
-    console.log("handleSelect address", address);
     const currentId = id;
     const tempObj = this.state[currentId];
     tempObj.address = address;
     this.setState({
       [currentId]: tempObj
     });
-    // const textValue = address;
-    // console.log(textValue);
 
     //Run address through Google Maps geocode function
     geocodeByAddress(address)
       .then(results => {
         //Returns object that contains results with formatted address, place ID, etc.
-        console.log("handleSelect results", results);
         const dataObject = {
           placeID: results[0].place_id,
           address: results[0].formatted_address
-          // displayAddress: this.state.address
         };
 
         this.setState({ [currentId]: dataObject });
@@ -218,17 +172,19 @@ class App extends Component {
     const tripInSeconds = result.routes[0].legs[0].duration.value;
     // Get origin time (Unix) from state
     const originTime = this.state.originDateTimeInSec;
+    console.log('trip in seconds', tripInSeconds, 'origin time', originTime)
     // Add two times together
     const time = tripInSeconds + originTime;
     // Get destination time in correct format using moment.js
     const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
+    console.log('origin time', originTime, 'destination time', destinationTime);
 
     // Set trip data and destination date/time in state
     this.setState({
       tripData: result,
       destinationDateTime: destinationTime
     });
-  };
+  }; 
 
   handleSubmit = e => {
     e.preventDefault();
@@ -259,7 +215,6 @@ class App extends Component {
   };
 
   handleRadioChange = e => {
-    // console.log(e.target);
     const newObj = this.state.userTripPreferences;
     this.state.userTripPreferences[e.target.name] = e.target.value;
     this.setState({
@@ -275,6 +230,28 @@ class App extends Component {
       userTripPreferences: newObj
     });
   };
+
+  handleMarkerClick = marker => {
+    console.log(marker)
+    const markerTitle = marker.wa.target.title;
+    console.log(markerTitle);
+    // const markerLat = marker.latLng.lat();
+    // const markerLng = marker.latLng.lng();
+    // console.log(markerTitle, markerLat, markerLng);
+    const markersArray = this.state.markers;
+    markersArray.forEach(marker => {
+      // const activeIndex = marker;
+      if (marker.title = markerTitle) {
+        marker.isLabelVisible = !marker.isLabelVisible;
+      }
+    })
+    this.setState({
+      markers: markersArray
+    });
+  }
+  handleDirClick = item => {
+    console.log(item);
+  }
 
   render() {
     return (
@@ -295,6 +272,9 @@ class App extends Component {
                   userTripPreferences={this.state.userTripPreferences}
                   originDateTime={this.state.originDateTime}
                   saveSearchResults={this.saveSearchResults}
+                  handleDirClick={this.handleDirClick}
+                  handleMarkerClick={this.handleMarkerClick}
+                  markers={this.state.markers}
                 />
                 <button onClick={this.handleReset}>Reset</button>
               </div>{" "}
