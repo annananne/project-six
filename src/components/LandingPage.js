@@ -9,9 +9,7 @@ class LandingPage extends Component {
     constructor(){
         super();
         this.state = {
-
         }
-
     }
 
     render() {
