@@ -1,12 +1,15 @@
 import React from "react";
-import { compose, withProps, lifecycle } from "recompose";
+import { compose, withProps, withHandlers, withState, lifecycle } from "recompose";
 import apiKeys from "../data/secrets";
 import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  DirectionsRenderer
+  GoogleMapsEvent,
+  DirectionsRenderer,
+  DirectionsRendererOptions
 } from "react-google-maps";
+import Directions from "./Directions.js";
 // import markers from "../markers";
 
 // const { compose, withProps, lifecycle } = require("recompose");
@@ -18,93 +21,139 @@ import {
 // } = require("react-google-maps");
 
 // const myMap = withScriptjs(withGoogleMap(props => <GoogleMap />));
+const {
+  MarkerWithLabel
+} = require("react-google-maps/lib/components/addons/MarkerWithLabel");
+
 const stylesArray = [
   {
-    "featureType": "landscape.natural",
-    "elementType": "geometry.fill",
-    "stylers": [
+    featureType: "landscape.natural",
+    elementType: "geometry.fill",
+    stylers: [
       {
-        "visibility": "on"
+        visibility: "on"
       },
       {
-        "color": "#e0efef"
+        color: "#e0efef"
       }
     ]
   },
   {
-    "featureType": "poi",
-    "elementType": "geometry.fill",
-    "stylers": [
+    featureType: "poi",
+    elementType: "geometry.fill",
+    stylers: [
       {
-        "visibility": "on"
+        visibility: "on"
       },
       {
-        "hue": "#1900ff"
+        hue: "#1900ff"
       },
       {
-        "color": "#c0e8e8"
+        color: "#c0e8e8"
       }
     ]
   },
   {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [
       {
-        "lightness": 100
+        lightness: 100
       },
       {
-        "visibility": "simplified"
+        visibility: "simplified"
       }
     ]
   },
   {
-    "featureType": "road",
-    "elementType": "labels",
-    "stylers": [
+    featureType: "road",
+    elementType: "labels",
+    stylers: [
       {
-        "visibility": "off"
+        visibility: "off"
       }
     ]
   },
   {
-    "featureType": "transit.line",
-    "elementType": "geometry",
-    "stylers": [
+    featureType: "transit.line",
+    elementType: "geometry",
+    stylers: [
       {
-        "visibility": "on"
+        visibility: "on"
       },
       {
-        "lightness": 700
+        lightness: 700
       }
     ]
   },
   {
-    "featureType": "water",
-    "elementType": "all",
-    "stylers": [
+    featureType: "water",
+    elementType: "all",
+    stylers: [
       {
-        "color": "#7dcdcd"
+        color: "#7dcdcd"
       }
     ]
   }
-]
+];
 
 const MapWithADirectionsRenderer = compose(
   withProps({
     googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${
       apiKeys.googleMaps
-    }&v=3.exp&libraries=geometry,drawing,places'goo`,
+    }&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100vh`, minHeight: `650px`, width: `40%` }} />
+    mapElement: (
+      <div style={{ height: `100vh`, minHeight: `650px`, width: `100%` }} />
+    )
   }),
+  // withState({
+  //   markers: [
+  //     {
+  //       title: "Kingston",
+  //       latitude: 44.2312,
+  //       longitude: -76.486,
+  //       isLabelVisible: false,
+  //       backgroundColor: "blue"
+  //     },
+  //     {
+  //       title: "Brockville",
+  //       latitude: 44.5895,
+  //       longitude: -75.6843,
+  //       isLabelVisible: false,
+  //       backgroundColor: "green"
+  //     },
+  //     {
+  //       title: "Ottawa",
+  //       latitude: 45.4215,
+  //       longitude: -75.6972,
+  //       isLabelVisible: false,
+  //       backgroundColor: "orange"
+  //     }
+  //   ]
+  // }),
   withScriptjs,
   withGoogleMap,
+  // withHandlers({
+    
+  //   // handleMarkerClick: () => marker => {
+  //   //   // const markerTitle = marker.wa.target.title;
+  //   //   // const markerLat = marker.latLng.lat();
+  //   //   // const markerLng = marker.latLng.lng();
+  //   //   // console.log(markerTitle, markerLat, markerLng);
+  //   //   // const markersArray = this.state.markers;
+  //   //   // markersArray[markerTitle].isShown = !markersArray[markerTitle].isShown;
+  //   //   // this.setState({
+  //   //   //   markers: markersArray
+  //   //   // });
+  //   // }
+  // }),
   lifecycle({
     componentDidMount() {
       const DirectionsService = new window.google.maps.DirectionsService();
 
+      console.log(new Date(this.props.originDateTime));
       DirectionsService.route(
         {
           origin: new window.google.maps.LatLng(
@@ -115,10 +164,22 @@ const MapWithADirectionsRenderer = compose(
             this.props.destinationLat,
             this.props.destinationLong
           ),
-          travelMode: window.google.maps.TravelMode.DRIVING
+          travelMode:
+            window.google.maps.TravelMode[
+              this.props.userTripPreferences.travelMode
+            ],
+          drivingOptions: {
+            departureTime: new Date(this.props.originDateTime)
+          },
+          provideRouteAlternatives: true,
+          avoidFerries: this.props.userTripPreferences.avoidFerries,
+          avoidHighways: this.props.userTripPreferences.avoidHighways,
+          avoidTolls: this.props.userTripPreferences.avoidTolls
         },
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
+            console.log(result);
+            this.props.saveSearchResults(result);
             this.setState({ directions: result });
           } else {
             console.error(`error fetching directions ${result}`);
@@ -128,15 +189,46 @@ const MapWithADirectionsRenderer = compose(
     }
   })
 )(props => (
-  <GoogleMap
-    defaultZoom={7}
-    defaultCenter={new window.google.maps.LatLng(41.85073, -87.65126)}
-    defaultOptions={{styles: stylesArray}}
-  >
-    {props.directions && <DirectionsRenderer directions={props.directions} />}
-  </GoogleMap>
+  <div>
+    <GoogleMap
+      defaultZoom={7}
+      defaultCenter={new window.google.maps.LatLng(41.85073, -87.65126)}
+      defaultOptions={{ styles: stylesArray }}
+    >
+      {props.directions &&
+        props.directions.routes.map((item, i) => {
+          return (
+            <div>
+              <DirectionsRenderer
+                directions={props.directions}
+                routeIndex={i}
+              />
+              <Directions directions={props.directions} routeIndex={i} />
+            </div>
+          );
+        })}
+
+      {props.markers && props.markers.map(marker => {
+        return <div>
+            <MarkerWithLabel position={{ lat: marker.latitude, lng: marker.longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: marker.backgroundColor, fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={true} title={marker.title} onClick={props.handleMarkerClick} id={marker.title}>
+              <div>
+                <h3>Weather Details</h3>
+                <p>
+                  City: {marker.title} ({marker.latitude}, {marker.longitude}
+                  )</p>
+                <p>Average temperature: 10°C</p>
+              </div>
+            </MarkerWithLabel>
+            {/* {marker.isLabelVisible && <div>I am the label!</div>} */}
+          </div>;
+      })
+      }
+    </GoogleMap>
+  </div>
 ));
 
-{/* <MapWithADirectionsRenderer />; */}
+{
+  /* <MapWithADirectionsRenderer />; */
+}
 
 export default MapWithADirectionsRenderer;

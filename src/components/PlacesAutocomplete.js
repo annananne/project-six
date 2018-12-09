@@ -126,7 +126,6 @@ class PlacesAutocomplete extends React.Component {
   };
 
   handleSelect = (address, placeId, id) => {
-    console.log('handleSelect inside PlacesAutocomplete', address, placeId, id);
     this.clearSuggestions();
     if (this.props.onSelect) {
       this.props.onSelect(address, placeId, id);
@@ -154,7 +153,6 @@ class PlacesAutocomplete extends React.Component {
 
   handleEnterKey = () => {
     const activeSuggestion = this.getActiveSuggestion();
-    // console.log('activeSuggestion', activeSuggestion);
     if (activeSuggestion === undefined) {
       this.handleSelect(this.props.value, null);
     } else {
@@ -227,12 +225,7 @@ class PlacesAutocomplete extends React.Component {
   };
 
   handleInputChange = (event, id) => {
-    // **** CONSOLE LOG EVENT TARGET TO FIGURE OUT WHAT IS BEING LOGGED HERE - IDEALLY SHOULD BE GETTING AN ID
-    console.log('target', event.target, 'id', id);
-
-    // Pre-existing code continues
     const { value } = event.target;
-    console.log(value);
     this.props.onChange(value, event.target.id);
     this.setState({ userInputValue: value });
     if (!value) {
@@ -297,7 +290,6 @@ class PlacesAutocomplete extends React.Component {
       ),
       value: this.props.value,
       onChange: event => {
-        // console.log('onChange event', event.target)
         this.handleInputChange(event, event.target.id);
       }
     };
@@ -373,7 +365,6 @@ class PlacesAutocomplete extends React.Component {
 
   handleSuggestionClick = (suggestion, event) => 
   {
-    console.log('event inside handleSuggestionClick', event.target);
     if (event && event.preventDefault) {
       event.preventDefault();
     }
