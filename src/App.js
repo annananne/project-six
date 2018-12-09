@@ -14,6 +14,7 @@ import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
 // import CurrentTripInfo from './components/CurrentTripInfo';
 import moment from "moment";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class App extends Component {
   constructor() {
@@ -240,7 +241,6 @@ class App extends Component {
     // console.log(markerTitle, markerLat, markerLng);
     const markersArray = this.state.markers;
     markersArray.forEach(marker => {
-      // const activeIndex = marker;
       if (marker.title = markerTitle) {
         marker.isLabelVisible = !marker.isLabelVisible;
       }
