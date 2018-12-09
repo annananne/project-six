@@ -22,28 +22,52 @@ class App extends Component {
       hasUserSubmitted: false,
       originData: { address: "" },
       destinationData: { address: "" },
+      directions: null,
       userTripPreferences: {
         travelMode: "DRIVING",
         avoidFerries: false,
         avoidHighways: false,
         avoidTolls: false
       },
-      tripData: {},
-      // use moment.js (https://momentjs.com/ to format user inputs) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
+      // tripData: {},
+      tripData: null,
+      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
       originDateTimeInSec: new Date().getTime(),
       //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
       // use moment.js (https://momentjs.com/ to format user inputs)
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
       destinationDateTime: "", // to be set when directions are calculated
       weatherResults: {
-        origin: null, // middleOne
-        // middleTwo (actual half of distance)
-        // middleThree
+        origin: null, 
+        // middleOne: null,
+        // (actual half of distance)
+        // middleTwo: null, 
+        // middleThree: null,
         destination: null
       }
     };
   }
 
+  componentDidUpdate(previousProps, previousState) {
+
+    if (this.state.tripData !== previousState.tripData && previousState.tripData === null) {
+      const originLat = this.state.originData.latitude;
+      const originLng = this.state.originData.longitude;
+      const destinationLat = this.state.destinationData.latitude;
+      const destinationLng = this.state.destinationData.longitude;
+      const middlePointCoordinates = this.getMiddlePoint(originLat, originLng, destinationLat, destinationLng);
+      // we need to save middle point to state
+      const middleMainLat = middlePointCoordinates.lat();
+      const middleMainLng = middlePointCoordinates.lng();
+
+      const middleFirstHalf = this.getMiddlePoint(originLat, originLng, middleMainLat, middleMainLng);
+      const middleSecondHalf = this.getMiddlePoint(middleMainLat, middleMainLng, destinationLat, destinationLng);
+      const middleFirstLat = middlePointCoordinates.lat();
+      const middleFirstLng = middlePointCoordinates.lng();
+      const middleSecondLat = middlePointCoordinates.lat();
+      const middleSecondLng = middlePointCoordinates.lng();
+    }
+  }
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
   // change the hardcoded long & lat below, prob this will receive parameters with the location info
   getWeather = () => {
@@ -107,6 +131,17 @@ class App extends Component {
       });
   };
 
+  getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
+    const p1 = new window.google.maps.LatLng(p1Lat, p1Lng);
+    const p2 = new window.google.maps.LatLng(p2Lat, p2Lng);
+    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(p1,
+      window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
+      window.google.maps.geometry.spherical.computeHeading(p1, p2));
+      console.log('MIDDLE POOOOOO', middleLatLng);
+      return middleLatLng;
+    // var distance = google.maps.geometry.spherical.computeDistanceBetween(origin, destination);
+    
+  }
   //Method to handle change in Google Places autocomplete entry field
   // handleChange = address => {
   //   console.log(address);
