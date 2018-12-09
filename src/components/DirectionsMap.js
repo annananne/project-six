@@ -136,17 +136,18 @@ const MapWithADirectionsRenderer = compose(
   withScriptjs,
   withGoogleMap,
   // withHandlers({
-  //   handleMarkerClick: () => marker => {
-  //     // const markerTitle = marker.wa.target.title;
-  //     // const markerLat = marker.latLng.lat();
-  //     // const markerLng = marker.latLng.lng();
-  //     // console.log(markerTitle, markerLat, markerLng);
-  //     // const markersArray = this.state.markers;
-  //     // markersArray[markerTitle].isShown = !markersArray[markerTitle].isShown;
-  //     // this.setState({
-  //     //   markers: markersArray
-  //     // });
-  //   }
+    
+  //   // handleMarkerClick: () => marker => {
+  //   //   // const markerTitle = marker.wa.target.title;
+  //   //   // const markerLat = marker.latLng.lat();
+  //   //   // const markerLng = marker.latLng.lng();
+  //   //   // console.log(markerTitle, markerLat, markerLng);
+  //   //   // const markersArray = this.state.markers;
+  //   //   // markersArray[markerTitle].isShown = !markersArray[markerTitle].isShown;
+  //   //   // this.setState({
+  //   //   //   markers: markersArray
+  //   //   // });
+  //   // }
   // }),
   lifecycle({
     componentDidMount() {
@@ -208,26 +209,18 @@ const MapWithADirectionsRenderer = compose(
         })}
 
       {props.markers && props.markers.map(marker => {
-        return (<div>
-          <MarkerWithLabel
-            position={{ lat: marker.latitude, lng: marker.longitude }}
-            labelAnchor={new window.google.maps.Point(0, 0)}
-            labelStyle={{
-              backgroundColor: marker.backgroundColor,
-              fontSize: "10px",
-              padding: "16px"
-            }}
-            labelVisible={marker.isLabelVisible}
-            title={marker.title}
-            onClick={props.handleMarkerClick}
-            id={marker.title}
-          >
-            <div>Hi! I'm in {marker.title}</div>
-          </MarkerWithLabel>
-          {
-          marker.isLabelVisible && <div>I am the label!</div> 
-          }
-         </div>)
+        return <div>
+            <MarkerWithLabel position={{ lat: marker.latitude, lng: marker.longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: marker.backgroundColor, fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={true} title={marker.title} onClick={props.handleMarkerClick} id={marker.title}>
+              <div>
+                <h3>Weather Details</h3>
+                <p>
+                  City: {marker.title} ({marker.latitude}, {marker.longitude}
+                  )</p>
+                <p>Average temperature: 10°C</p>
+              </div>
+            </MarkerWithLabel>
+            {/* {marker.isLabelVisible && <div>I am the label!</div>} */}
+          </div>;
       })
       }
     </GoogleMap>

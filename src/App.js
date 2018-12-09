@@ -18,57 +18,9 @@ import moment from "moment";
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      hasUserSubmitted: false,
-      originData: { address: "" },
-      destinationData: { address: "" },
-      directions: null,
-      userTripPreferences: {
-        travelMode: "DRIVING",
-        avoidFerries: false,
-        avoidHighways: false,
-        avoidTolls: false
-      },
-      // tripData: {},
-      tripData: null,
-      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      originDateTimeInSec: (new Date().getTime() / 1000),
-      //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info)
-      // use moment.js (https://momentjs.com/ to format user inputs)
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-      destinationDateTime: "", // to be set when directions are calculated
-      weatherResults: {
-        origin: null, 
-        // middleOne: null,
-        // (actual half of distance)
-        // middleTwo: null, 
-        // middleThree: null,
-        destination: null
-      },
-      markers: [
-        {
-          title: "Kingston",
-          latitude: 44.2312,
-          longitude: -76.486,
-          isLabelVisible: false,
-          backgroundColor: "blue"
-        },
-        {
-          title: "Brockville",
-          latitude: 44.5895,
-          longitude: -75.6843,
-          isLabelVisible: false,
-          backgroundColor: "green"
-        },
-        {
-          title: "Ottawa",
-          latitude: 45.4215,
-          longitude: -75.6972,
-          isLabelVisible: false,
-          backgroundColor: "orange"
-        }
-      ]
-    };
+    this.state = { hasUserSubmitted: false, originData: { address: "" }, destinationData: { address: "" }, directions: null, userTripPreferences: { travelMode: "DRIVING", avoidFerries: false, avoidHighways: false, avoidTolls: false }, tripData: null, originDateTimeInSec: new Date().getTime() / 1000, originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), destinationDateTime: "", weatherResults: { origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
+      destination: null
+    }, markers: [{ title: "Kingston", latitude: 44.2312, longitude: -76.486, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }, { title: "Brockville", latitude: 44.5895, longitude: -75.6843, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }, { title: "Ottawa", latitude: 45.4215, longitude: -75.6972, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }] };
   }
 
   componentDidUpdate(previousProps, previousState) {
@@ -297,6 +249,10 @@ class App extends Component {
       markers: markersArray
     });
   }
+  handleDirClick = item => {
+    console.log(item);
+  }
+
   render() {
     return (
       <div className="App">
@@ -316,6 +272,7 @@ class App extends Component {
                   userTripPreferences={this.state.userTripPreferences}
                   originDateTime={this.state.originDateTime}
                   saveSearchResults={this.saveSearchResults}
+                  handleDirClick={this.handleDirClick}
                   handleMarkerClick={this.handleMarkerClick}
                   markers={this.state.markers}
                 />
