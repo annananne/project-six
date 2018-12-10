@@ -18,50 +18,82 @@ import moment from "moment";
 class App extends Component {
   constructor() {
     super();
-    this.state = { hasUserSubmitted: false, originData: { address: "" }, destinationData: { address: "" }, directions: null, userTripPreferences: { travelMode: "DRIVING", avoidFerries: false, avoidHighways: false, avoidTolls: false }, tripData: null, originDateTimeInSec: new Date().getTime() / 1000, originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), destinationDateTime: "", weatherResults: { origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
-      destination: null
-    }, markers: [{ title: "Kingston", latitude: 44.2312, longitude: -76.486, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }, { title: "Brockville", latitude: 44.5895, longitude: -75.6843, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }, { title: "Ottawa", latitude: 45.4215, longitude: -75.6972, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }] };
+    this.state = {
+      hasUserSubmitted: false,
+      originData: { address: "" },
+      destinationData: { address: "" },
+      directions: null,
+      userTripPreferences: {
+        travelMode: "DRIVING",
+        avoidFerries: false,
+        avoidHighways: false,
+        avoidTolls: false
+      },
+      tripData: null,
+      originDateTimeInSec: new Date().getTime() / 1000,
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      destinationDateTime: "",
+      weatherResults: {
+        origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
+        destination: null
+      },
+      markers: [
+        {
+          title: "Kingston",
+          latitude: 44.2312,
+          longitude: -76.486,
+          isLabelVisible: false,
+          backgroundColor: "rgba(255, 255, 255, 0.5)"
+        },
+        {
+          title: "Brockville",
+          latitude: 44.5895,
+          longitude: -75.6843,
+          isLabelVisible: false,
+          backgroundColor: "rgba(255, 255, 255, 0.5)"
+        },
+        {
+          title: "Ottawa",
+          latitude: 45.4215,
+          longitude: -75.6972,
+          isLabelVisible: false,
+          backgroundColor: "rgba(255, 255, 255, 0.5)"
+        }
+      ]
+    };
   }
 
-
-  //
   componentDidMount() {
+    // persisting user login
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.setState({
-          user: user
-        },
-          () => {
-            // create reference specific to user
-            this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
-            // attaching our event listener to firebase
-            // this.dbRef.on('value', (snapshot) => {
-
-            // })
+        this.setState(
+          {
+            user: user
           }
-        )
-      }
-    })
-  };
+          // () => {
+          // create reference specific to user
+          // this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+          // attaching our event listener to firebase
+          // this.dbRef.on('value', (snapshot) => {
 
+          // })
+          // }
+        );
+      }
+    });
+  }
+
+  // function to login
   logIn = () => {
-    auth.signInWithPopup(provider).then((result) => {
-      console.log(result);
+    auth.signInWithPopup(provider).then((res) => {
       this.setState({
-        user: result.user
-      }, () => {
-        // create reference specific to user
-        const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
-        // attaching our event listener to firebase
-        dbRef.on('value', (snapshot) => {
-          console.log(snapshot.val());
-        });
-      }
-      );
-
+        user: res.user
+      });
     });
   };
 
+  // function to logout
   logOut = () => {
     auth.signOut().then(() => {
       this.setState({
@@ -70,21 +102,65 @@ class App extends Component {
     });
   };
 
+  // logIn = () => {
+  //   auth.signInWithPopup(provider)
+  //     .then((result) => {
+  //     console.log(result);
+  //     this.setState({
+  //       user: result.user
+  //     }
+  //     , () => {
+  //       // create reference specific to user
+  //       const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+  //       // attaching our event listener to firebase
+  //       dbRef.on('value', (snapshot) => {
+  //         console.log(snapshot.val());
+  //       });
+  //     }
+  //     );
+
+  //   });
+  // };
+
+  // logOut = () => {
+  //   auth.signOut().then(() => {
+  //     this.setState({
+  //       user: null
+  //     });
+  //   });
+  // };
 
   componentDidUpdate(previousProps, previousState) {
-
-    if (this.state.tripData !== previousState.tripData && previousState.tripData === null) {
+    if (
+      this.state.tripData !== previousState.tripData &&
+      previousState.tripData === null
+    ) {
       const originLat = this.state.originData.latitude;
       const originLng = this.state.originData.longitude;
       const destinationLat = this.state.destinationData.latitude;
       const destinationLng = this.state.destinationData.longitude;
-      const middlePointCoordinates = this.getMiddlePoint(originLat, originLng, destinationLat, destinationLng);
+      const middlePointCoordinates = this.getMiddlePoint(
+        originLat,
+        originLng,
+        destinationLat,
+        destinationLng
+      );
       // we need to save middle point to state
       const middleMainLat = middlePointCoordinates.lat();
       const middleMainLng = middlePointCoordinates.lng();
 
-      const middleFirstHalf = this.getMiddlePoint(originLat, originLng, middleMainLat, middleMainLng);
-      const middleSecondHalf = this.getMiddlePoint(middleMainLat, middleMainLng, destinationLat, destinationLng);
+      const middleFirstHalf = this.getMiddlePoint(
+        originLat,
+        originLng,
+        middleMainLat,
+        middleMainLng
+      );
+      const middleSecondHalf = this.getMiddlePoint(
+        middleMainLat,
+        middleMainLng,
+        destinationLat,
+        destinationLng
+      );
       const middleFirstLat = middlePointCoordinates.lat();
       const middleFirstLng = middlePointCoordinates.lng();
       const middleSecondLat = middlePointCoordinates.lat();
@@ -120,7 +196,7 @@ class App extends Component {
         method: "GET",
         contentType: "json"
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
         this.setState({
           weatherResults: {
@@ -129,7 +205,7 @@ class App extends Component {
           }
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
 
@@ -139,7 +215,7 @@ class App extends Component {
         method: "GET",
         contentType: "json"
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
         this.setState({
           weatherResults: {
@@ -148,7 +224,7 @@ class App extends Component {
           }
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -156,14 +232,15 @@ class App extends Component {
   getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
     const p1 = new window.google.maps.LatLng(p1Lat, p1Lng);
     const p2 = new window.google.maps.LatLng(p2Lat, p2Lng);
-    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(p1,
+    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(
+      p1,
       window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
-      window.google.maps.geometry.spherical.computeHeading(p1, p2));
-      console.log('MIDDLE POOOOOO', middleLatLng);
-      return middleLatLng;
+      window.google.maps.geometry.spherical.computeHeading(p1, p2)
+    );
+    console.log("MIDDLE POOOOOO", middleLatLng);
+    return middleLatLng;
     // var distance = google.maps.geometry.spherical.computeDistanceBetween(origin, destination);
-    
-  }
+  };
   //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
     //Continuously update this.state.address to match what is put into input box (just text)
@@ -185,7 +262,7 @@ class App extends Component {
 
     //Run address through Google Maps geocode function
     geocodeByAddress(address)
-      .then(results => {
+      .then((results) => {
         //Returns object that contains results with formatted address, place ID, etc.
         const dataObject = {
           placeID: results[0].place_id,
@@ -197,17 +274,17 @@ class App extends Component {
         // Run results from geocodeByAddress through function that gets latitude and longitude based on address
         return getLatLng(results[0]);
       })
-      .then(latLng => {
+      .then((latLng) => {
         //Update data object to include latitude and longitude data
         const updatedDataObject = this.state[currentId];
         updatedDataObject.latitude = latLng.lat;
         updatedDataObject.longitude = latLng.lng;
         this.setState({ [currentId]: updatedDataObject });
       })
-      .catch(error => console.error("Error", error));
+      .catch((error) => console.error("Error", error));
   };
 
-  handleDateTimeChange = e => {
+  handleDateTimeChange = (e) => {
     const unixDate = new Date(e.target.value).getTime();
     this.setState({
       originDateTimeInSec: unixDate,
@@ -215,26 +292,26 @@ class App extends Component {
     });
   };
 
-  saveSearchResults = result => {
+  saveSearchResults = (result) => {
     // Get duration of trip in seconds from returned results object
     const tripInSeconds = result.routes[0].legs[0].duration.value;
     // Get origin time (Unix) from state
     const originTime = this.state.originDateTimeInSec;
-    console.log('trip in seconds', tripInSeconds, 'origin time', originTime)
+    console.log("trip in seconds", tripInSeconds, "origin time", originTime);
     // Add two times together
     const time = tripInSeconds + originTime;
     // Get destination time in correct format using moment.js
     const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
-    console.log('origin time', originTime, 'destination time', destinationTime);
+    console.log("origin time", originTime, "destination time", destinationTime);
 
     // Set trip data and destination date/time in state
     this.setState({
       tripData: result,
       destinationDateTime: destinationTime
     });
-  }; 
+  };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     {
       if (
@@ -262,7 +339,7 @@ class App extends Component {
     });
   };
 
-  handleRadioChange = e => {
+  handleRadioChange = (e) => {
     const newObj = this.state.userTripPreferences;
     this.state.userTripPreferences[e.target.name] = e.target.value;
     this.setState({
@@ -270,7 +347,7 @@ class App extends Component {
     });
   };
 
-  handleCheckboxChange = e => {
+  handleCheckboxChange = (e) => {
     const newObj = this.state.userTripPreferences;
     this.state.userTripPreferences[e.target.name] = !this.state
       .userTripPreferences[e.target.name];
@@ -279,39 +356,41 @@ class App extends Component {
     });
   };
 
-  handleMarkerClick = marker => {
-    console.log(marker)
+  handleMarkerClick = (marker) => {
+    console.log(marker);
     const markerTitle = marker.wa.target.title;
     console.log(markerTitle);
     // const markerLat = marker.latLng.lat();
     // const markerLng = marker.latLng.lng();
     // console.log(markerTitle, markerLat, markerLng);
     const markersArray = this.state.markers;
-    markersArray.forEach(marker => {
+    markersArray.forEach((marker) => {
       // const activeIndex = marker;
-      if (marker.title = markerTitle) {
+      if ((marker.title = markerTitle)) {
         marker.isLabelVisible = !marker.isLabelVisible;
       }
-    })
+    });
     this.setState({
       markers: markersArray
     });
-  }
-  handleDirClick = item => {
+  };
+  handleDirClick = (item) => {
     console.log(item);
-  }
+  };
 
   render() {
     return (
       <div className="App">
         <header className="App-header" />
-        {this.state.user ?
+        <h1>Wayfayer</h1>
+        <p>Plan Your Perfect Trip.</p>
+        {this.state.user ? (
           <button onClick={this.logOut}>Log Out</button>
-          :
+        ) : (
           <button onClick={this.logIn}>Log In</button>
           // <button>Continue As Guest</button>
+        )
         }
-        {/* <LandingPage /> */}
 
         <TripList />
         <main>
