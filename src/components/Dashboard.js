@@ -6,6 +6,6 @@ const Dashboard = () => {
       <Link to="/newtrip">Start a new trip</Link>
       <Link to="/alltrips">See all trips</Link>
   </div>;
-};
+}
 
 export default Dashboard;
