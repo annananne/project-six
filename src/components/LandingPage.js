@@ -2,19 +2,18 @@
 // import firebase, { auth, provider } from "../firebase.js";
 // import TripList from "./TripList.js";
 
+// reference to the root of the database
+// const dbRef = firebase.database().ref();
 
-// // reference to the root of the database
-// // const dbRef = firebase.database().ref();
-
-// class LandingPage extends Component {
-//     constructor(){
-//         super();
-//         this.state = {
-//             user: null
-//         }
-//         this.login = this.login.bind(this);
-//         this.logout = this.logout.bind(this);
-//     }
+class LandingPage extends Component {
+    constructor(){
+        super();
+        this.state = {
+            user: null
+        }
+        this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
+    }
 
 //     componentDidMount(){
 //         auth.onAuthStateChanged((user) => {
@@ -54,11 +53,19 @@
 //         }
 //     }
 
+<<<<<<< HEAD
 //     handleChange = e => {
 //         this.setState ({
 //             [e.target.id]: e.target.value
 //         })
 //     }
+=======
+    handleChange = e => {
+        this.setState ({
+            [e.target.id]: e.target.value
+        })
+    }
+>>>>>>> 2fff0b1baaea51196f12c2788a63a51234192697
 
 //     login = () => {
 //         auth.sighInWithPopup(provider).then((result) => {

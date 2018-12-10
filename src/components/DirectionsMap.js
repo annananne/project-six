@@ -7,7 +7,6 @@ import {
   GoogleMap,
   GoogleMapsEvent,
   DirectionsRenderer,
-  DirectionsRendererOptions
 } from "react-google-maps";
 import Directions from "./Directions.js";
 // import markers from "../markers";
@@ -108,31 +107,9 @@ const MapWithADirectionsRenderer = compose(
       <div style={{ height: `100vh`, minHeight: `650px`, width: `100%` }} />
     )
   }),
-  // withState({
-  //   markers: [
-  //     {
-  //       title: "Kingston",
-  //       latitude: 44.2312,
-  //       longitude: -76.486,
-  //       isLabelVisible: false,
-  //       backgroundColor: "blue"
-  //     },
-  //     {
-  //       title: "Brockville",
-  //       latitude: 44.5895,
-  //       longitude: -75.6843,
-  //       isLabelVisible: false,
-  //       backgroundColor: "green"
-  //     },
-  //     {
-  //       title: "Ottawa",
-  //       latitude: 45.4215,
-  //       longitude: -75.6972,
-  //       isLabelVisible: false,
-  //       backgroundColor: "orange"
-  //     }
-  //   ]
-  // }),
+  withState({
+    markerInfo: null
+  }),
   withScriptjs,
   withGoogleMap,
   // withHandlers({
@@ -156,12 +133,12 @@ const MapWithADirectionsRenderer = compose(
       DirectionsService.route(
         {
           origin: new window.google.maps.LatLng(
-            this.props.originLat,
-            this.props.originLong
+            this.props.originData.latitude,
+            this.props.originData.longitude
           ),
           destination: new window.google.maps.LatLng(
-            this.props.destinationLat,
-            this.props.destinationLong
+            this.props.destinationData.latitude,
+            this.props.destinationData.longitude
           ),
           travelMode:
             window.google.maps.TravelMode[
@@ -185,6 +162,17 @@ const MapWithADirectionsRenderer = compose(
           }
         }
       );
+    },
+    componentDidUpdate(prevProps) {
+      console.log(prevProps);
+      if (this.props.markerInfo !== prevProps.markerInfo) {
+        const markerArray = Object.entries(this.props.weatherResults);
+        console.log(markerArray);
+        console.log('ana')
+        this.setState({
+          markerInfo: markerArray
+        });
+      }
     }
   })
 )(props => (
@@ -196,27 +184,57 @@ const MapWithADirectionsRenderer = compose(
     >
       {props.directions &&
         props.directions.routes.map((item, i) => {
-          return <div>
-              <DirectionsRenderer directions={props.directions} routeIndex={i} suppressInfoWindows={true} options={{ polylineOptions: { strokeColor: "#f9d549", strokeOpacity: 0.75, strokeWeight: 6 }, markerOptions: { opacity: 1, clickable: false, animation: 'DROP' } }} />
+          return (
+            <div>
+              <DirectionsRenderer
+                directions={props.directions}
+                routeIndex={i}
+                suppressInfoWindows={true}
+                options={{
+                  polylineOptions: {
+                    strokeColor: "#f9d549",
+                    strokeOpacity: 0.75,
+                    strokeWeight: 6
+                  },
+                  markerOptions: { opacity: 1, clickable: false }
+                }}
+                onClick={props.handleDirClick}
+              />
               <Directions directions={props.directions} routeIndex={i} />
-            </div>;
+            </div>
+          );
         })}
 
       {props.markers && props.markers.map(marker => {
         return <div>
-            <MarkerWithLabel position={{ lat: marker.latitude, lng: marker.longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: marker.backgroundColor, fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={true} title={marker.title} onClick={props.handleMarkerClick} id={marker.title}>
+            <MarkerWithLabel position={{ lat: marker.latitude, lng: marker.longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: "lightgrey", fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={marker.isLabelVisible} onClick={props.handleMarkerClick}>
               <div>
-                <h3>Weather Details</h3>
+                <h3>{marker.title}</h3>
                 <p>
-                  City: {marker.title} ({marker.latitude}, {marker.longitude}
-                  )</p>
-                <p>Average temperature: 10°C</p>
+                Location: ({marker.latitude}, {marker.longitude})
+                </p>
               </div>
             </MarkerWithLabel>
-            {/* {marker.isLabelVisible && <div>I am the label!</div>} */}
           </div>;
       })
       }
+
+      {props.markerInfo &&
+        props.markerInfo.map(result => {
+          console.log(result);
+          // return <div>
+          //     <MarkerWithLabel position={{ lat: result[1].latitude, lng: result[1].longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: "lightgrey", fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={true} onClick={props.handleMarkerClick}>
+          //       <div>
+          //         <p>
+          //           Location: ({result[1].latitude}, {result[1].longitude})
+          //         </p>
+          //         <p>
+          //           {result[1].currently.summary} ({result[1].currently.temperature}°F)
+          //         </p>
+          //       </div>
+          //     </MarkerWithLabel>
+          //   </div>;
+        })}
     </GoogleMap>
   </div>
 ));
