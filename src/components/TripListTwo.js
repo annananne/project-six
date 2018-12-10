@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import firebase, { auth, provider } from "../firebase.js";
 
 
-class TripList extends Component {
+class TripListTwo extends Component {
     constructor() {
         super();
         this.state = {
@@ -141,4 +141,4 @@ class TripList extends Component {
 }
 
 
-export default TripList;
+export default TripListTwo;

@@ -8,7 +8,7 @@ import LocationSearchInput from "./components/LocationSearchInput";
 // import Map from "./components/Map.js";
 import firebase, { auth, provider } from "./firebase.js";
 // import LandingPage from "./components/LandingPage.js"
-import TripList from "./components/TripList.js";
+import TripList   from "./components/TripList.js";
 import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
 import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
@@ -37,6 +37,8 @@ class App extends Component {
         origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
         destination: null
       },
+      listOfTrips: [],
+      user: null,
       markers: [
         {
           title: "Kingston",
@@ -67,21 +69,11 @@ class App extends Component {
     // persisting user login
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.setState(
-          {
-            user: user
-          }
-          // () => {
-          // create reference specific to user
-          // this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
-          // attaching our event listener to firebase
-          // this.dbRef.on('value', (snapshot) => {
-
-          // })
-          // }
-        );
+        this.setState({
+          user: user
+        })
       }
-    });
+    })
   }
 
   // function to login
@@ -392,7 +384,7 @@ class App extends Component {
         )
         }
 
-        <TripList />
+        <TripList user={this.state.user}/>
         <main>
           {this.state.hasUserSubmitted ? (
             <div>
