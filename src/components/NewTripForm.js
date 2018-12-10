@@ -6,11 +6,10 @@ import DateTimeInput from "./DateTimeInput";
 import { Link } from "react-router-dom";
 import CurrentTripInfo from './CurrentTripInfo';
 
-
 class NewTripForm extends Component {
   render() {
     return <div>
-        <form action="">
+        <form action="" onSubmit={this.props.handleSubmit}>
           {/* <form action="" onSubmit={this.handleSubmit}> */}
           <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places,geometry,drawing`]}>
             {/* Input for origin point search */}
@@ -36,13 +35,11 @@ class NewTripForm extends Component {
               <label htmlFor="tolls">Avoid tolls</label>
               <input type="checkbox" id="tolls" name="avoidTolls" onChange={this.props.handleCheckboxChange} />
             </fieldset>
-            <input type="submit" value="Get recommendation" />
+          <Link to="/tripdetails"><input type="submit" value="Get recommendation" /></Link>
           </ReactDependentScript>
         </form>
-      <Link to="/tripdetails">Get trip info</Link>
       </div>
       }
   }
-
 
 export default NewTripForm;

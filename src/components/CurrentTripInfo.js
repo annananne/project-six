@@ -1,16 +1,11 @@
 import React, { Component } from "react";
 import MapWithADirectionsRenderer from "./DirectionsMap.js";
 
-
-
 class CurrentTripInfo extends Component {
   render() {
-    return (
-      <div>
-        <p>I am the map</p>
-        {/* <MapWithADirectionsRenderer /> */}
-      </div>
-    )
+    return <div>
+        <MapWithADirectionsRenderer originDateTime={this.props.originDateTime} userTripPreferences={this.props.userTripPreferences} markers={this.props.markers} saveSearchResults={this.props.saveSearchResults} originData={this.props.originData} destinationData={this.props.destinationData} handleDirClick={this.props.handleDirClick} weatherResults={this.props.weatherResults}/>
+      </div>;
   }
 }
 
