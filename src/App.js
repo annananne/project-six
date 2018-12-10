@@ -69,6 +69,7 @@ class App extends Component {
     });
   }
 
+  // function to login
   logIn = () => {
     auth.signInWithPopup(provider).then(result => {
       console.log(result);
@@ -88,6 +89,7 @@ class App extends Component {
     });
   };
 
+  // function to logout
   logOut = () => {
     auth.signOut().then(() => {
       this.setState({
@@ -237,7 +239,7 @@ class App extends Component {
 
     //Run address through Google Maps geocode function
     geocodeByAddress(address)
-      .then(results => {
+      .then((results) => {
         //Returns object that contains results with formatted address, place ID, etc.
         const dataObject = {
           placeID: results[0].place_id,
@@ -249,17 +251,17 @@ class App extends Component {
         // Run results from geocodeByAddress through function that gets latitude and longitude based on address
         return getLatLng(results[0]);
       })
-      .then(latLng => {
+      .then((latLng) => {
         //Update data object to include latitude and longitude data
         const updatedDataObject = this.state[currentId];
         updatedDataObject.latitude = latLng.lat;
         updatedDataObject.longitude = latLng.lng;
         this.setState({ [currentId]: updatedDataObject });
       })
-      .catch(error => console.error("Error", error));
+      .catch((error) => console.error("Error", error));
   };
 
-  handleDateTimeChange = e => {
+  handleDateTimeChange = (e) => {
     const unixDate = new Date(e.target.value).getTime();
     this.setState({
       originDateTimeInSec: unixDate,
@@ -267,7 +269,7 @@ class App extends Component {
     });
   };
 
-  saveSearchResults = result => {
+  saveSearchResults = (result) => {
     // Get duration of trip in seconds from returned results object
     const tripInSeconds = result.routes[0].legs[0].duration.value;
     // Get origin time (Unix) from state
@@ -286,7 +288,7 @@ class App extends Component {
     });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     {
       if (
@@ -317,7 +319,7 @@ class App extends Component {
     });
   };
 
-  handleRadioChange = e => {
+  handleRadioChange = (e) => {
     const newObj = this.state.userTripPreferences;
     this.state.userTripPreferences[e.target.name] = e.target.value;
     this.setState({
@@ -325,7 +327,7 @@ class App extends Component {
     });
   };
 
-  handleCheckboxChange = e => {
+  handleCheckboxChange = (e) => {
     const newObj = this.state.userTripPreferences;
     this.state.userTripPreferences[e.target.name] = !this.state
       .userTripPreferences[e.target.name];
