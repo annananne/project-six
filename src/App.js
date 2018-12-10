@@ -6,13 +6,14 @@ import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
 import firebase, { auth, provider } from "./firebase.js";
-// import LandingPage from "./components/LandingPage.js"
 import TripList from "./components/TripList.js";
-import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
+import NewTripForm from "./components/NewTripForm.js";
+import Dashboard from './components/Dashboard.js';
+import CurrentTripInfo from './components/CurrentTripInfo';
 import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
-// import CurrentTripInfo from './components/CurrentTripInfo';
 import moment from "moment";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class App extends Component {
   constructor() {
@@ -49,11 +50,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(user => {
       if (user) {
-        this.setState({
-          user: user
-        },
+        this.setState(
+          {
+            user: user
+          },
           () => {
             // create reference specific to user
             this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
@@ -62,26 +64,27 @@ class App extends Component {
 
             // })
           }
-        )
+        );
       }
-    })
-  };
+    });
+  }
 
   logIn = () => {
-    auth.signInWithPopup(provider).then((result) => {
+    auth.signInWithPopup(provider).then(result => {
       console.log(result);
-      this.setState({
-        user: result.user
-      }, () => {
-        // create reference specific to user
-        const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
-        // attaching our event listener to firebase
-        dbRef.on('value', (snapshot) => {
-          console.log(snapshot.val());
-        });
-      }
+      this.setState(
+        {
+          user: result.user
+        },
+        () => {
+          // create reference specific to user
+          const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+          // attaching our event listener to firebase
+          dbRef.on("value", snapshot => {
+            console.log(snapshot.val());
+          });
+        }
       );
-
     });
   };
 
@@ -206,7 +209,8 @@ class App extends Component {
   getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
     const p1 = new window.google.maps.LatLng(p1Lat, p1Lng);
     const p2 = new window.google.maps.LatLng(p2Lat, p2Lng);
-    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(p1,
+    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(
+      p1,
       window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
       window.google.maps.geometry.spherical.computeHeading(p1, p2));
       console.log('Point coordinates found', middleLatLng);
@@ -268,19 +272,19 @@ class App extends Component {
     const tripInSeconds = result.routes[0].legs[0].duration.value;
     // Get origin time (Unix) from state
     const originTime = this.state.originDateTimeInSec;
-    console.log('trip in seconds', tripInSeconds, 'origin time', originTime)
+    console.log("trip in seconds", tripInSeconds, "origin time", originTime);
     // Add two times together
     const time = tripInSeconds + originTime;
     // Get destination time in correct format using moment.js
     const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
-    console.log('origin time', originTime, 'destination time', destinationTime);
+    console.log("origin time", originTime, "destination time", destinationTime);
 
     // Set trip data and destination date/time in state
     this.setState({
       tripData: result,
       destinationDateTime: destinationTime
     });
-  }; 
+  };
 
   handleSubmit = e => {
     e.preventDefault();
@@ -331,7 +335,7 @@ class App extends Component {
   };
 
   handleMarkerClick = marker => {
-    console.log(marker)
+    console.log(marker);
     const markerTitle = marker.wa.target.title;
     console.log(markerTitle);
     // const markerLat = marker.latLng.lat();
@@ -339,152 +343,48 @@ class App extends Component {
     // console.log(markerTitle, markerLat, markerLng);
     const markersArray = this.state.markers;
     markersArray.forEach(marker => {
-      // const activeIndex = marker;
-      if (marker.title = markerTitle) {
+      if ((marker.title = markerTitle)) {
         marker.isLabelVisible = !marker.isLabelVisible;
       }
-    })
+    });
     this.setState({
       markers: markersArray
     });
-  }
+  };
+
   handleDirClick = item => {
     console.log(item);
-  }
+  };
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header" />
-        {this.state.user ?
-          <button onClick={this.logOut}>Log Out</button>
-          :
-          <button onClick={this.logIn}>Log In</button>
-          // <button>Continue As Guest</button>
-        }
-        {/* <LandingPage /> */}
+    return <Router>
+        <div className="App">
+          <header className="App-header">
+            {this.state.user ? <button onClick={this.logOut}>
+                Log Out
+              </button> : <button onClick={this.logIn}>Log In</button>
 
-        <TripList />
-        <main>
-          {this.state.hasUserSubmitted ? (
-            <div>
-              <div>
-                <MapWithADirectionsRenderer
-                  originLat={this.state.originData.latitude}
-                  originLong={this.state.originData.longitude}
-                  destinationLat={this.state.destinationData.latitude}
-                  destinationLong={this.state.destinationData.longitude}
-                  userTripPreferences={this.state.userTripPreferences}
-                  originDateTime={this.state.originDateTime}
-                  saveSearchResults={this.saveSearchResults}
-                  handleDirClick={this.handleDirClick}
-                  handleMarkerClick={this.handleMarkerClick}
-                  markers={this.state.markers}
-                />
-                <button onClick={this.handleReset}>Reset</button>
-              </div>{" "}
-            </div>
-          ) : (
-            <form action="" onSubmit={this.handleSubmit}>
-              <ReactDependentScript
-                scripts={[
-                  `https://maps.googleapis.com/maps/api/js?key=${
-                    apiKeys.googleMaps
-                  }&libraries=places,geometry,drawing`
-                ]}
-              >
-                {/* Input for origin point search */}
-                <LocationSearchInput
-                  id="originData"
-                  address={this.state.originData.address}
-                  originData={this.state.originData}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
-                />
-                {/* Input for destination point search */}
-                <LocationSearchInput
-                  id="destinationData"
-                  address={this.state.destinationData.address}
-                  destinationData={this.state.destinationData}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
-                />
-                <DateTimeInput
-                  dateString={this.state.originDateTime}
-                  handleDateTimeChange={this.handleDateTimeChange}
-                />
-                <fieldset>
-                  <label htmlFor="driving">Driving</label>
-                  <input
-                    type="radio"
-                    id="driving"
-                    name="travelMode"
-                    value="DRIVING"
-                    onChange={this.handleRadioChange} // className="no-display"
-                    checked={
-                      this.state.userTripPreferences.travelMode === "DRIVING"
-                    }
-                  />
+            // <button>Continue As Guest</button>
+            }
+            <Link to="/dashboard">Home</Link>
+          </header>
 
-                  <label htmlFor="bicycling">Bicycling</label>
-                  <input
-                    type="radio"
-                    id="bicycling"
-                    name="travelMode"
-                    value="BICYCLING"
-                    onChange={this.handleRadioChange}
-                    checked={
-                      this.state.userTripPreferences.travelMode === "BICYCLING"
-                    }
-                  />
-                </fieldset>
-                <fieldset>
-                  <label htmlFor="ferries">Avoid ferries</label>
-                  <input
-                    type="checkbox"
-                    id="ferries"
-                    name="avoidFerries"
-                    onChange={this.handleCheckboxChange}
-                  />
+          {/* <LandingPage /> */}
 
-                  <label htmlFor="highways">Avoid highways</label>
-                  <input
-                    type="checkbox"
-                    id="highways"
-                    name="avoidHighways"
-                    onChange={this.handleCheckboxChange}
-                  />
-
-                  <label htmlFor="tolls">Avoid tolls</label>
-                  <input
-                    type="checkbox"
-                    id="tolls"
-                    name="avoidTolls"
-                    onChange={this.handleCheckboxChange}
-                  />
-                </fieldset>
-                <input type="submit" value="Get recommendation" />
-              </ReactDependentScript>
-            </form>
-          )}
-
-          <div className="App">
-            <button onClick={this.getWeather}>Get weather</button>
-
-            {this.state.weatherResults.origin !== null &&
-              this.state.weatherResults.destination !== null && (
-                <PointWeatherDisplay
-                  originWeatherData={this.state.weatherResults.origin}
-                  destinationWeatherData={this.state.weatherResults.destination}
-                  originAddress={this.state.originData.address}
-                  destinationAddress={this.state.destinationData.address}
-                  // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
-                />
-              )}
+          <div>
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/newtrip" render={props => <NewTripForm {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} />}/>
+            <Route path="/alltrips" component={TripList} />
           </div>
-        </main>
-      </div>
-    );
+
+        {/* <button onClick={this.getWeather}>Get weather</button> */}
+
+        {this.state.weatherResults.origin !== null && this.state.weatherResults.destination !== null && <PointWeatherDisplay originWeatherData={this.state.weatherResults.origin} destinationWeatherData={this.state.weatherResults.destination} originAddress={this.state.originData.address} destinationAddress={this.state.destinationData.address} />
+          // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
+        }
+        </div>
+      </Router>
   }
 }
 

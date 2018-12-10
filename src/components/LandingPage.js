@@ -10,7 +10,6 @@ class LandingPage extends Component {
     constructor(){
         super();
         this.state = {
-<<<<<<< HEAD
             user: null
         }
         this.login = this.login.bind(this);
@@ -59,9 +58,6 @@ class LandingPage extends Component {
         this.setState ({
             [e.target.id]: e.target.value
         })
-=======
-        }
->>>>>>> 641a89a1465442f4553b368312d676934094b667
     }
 
     login = () => {

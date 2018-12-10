@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 
 class DateTimeInput extends Component {
-
   render() {
     return(
       <div className="date-time">
@@ -19,6 +18,5 @@ class DateTimeInput extends Component {
     )
   }
 }
-
 
 export default DateTimeInput;
