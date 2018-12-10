@@ -1,25 +1,24 @@
 import React, { Component } from "react";
+import MapWithADirectionsRenderer from "./DirectionsMap.js";
+
+
 
 class CurrentTripInfo extends Component {
-
   render() {
-
     return (
       <div>
-        
+        <p>I am the map</p>
+        {/* <MapWithADirectionsRenderer /> */}
       </div>
     )
   }
 }
 
-
 export default CurrentTripInfo;
-
-
 
 // 1. Exactly what data we can pull to send to our users
 // 2 API calls for both user inputs (point A, point B)
-  // -lat 
+  // -lat
   // -long
   // temperature (temperature history) - based on user input on date & time
 

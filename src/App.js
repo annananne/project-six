@@ -5,25 +5,25 @@ import ReactDependentScript from "react-dependent-script";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
 import LocationSearchInput from "./components/LocationSearchInput";
-// import Map from "./components/Map.js";
 import firebase, { auth, provider } from "./firebase.js";
-// import LandingPage from "./components/LandingPage.js"
-import TripList   from "./components/TripList.js";
-import MapWithADirectionsRenderer from "./components/DirectionsMap.js";
+import TripList from "./components/TripList.js";
+import NewTripForm from "./components/NewTripForm.js";
+import Dashboard from './components/Dashboard.js';
+import CurrentTripInfo from './components/CurrentTripInfo';
 import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
-// import CurrentTripInfo from './components/CurrentTripInfo';
 import moment from "moment";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
+    this.state = { 
       hasUserSubmitted: false,
       originData: { address: "" },
       destinationData: { address: "" },
       directions: null,
-      userTripPreferences: {
+      userTripPreferences: { 
         travelMode: "DRIVING",
         avoidFerries: false,
         avoidHighways: false,
@@ -33,55 +33,59 @@ class App extends Component {
       originDateTimeInSec: new Date().getTime() / 1000,
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
       destinationDateTime: "",
-      weatherResults: {
-        origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
+      weatherRequestInfo: {},
+      weatherResults: { 
+        origin: null,
+        middleFirstHalf: null,
+        middleMain: null,
+        middleSecondHalf: null,
         destination: null
-      },
-      listOfTrips: [],
-      user: null,
+      }, 
       markers: [
-        {
-          title: "Kingston",
-          latitude: 44.2312,
-          longitude: -76.486,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.5)"
-        },
-        {
-          title: "Brockville",
-          latitude: 44.5895,
-          longitude: -75.6843,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.5)"
-        },
-        {
-          title: "Ottawa",
-          latitude: 45.4215,
-          longitude: -75.6972,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.5)"
-        }
+        { title: "Kingston", latitude: 44.2312, longitude: -76.486, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" },
+        { title: "Brockville", latitude: 44.5895, longitude: -75.6843, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" },
+        { title: "Ottawa", latitude: 45.4215, longitude: -75.6972, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }
       ]
     };
   }
 
   componentDidMount() {
-    // persisting user login
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(user => {
       if (user) {
-        this.setState({
-          user: user
-        })
+        this.setState(
+          {
+            user: user
+          },
+          () => {
+            // create reference specific to user
+            this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+            // attaching our event listener to firebase
+            // this.dbRef.on('value', (snapshot) => {
+
+            // })
+          }
+        );
       }
-    })
+    });
   }
 
   // function to login
   logIn = () => {
-    auth.signInWithPopup(provider).then((res) => {
-      this.setState({
-        user: res.user
-      });
+    auth.signInWithPopup(provider).then(result => {
+      console.log(result);
+      this.setState(
+        {
+          user: result.user
+        },
+        () => {
+          // create reference specific to user
+          const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
+          // attaching our event listener to firebase
+          dbRef.on("value", snapshot => {
+            console.log(snapshot.val());
+          });
+        }
+      );
     });
   };
 
@@ -94,131 +98,114 @@ class App extends Component {
     });
   };
 
-  // logIn = () => {
-  //   auth.signInWithPopup(provider)
-  //     .then((result) => {
-  //     console.log(result);
-  //     this.setState({
-  //       user: result.user
-  //     }
-  //     , () => {
-  //       // create reference specific to user
-  //       const dbRef = firebase.database().ref(`/${this.state.user.uid}`);
-  //       // attaching our event listener to firebase
-  //       dbRef.on('value', (snapshot) => {
-  //         console.log(snapshot.val());
-  //       });
-  //     }
-  //     );
-
-  //   });
-  // };
-
-  // logOut = () => {
-  //   auth.signOut().then(() => {
-  //     this.setState({
-  //       user: null
-  //     });
-  //   });
-  // };
-
   componentDidUpdate(previousProps, previousState) {
-    if (
-      this.state.tripData !== previousState.tripData &&
-      previousState.tripData === null
-    ) {
+    // only calculate the middle points when the tripData first gets into the App state
+    if (this.state.tripData !== previousState.tripData && previousState.tripData === null) {
+      // COORDS calculations
+      // Calculate point coordinates and prepare them for weather requests
+      
       const originLat = this.state.originData.latitude;
       const originLng = this.state.originData.longitude;
       const destinationLat = this.state.destinationData.latitude;
       const destinationLng = this.state.destinationData.longitude;
-      const middlePointCoordinates = this.getMiddlePoint(
-        originLat,
-        originLng,
-        destinationLat,
-        destinationLng
-      );
-      // we need to save middle point to state
-      const middleMainLat = middlePointCoordinates.lat();
-      const middleMainLng = middlePointCoordinates.lng();
 
-      const middleFirstHalf = this.getMiddlePoint(
-        originLat,
-        originLng,
-        middleMainLat,
-        middleMainLng
-      );
-      const middleSecondHalf = this.getMiddlePoint(
-        middleMainLat,
-        middleMainLng,
-        destinationLat,
-        destinationLng
-      );
-      const middleFirstLat = middlePointCoordinates.lat();
-      const middleFirstLng = middlePointCoordinates.lng();
-      const middleSecondLat = middlePointCoordinates.lat();
-      const middleSecondLng = middlePointCoordinates.lng();
+      // MIDDLE MAIN POINT
+      const middleMainCoords = this.getMiddlePoint(originLat, originLng, destinationLat, destinationLng);
+      const middleMainLat = middleMainCoords.lat();
+      const middleMainLng = middleMainCoords.lng();
+
+      // MIDDLE FIRST HALF POINT
+      const middleFirstHalfCoords = this.getMiddlePoint(originLat, originLng, middleMainLat, middleMainLng);
+      // MIDDLE SECOND HALF POINT
+      const middleSecondHalfCoords = this.getMiddlePoint(middleMainLat, middleMainLng, destinationLat, destinationLng);
+
+      // maybe we should also calculate and put in the time
+      
+      // TIME calculations
+      const { originDateTime } = this.state;
+      const originMoment = moment(originDateTime);
+      const dateTimeFormat = "YYYY-MM-DDTHH:mm";
+      // duration of the trip in seconds
+      // if there are ever multiple legs, we can use legs[legsArray.length-1]
+      const tripSeconds = this.state.tripData.routes[0].legs[0].duration.value;
+      
+      const middleFirstHalfMoment = moment(originMoment).add(Math.round(tripSeconds * 0.25), 'seconds');
+      const middleMainMoment = moment(originMoment).add(Math.round(tripSeconds * 0.5), 'seconds');
+      const middleSecondHalfMoment = moment(originMoment).add(Math.round(tripSeconds * 0.75), 'seconds');
+      const destinationMoment = moment(originMoment).add(tripSeconds, 'seconds');
+
+      const weatherRequestInfo = {
+        origin: {
+          lat: originLat,
+          lng: originLng,
+          dateTime: originDateTime
+        },
+        middleFirstHalf: {
+          lat: middleFirstHalfCoords.lat(),
+          lng: middleFirstHalfCoords.lng(),
+          dateTime: middleFirstHalfMoment.format(dateTimeFormat)
+        },
+        middleMain: {
+          lat: middleMainLat,
+          lng: middleMainLng,
+          dateTime: middleMainMoment.format(dateTimeFormat)
+        },
+        middleSecondHalf: {
+          lat: middleSecondHalfCoords.lat(),
+          lng: middleSecondHalfCoords.lng(),
+          dateTime: middleSecondHalfMoment.format(dateTimeFormat)
+        },
+        destination: {
+          lat: destinationLat,
+          lng: destinationLng,
+          dateTime: destinationMoment.format(dateTimeFormat)
+        },
+      }
+
+      this.setState({
+        // allPointCoordsCalculated: true,
+        weatherRequestInfo: weatherRequestInfo
+      });
+      // sendWeatherData requests right away
+      this.getWeather(weatherRequestInfo);
+
     }
   }
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
   // change the hardcoded long & lat below, prob this will receive parameters with the location info
-  getWeather = () => {
-    const dateTime = `${this.state.originDateTime}:00`;
-    const originDateTime = `${this.state.originDateTime}:00`;
-    // find out destinationDateTime
 
-    const originWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
-      apiKeys.darkSky
-    }/${this.state.originData.latitude},${
-      this.state.originData.longitude
-    },${dateTime}`;
-
-    const destinationWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
-      apiKeys.darkSky
-    }/${this.state.destinationData.latitude},${
-      this.state.destinationData.longitude
-    },${dateTime}`;
-    // DarkSky Time & date format
-    // [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone]
-
-    // for now - later refactor
-
-    // this gets origin
-    axios
-      .get(originWeatherURL, {
+  getWeatherForPoint = (lat, lng, datetime, pointName) => {
+    const dateTimeFormatted = `${datetime}:00`;
+    let weatherRequestURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${apiKeys.darkSky}/`;
+    // adding relevant parameters for the request
+    weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
+    
+    // send the weather request to the API
+    axios.get(weatherRequestURL, {
         method: "GET",
         contentType: "json"
       })
-      .then((res) => {
-        console.log(res);
+      .then(res => {
+        console.log(`Got weather data successfully for ${pointName}`);
+        console.log(res.data);
         this.setState({
           weatherResults: {
             ...this.state.weatherResults,
-            origin: res.data
+            [pointName]: res.data
           }
         });
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(error => {
+        console.log(`Error when getting weather for ${pointName}: ${error}`);
       });
+  }
 
-    // this gets destination
-    axios
-      .get(destinationWeatherURL, {
-        method: "GET",
-        contentType: "json"
-      })
-      .then((res) => {
-        console.log(res);
-        this.setState({
-          weatherResults: {
-            ...this.state.weatherResults,
-            destination: res.data
-          }
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  // gets weather for all the points
+  getWeather = (weatherRequestInfo) => {
+    Object.keys(weatherRequestInfo).forEach(pointName => {
+      const point = weatherRequestInfo[pointName];
+      this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName);
+    })
   };
 
   getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
@@ -227,12 +214,10 @@ class App extends Component {
     const middleLatLng = window.google.maps.geometry.spherical.computeOffset(
       p1,
       window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
-      window.google.maps.geometry.spherical.computeHeading(p1, p2)
-    );
-    console.log("MIDDLE POOOOOO", middleLatLng);
-    return middleLatLng;
-    // var distance = google.maps.geometry.spherical.computeDistanceBetween(origin, destination);
-  };
+      window.google.maps.geometry.spherical.computeHeading(p1, p2));
+      console.log('Point coordinates found', middleLatLng);
+    return middleLatLng;    
+  }
   //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
     //Continuously update this.state.address to match what is put into input box (just text)
@@ -326,6 +311,9 @@ class App extends Component {
       hasUserSubmitted: false,
       weatherResults: {
         origin: null,
+        middleFirstHalf: null,
+        middleMain: null,
+        middleSecondHalf: null,
         destination: null
       }
     });
@@ -348,7 +336,7 @@ class App extends Component {
     });
   };
 
-  handleMarkerClick = (marker) => {
+  handleMarkerClick = marker => {
     console.log(marker);
     const markerTitle = marker.wa.target.title;
     console.log(markerTitle);
@@ -356,8 +344,7 @@ class App extends Component {
     // const markerLng = marker.latLng.lng();
     // console.log(markerTitle, markerLat, markerLng);
     const markersArray = this.state.markers;
-    markersArray.forEach((marker) => {
-      // const activeIndex = marker;
+    markersArray.forEach(marker => {
       if ((marker.title = markerTitle)) {
         marker.isLabelVisible = !marker.isLabelVisible;
       }
@@ -366,145 +353,40 @@ class App extends Component {
       markers: markersArray
     });
   };
-  handleDirClick = (item) => {
+
+  handleDirClick = item => {
     console.log(item);
   };
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header" />
-        <h1>Wayfayer</h1>
-        <p>Plan Your Perfect Trip.</p>
-        {this.state.user ? (
-          <button onClick={this.logOut}>Log Out</button>
-        ) : (
-          <button onClick={this.logIn}>Log In</button>
-          // <button>Continue As Guest</button>
-        )
-        }
+    return <Router>
+        <div className="App">
+          <header className="App-header">
+            {this.state.user ? <button onClick={this.logOut}>
+                Log Out
+              </button> : <button onClick={this.logIn}>Log In</button>
 
-        <TripList user={this.state.user}/>
-        <main>
-          {this.state.hasUserSubmitted ? (
-            <div>
-              <div>
-                <MapWithADirectionsRenderer
-                  originLat={this.state.originData.latitude}
-                  originLong={this.state.originData.longitude}
-                  destinationLat={this.state.destinationData.latitude}
-                  destinationLong={this.state.destinationData.longitude}
-                  userTripPreferences={this.state.userTripPreferences}
-                  originDateTime={this.state.originDateTime}
-                  saveSearchResults={this.saveSearchResults}
-                  handleDirClick={this.handleDirClick}
-                  handleMarkerClick={this.handleMarkerClick}
-                  markers={this.state.markers}
-                />
-                <button onClick={this.handleReset}>Reset</button>
-              </div>{" "}
-            </div>
-          ) : (
-            <form action="" onSubmit={this.handleSubmit}>
-              <ReactDependentScript
-                scripts={[
-                  `https://maps.googleapis.com/maps/api/js?key=${
-                    apiKeys.googleMaps
-                  }&libraries=places,geometry,drawing`
-                ]}
-              >
-                {/* Input for origin point search */}
-                <LocationSearchInput
-                  id="originData"
-                  address={this.state.originData.address}
-                  originData={this.state.originData}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
-                />
-                {/* Input for destination point search */}
-                <LocationSearchInput
-                  id="destinationData"
-                  address={this.state.destinationData.address}
-                  destinationData={this.state.destinationData}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
-                />
-                <DateTimeInput
-                  dateString={this.state.originDateTime}
-                  handleDateTimeChange={this.handleDateTimeChange}
-                />
-                <fieldset>
-                  <label htmlFor="driving">Driving</label>
-                  <input
-                    type="radio"
-                    id="driving"
-                    name="travelMode"
-                    value="DRIVING"
-                    onChange={this.handleRadioChange} // className="no-display"
-                    checked={
-                      this.state.userTripPreferences.travelMode === "DRIVING"
-                    }
-                  />
+            // <button>Continue As Guest</button>
+            }
+            <Link to="/dashboard">Home</Link>
+          </header>
 
-                  <label htmlFor="bicycling">Bicycling</label>
-                  <input
-                    type="radio"
-                    id="bicycling"
-                    name="travelMode"
-                    value="BICYCLING"
-                    onChange={this.handleRadioChange}
-                    checked={
-                      this.state.userTripPreferences.travelMode === "BICYCLING"
-                    }
-                  />
-                </fieldset>
-                <fieldset>
-                  <label htmlFor="ferries">Avoid ferries</label>
-                  <input
-                    type="checkbox"
-                    id="ferries"
-                    name="avoidFerries"
-                    onChange={this.handleCheckboxChange}
-                  />
+          {/* <LandingPage /> */}
 
-                  <label htmlFor="highways">Avoid highways</label>
-                  <input
-                    type="checkbox"
-                    id="highways"
-                    name="avoidHighways"
-                    onChange={this.handleCheckboxChange}
-                  />
-
-                  <label htmlFor="tolls">Avoid tolls</label>
-                  <input
-                    type="checkbox"
-                    id="tolls"
-                    name="avoidTolls"
-                    onChange={this.handleCheckboxChange}
-                  />
-                </fieldset>
-                <input type="submit" value="Get recommendation" />
-              </ReactDependentScript>
-            </form>
-          )}
-
-          <div className="App">
-            <button onClick={this.getWeather}>Get weather</button>
-
-            {this.state.weatherResults.origin !== null &&
-              this.state.weatherResults.destination !== null && (
-                <PointWeatherDisplay
-                  originWeatherData={this.state.weatherResults.origin}
-                  destinationWeatherData={this.state.weatherResults.destination}
-                  originAddress={this.state.originData.address}
-                  destinationAddress={this.state.destinationData.address}
-                  // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
-                />
-              )}
+          <div>
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/newtrip" render={props => <NewTripForm {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} />}/>
+            <Route path="/alltrips" component={TripList} />
           </div>
-        </main>
-      </div>
-    );
+
+        {/* <button onClick={this.getWeather}>Get weather</button> */}
+
+        {this.state.weatherResults.origin !== null && this.state.weatherResults.destination !== null && <PointWeatherDisplay originWeatherData={this.state.weatherResults.origin} destinationWeatherData={this.state.weatherResults.destination} originAddress={this.state.originData.address} destinationAddress={this.state.destinationData.address} />
+          // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
+        }
+        </div>
+      </Router>
   }
 }
 

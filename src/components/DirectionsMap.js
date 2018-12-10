@@ -136,7 +136,6 @@ const MapWithADirectionsRenderer = compose(
   withScriptjs,
   withGoogleMap,
   // withHandlers({
-    
   //   // handleMarkerClick: () => marker => {
   //   //   // const markerTitle = marker.wa.target.title;
   //   //   // const markerLat = marker.latLng.lat();
@@ -197,15 +196,10 @@ const MapWithADirectionsRenderer = compose(
     >
       {props.directions &&
         props.directions.routes.map((item, i) => {
-          return (
-            <div>
-              <DirectionsRenderer
-                directions={props.directions}
-                routeIndex={i}
-              />
+          return <div>
+              <DirectionsRenderer directions={props.directions} routeIndex={i} suppressInfoWindows={true} options={{ polylineOptions: { strokeColor: "#f9d549", strokeOpacity: 0.75, strokeWeight: 6 }, markerOptions: { opacity: 1, clickable: false, animation: 'DROP' } }} />
               <Directions directions={props.directions} routeIndex={i} />
-            </div>
-          );
+            </div>;
         })}
 
       {props.markers && props.markers.map(marker => {
@@ -226,9 +220,4 @@ const MapWithADirectionsRenderer = compose(
     </GoogleMap>
   </div>
 ));
-
-{
-  /* <MapWithADirectionsRenderer />; */
-}
-
 export default MapWithADirectionsRenderer;
