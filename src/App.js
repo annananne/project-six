@@ -18,12 +18,12 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 class App extends Component {
   constructor() {
     super();
-    this.state = {
+    this.state = { 
       hasUserSubmitted: false,
       originData: { address: "" },
       destinationData: { address: "" },
       directions: null,
-      userTripPreferences: {
+      userTripPreferences: { 
         travelMode: "DRIVING",
         avoidFerries: false,
         avoidHighways: false,
@@ -33,37 +33,22 @@ class App extends Component {
       originDateTimeInSec: new Date().getTime() / 1000,
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
       destinationDateTime: "",
-      weatherResults: {
-        origin: null, // middleThree: null, // middleTwo: null, // use moment.js (https://momentjs.com/ to format user inputs) // tripData: {}, //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all user choices for the trip // we get this from user inputs //Stores all data related to destination point (place_id, address, display address, longitude, latitude, + relevant weather info) //Stores all data related to origin point (place_id, address, display address, longitude, latitude, + relevant weather info) // (actual half of distance) // middleOne: null, // to be set when directions are calculated
+      weatherRequestInfo: {},
+      weatherResults: { 
+        origin: null,
+        middleFirstHalf: null,
+        middleMain: null,
+        middleSecondHalf: null,
         destination: null
-      },
+      }, 
       markers: [
-        {
-          title: "Kingston",
-          latitude: 44.2312,
-          longitude: -76.486,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.5)"
-        },
-        {
-          title: "Brockville",
-          latitude: 44.5895,
-          longitude: -75.6843,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.5)"
-        },
-        {
-          title: "Ottawa",
-          latitude: 45.4215,
-          longitude: -75.6972,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.5)"
-        }
+        { title: "Kingston", latitude: 44.2312, longitude: -76.486, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" },
+        { title: "Brockville", latitude: 44.5895, longitude: -75.6843, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" },
+        { title: "Ottawa", latitude: 45.4215, longitude: -75.6972, isLabelVisible: false, backgroundColor: "rgba(255, 255, 255, 0.5)" }
       ]
     };
   }
 
-  //
   componentDidMount() {
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -112,102 +97,113 @@ class App extends Component {
   };
 
   componentDidUpdate(previousProps, previousState) {
-    if (
-      this.state.tripData !== previousState.tripData &&
-      previousState.tripData === null
-    ) {
+    // only calculate the middle points when the tripData first gets into the App state
+    if (this.state.tripData !== previousState.tripData && previousState.tripData === null) {
+      // COORDS calculations
+      // Calculate point coordinates and prepare them for weather requests
+      
       const originLat = this.state.originData.latitude;
       const originLng = this.state.originData.longitude;
       const destinationLat = this.state.destinationData.latitude;
       const destinationLng = this.state.destinationData.longitude;
-      const middlePointCoordinates = this.getMiddlePoint(
-        originLat,
-        originLng,
-        destinationLat,
-        destinationLng
-      );
-      // we need to save middle point to state
-      const middleMainLat = middlePointCoordinates.lat();
-      const middleMainLng = middlePointCoordinates.lng();
 
-      const middleFirstHalf = this.getMiddlePoint(
-        originLat,
-        originLng,
-        middleMainLat,
-        middleMainLng
-      );
-      const middleSecondHalf = this.getMiddlePoint(
-        middleMainLat,
-        middleMainLng,
-        destinationLat,
-        destinationLng
-      );
-      const middleFirstLat = middlePointCoordinates.lat();
-      const middleFirstLng = middlePointCoordinates.lng();
-      const middleSecondLat = middlePointCoordinates.lat();
-      const middleSecondLng = middlePointCoordinates.lng();
+      // MIDDLE MAIN POINT
+      const middleMainCoords = this.getMiddlePoint(originLat, originLng, destinationLat, destinationLng);
+      const middleMainLat = middleMainCoords.lat();
+      const middleMainLng = middleMainCoords.lng();
+
+      // MIDDLE FIRST HALF POINT
+      const middleFirstHalfCoords = this.getMiddlePoint(originLat, originLng, middleMainLat, middleMainLng);
+      // MIDDLE SECOND HALF POINT
+      const middleSecondHalfCoords = this.getMiddlePoint(middleMainLat, middleMainLng, destinationLat, destinationLng);
+
+      // maybe we should also calculate and put in the time
+      
+      // TIME calculations
+      const { originDateTime } = this.state;
+      const originMoment = moment(originDateTime);
+      const dateTimeFormat = "YYYY-MM-DDTHH:mm";
+      // duration of the trip in seconds
+      // if there are ever multiple legs, we can use legs[legsArray.length-1]
+      const tripSeconds = this.state.tripData.routes[0].legs[0].duration.value;
+      
+      const middleFirstHalfMoment = moment(originMoment).add(Math.round(tripSeconds * 0.25), 'seconds');
+      const middleMainMoment = moment(originMoment).add(Math.round(tripSeconds * 0.5), 'seconds');
+      const middleSecondHalfMoment = moment(originMoment).add(Math.round(tripSeconds * 0.75), 'seconds');
+      const destinationMoment = moment(originMoment).add(tripSeconds, 'seconds');
+
+      const weatherRequestInfo = {
+        origin: {
+          lat: originLat,
+          lng: originLng,
+          dateTime: originDateTime
+        },
+        middleFirstHalf: {
+          lat: middleFirstHalfCoords.lat(),
+          lng: middleFirstHalfCoords.lng(),
+          dateTime: middleFirstHalfMoment.format(dateTimeFormat)
+        },
+        middleMain: {
+          lat: middleMainLat,
+          lng: middleMainLng,
+          dateTime: middleMainMoment.format(dateTimeFormat)
+        },
+        middleSecondHalf: {
+          lat: middleSecondHalfCoords.lat(),
+          lng: middleSecondHalfCoords.lng(),
+          dateTime: middleSecondHalfMoment.format(dateTimeFormat)
+        },
+        destination: {
+          lat: destinationLat,
+          lng: destinationLng,
+          dateTime: destinationMoment.format(dateTimeFormat)
+        },
+      }
+
+      this.setState({
+        // allPointCoordsCalculated: true,
+        weatherRequestInfo: weatherRequestInfo
+      });
+      // sendWeatherData requests right away
+      this.getWeather(weatherRequestInfo);
+
     }
   }
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
   // change the hardcoded long & lat below, prob this will receive parameters with the location info
-  getWeather = () => {
-    const dateTime = `${this.state.originDateTime}:00`;
-    const originDateTime = `${this.state.originDateTime}:00`;
-    // find out destinationDateTime
 
-    const originWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
-      apiKeys.darkSky
-    }/${this.state.originData.latitude},${
-      this.state.originData.longitude
-    },${dateTime}`;
-
-    const destinationWeatherURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${
-      apiKeys.darkSky
-    }/${this.state.destinationData.latitude},${
-      this.state.destinationData.longitude
-    },${dateTime}`;
-    // DarkSky Time & date format
-    // [YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone]
-
-    // for now - later refactor
-
-    // this gets origin
-    axios
-      .get(originWeatherURL, {
+  getWeatherForPoint = (lat, lng, datetime, pointName) => {
+    const dateTimeFormatted = `${datetime}:00`;
+    let weatherRequestURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${apiKeys.darkSky}/`;
+    // adding relevant parameters for the request
+    weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
+    
+    // send the weather request to the API
+    axios.get(weatherRequestURL, {
         method: "GET",
         contentType: "json"
       })
       .then(res => {
-        console.log(res);
+        console.log(`Got weather data successfully for ${pointName}`);
+        console.log(res.data);
         this.setState({
           weatherResults: {
             ...this.state.weatherResults,
-            origin: res.data
+            [pointName]: res.data
           }
         });
       })
       .catch(error => {
-        console.log(error);
+        console.log(`Error when getting weather for ${pointName}: ${error}`);
       });
+  }
 
-    // this gets destination
-    axios
-      .get(destinationWeatherURL, {
-        method: "GET",
-        contentType: "json"
-      })
-      .then(res => {
-        console.log(res);
-        this.setState({
-          weatherResults: {
-            ...this.state.weatherResults,
-            destination: res.data
-          }
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  // gets weather for all the points
+  getWeather = (weatherRequestInfo) => {
+    Object.keys(weatherRequestInfo).forEach(pointName => {
+      const point = weatherRequestInfo[pointName];
+      this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName);
+    })
   };
 
   getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
@@ -216,12 +212,10 @@ class App extends Component {
     const middleLatLng = window.google.maps.geometry.spherical.computeOffset(
       p1,
       window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
-      window.google.maps.geometry.spherical.computeHeading(p1, p2)
-    );
-    console.log("MIDDLE POOOOOO", middleLatLng);
-    return middleLatLng;
-    // var distance = google.maps.geometry.spherical.computeDistanceBetween(origin, destination);
-  };
+      window.google.maps.geometry.spherical.computeHeading(p1, p2));
+      console.log('Point coordinates found', middleLatLng);
+    return middleLatLng;    
+  }
   //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
     //Continuously update this.state.address to match what is put into input box (just text)
@@ -315,6 +309,9 @@ class App extends Component {
       hasUserSubmitted: false,
       weatherResults: {
         origin: null,
+        middleFirstHalf: null,
+        middleMain: null,
+        middleSecondHalf: null,
         destination: null
       }
     });
