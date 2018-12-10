@@ -96,9 +96,9 @@ class TripList extends Component {
 
   render() {
     return (
-      <div>
+      <div class="alltrips-wrapper">
         <header>
-          <h1>All Trips!</h1>
+          <h3>All Trips!</h3>
         </header>
         <section className="mockInput">
           <form action="" onSubmit={this.handleSubmit}>

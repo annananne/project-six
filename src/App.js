@@ -361,17 +361,17 @@ class App extends Component {
   render() {
     return <Router>
         <div className="App">
-          <header className="App-header">
-            {this.state.user ? <button onClick={this.logOut}>
-                Log Out
-              </button> : <button onClick={this.logIn}>Log In</button>
-
-            // <button>Continue As Guest</button>
-            }
-            <Link to="/dashboard">Home</Link>
-          </header>
-
-          {/* <LandingPage /> */}
+         
+          <div className="narrow-wrapper">
+            <h1 className="main-title">Wayfarer</h1>
+            <p className="main-slogan">Plan Your Perfect Trip.</p>
+              {this.state.user ? <button className="main-button" onClick={this.logOut}>
+                  Log Out
+                </button> : <button className="main-button" onClick={this.logIn}>Log In</button>
+              }
+              <Link to="/dashboard">Home</Link>
+          </div>
+          
 
           <div>
             <Route path="/dashboard" component={Dashboard} />
