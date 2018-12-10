@@ -136,7 +136,6 @@ const MapWithADirectionsRenderer = compose(
   withScriptjs,
   withGoogleMap,
   // withHandlers({
-    
   //   // handleMarkerClick: () => marker => {
   //   //   // const markerTitle = marker.wa.target.title;
   //   //   // const markerLat = marker.latLng.lat();
@@ -221,9 +220,4 @@ const MapWithADirectionsRenderer = compose(
     </GoogleMap>
   </div>
 ));
-
-{
-  /* <MapWithADirectionsRenderer />; */
-}
-
 export default MapWithADirectionsRenderer;
