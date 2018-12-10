@@ -5,3 +5,15 @@
 .no-display {
   display: none;
 }
+
+.main-button {
+  padding: 20px 40px;
+  background: #f9d549;
+  border: #f9d549;
+  border-radius: 40px;
+  color: #222449;
+  font-size: 1.5rem;
+  font-weight: 700px;
+  cursor: pointer;
+
+}
