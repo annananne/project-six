@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import firebase, { auth } from "../firebase.js";
+import firebase from "../firebase.js";
 
 // const dbRef = firebase.database().ref();
 // const provider = new firebase.auth.GoogleAuthProvider(); 
@@ -11,55 +11,56 @@ class TripList extends Component {
     this.state = {
       tripName: "",
       startPoint: "",
-      endPoint: "",
-      listOfTrips: []
+      endPoint: ""
     };
   }
-  componentDidMount (){
-    if (this.props.user) {
-      console.log('recognizing user')
-      this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
-      this.dbRef.on("value", (snapshot) => {
-        this.setState({ listOfTrips: snapshot.val() || {} });
-      });
-    }
-  }
+  // componentDidMount (){
+  //   if (this.props.user) {
+  //     console.log('recognizing user')
+  //     this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
+  //     this.dbRef.on("value", (snapshot) => {
+  //       this.setState({ listOfTrips: snapshot.val() || {} });
+  //     });
+  //   }
+  // }
 
   // componentDidMount() {
+  //   console.log("I MOUNTED")
   //   if (this.props.user) {
-  //     this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
-  //     this.dbRef.on('value', (snapshot) => {
-  //       this.setState({
-  //         listOfTrips: snapshot.val() || {}
-  //       });
-  //     })
+  //     this.dbRef = firebase.database().ref(`/${this.props.user.uid}`)
+  //     console.log(this.dbRef)
+  //       this.dbRef.on('value', (snapshot) => {
+  //         this.setState({
+  //           listOfTrips: snapshot.val() || {}
+  //         });
+  //       })
   //   }
-  //   // auth.onAuthStateChanged((user) => {
-  //   //   if (user) {
-  //   //     this.setState({
-  //   //       user: user
-  //   //     }, () => {
-  //   //       this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
-  //   //       this.dbRef.on('value', (snapshot) => {
-  //   //         this.setState({
-  //   //           listOfTrips: snapshot.val() || {}
-  //   //         });
-  //   //       })
-  //   //     })
-  //   //   }
-  //   // })
-  //   // dbRef.on("value", (snapshot) => {
-  //   //   const newTripList = snapshot.val() === null ? {} : snapshot.val();
-  //   //   const newState = [];
-  //   //   for (let tripKey in newTripList) {
-  //   //     newTripList[tripKey].key = tripKey;
-  //   //     newState.push(newTripList[tripKey]);
-  //   //   }
-  //   //   console.log(newState);
-  //   //   this.setState({
-  //   //     listOfTrips: newState
-  //   //   });
-  //   // });
+    // auth.onAuthStateChanged((user) => {
+    //   if (user) {
+    //     this.setState({
+    //       user: user
+    //     }, () => {
+    //       this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
+    //       this.dbRef.on('value', (snapshot) => {
+    //         this.setState({
+    //           listOfTrips: snapshot.val() || {}
+    //         });
+    //       })
+    //     })
+    //   }
+    // })
+    // dbRef.on("value", (snapshot) => {
+    //   const newTripList = snapshot.val() === null ? {} : snapshot.val();
+    //   const newState = [];
+    //   for (let tripKey in newTripList) {
+    //     newTripList[tripKey].key = tripKey;
+    //     newState.push(newTripList[tripKey]);
+    //   }
+    //   console.log(newState);
+    //   this.setState({
+    //     listOfTrips: newState
+    //   });
+    // });
   // }
 
   handleSubmit = (e) => {
@@ -95,7 +96,9 @@ class TripList extends Component {
   };
 
   render() {
+    // console.log(this.props.user.uid)
     return (
+
       <div class="alltrips-wrapper">
         <header>
           <h3>All Trips!</h3>
@@ -128,19 +131,21 @@ class TripList extends Component {
               onChange={this.handleChange}
               value={this.state.endPoint}
             />
+
             <button>Save Trip!</button>
           </form>
         </section>
 
         <section>
           <ul>
-            {this.state.listOfTrips.map((item) => {
+            {Object.entries(this.props.listOfTrips).map((item) => {
+              console.log(item, "bananas")
               return (
-                <li key={item.key}>
-                  <h3>{item.title}</h3>
-                  <p>Origin: {item.origin}</p>
-                  <p>Destination: {item.destination}</p>
-                  <button id={item.key} onClick={this.removeTrip}>
+                <li key={item[0]}>
+                  <h3>{item[1].title}</h3>
+                  <p>Origin: {item[1].origin}</p>
+                  <p>Destination: {item[1].destination}</p>
+                  <button id={item[0]} onClick={this.removeTrip}>
                     Remove Trip!
                   </button>
                 </li>
