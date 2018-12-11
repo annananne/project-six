@@ -12,10 +12,11 @@ class TripList extends Component {
       tripName: "",
       startPoint: "",
       endPoint: "",
-      listOfTrips: []
+      listOfTrips: {}
     };
   }
   componentDidMount (){
+    console.log()
     if (this.props.user) {
       console.log('recognizing user')
       this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
@@ -134,7 +135,7 @@ class TripList extends Component {
 
         <section>
           <ul>
-            {this.state.listOfTrips.map((item) => {
+            {Object.entries(this.state.listOfTrips).map((item) => {
               return (
                 <li key={item.key}>
                   <h3>{item.title}</h3>

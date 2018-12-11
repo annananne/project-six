@@ -87,8 +87,8 @@ class App extends Component {
             // create reference specific to user
             this.dbRef = firebase.database().ref(`/${this.state.user.uid}`);
             // attaching our event listener to firebase
-            // this.dbRef.on('value', (snapshot) => {
-            // })
+            this.dbRef.on('value', (snapshot) => {
+            })
           }
         );
       }
@@ -447,7 +447,9 @@ class App extends Component {
             <Route path="/newtrip" render={props => <NewTripForm {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} />
             {this.state.hasUserSubmitted && <Redirect to="/tripdetails" />}
             <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} originData={this.state.originData} destinationData={this.state.destinationData} handleDirClick={this.handleDirClick} weatherResults={this.state.weatherResults} />} />
-            <Route path="/alltrips" component={TripList} />
+          <Route path="/alltrips" render={() => (
+            <TripList user={this.state.user}/>
+          )} />
           </div>
 
           {/* <button onClick={this.getWeather}>Get weather</button> */}
