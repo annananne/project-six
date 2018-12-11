@@ -42,13 +42,7 @@ class App extends Component {
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
       destinationDateTime: "",
       weatherRequestInfo: {},
-      weatherResults: {
-        origin: null,
-        middleFirstHalf: null,
-        middleMain: null,
-        middleSecondHalf: null,
-        destination: null
-      },
+      weatherResults: [],
       markers: [
         {
           title: "Kingston",
@@ -225,6 +219,7 @@ class App extends Component {
       });
       // sendWeatherData requests right away
       this.getWeather(weatherRequestInfo);
+      
     }
   }
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
@@ -239,21 +234,21 @@ class App extends Component {
     weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
 
     // send the weather request to the API
-    axios
+     return axios
       .get(weatherRequestURL, {
         method: "GET",
         contentType: "json"
       })
-      .then(res => {
-        // console.log(`Got weather data successfully for ${pointName}`);
-        // console.log(res.data);
-        this.setState({
-          weatherResults: {
-            ...this.state.weatherResults,
-            [pointName]: res.data
-          }
-        });
-      })
+      // .then(res => {
+      //   // console.log(`Got weather data successfully for ${pointName}`);
+      //   // console.log(res.data);
+      //   this.setState({
+      //     weatherResults: {
+      //       ...this.state.weatherResults,
+      //       [pointName]: res.data
+      //     }
+      //   });
+      // })
       .catch(error => {
         console.log(`Error when getting weather for ${pointName}: ${error}`);
       });
@@ -261,10 +256,20 @@ class App extends Component {
 
   // gets weather for all the points
   getWeather = weatherRequestInfo => {
+    const weatherArray = [];
     Object.keys(weatherRequestInfo).forEach(pointName => {
       const point = weatherRequestInfo[pointName];
-      this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName);
+      weatherArray.push(this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName));
     });
+    Promise.all(weatherArray).then(res => {
+      res.map(object => {
+        const weatherMarkerData = this.state.weatherResults;
+        weatherMarkerData.push(object.data);
+        this.setState({
+          weatherResults: weatherMarkerData
+        })
+      })
+    })
   };
 
   getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
@@ -372,13 +377,7 @@ class App extends Component {
       originData: {},
       destinationData: {},
       hasUserSubmitted: false,
-      weatherResults: {
-        origin: null,
-        middleFirstHalf: null,
-        middleMain: null,
-        middleSecondHalf: null,
-        destination: null
-      }
+      weatherResults: [],
     });
   };
 
@@ -457,6 +456,7 @@ class App extends Component {
             />
 
             {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
+
             <Route
               path="/newtrip"
               render={props => (

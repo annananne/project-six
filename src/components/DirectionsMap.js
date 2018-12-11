@@ -15,6 +15,8 @@ import {
   DirectionsRenderer
 } from "react-google-maps";
 import Directions from "./Directions.js";
+// import {getMarkersArray} from './CurrentTripInfo.js';
+import {markerArray} from './Markers';
 // import markers from "../markers";
 
 // const { compose, withProps, lifecycle } = require("recompose");
@@ -104,7 +106,7 @@ const stylesArray = [
 
 const MapWithADirectionsRenderer = compose(
   withProps({
-    googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${
+    googleMapURL: `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/js?key=${
       apiKeys.googleMaps
     }&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
@@ -113,9 +115,9 @@ const MapWithADirectionsRenderer = compose(
       <div style={{ height: `100vh`, minHeight: `650px`, width: `100%` }} />
     )
   }),
-  withState({
-    markerInfo: null
-  }),
+  // withState({
+  //   markerInfo: 'markers'
+  // }),
   withScriptjs,
   withGoogleMap,
   // withHandlers({
@@ -132,7 +134,12 @@ const MapWithADirectionsRenderer = compose(
   //   // }
   // }),
   lifecycle({
-    componentDidMount(){
+    componentDidMount() {
+      console.log("inside component did mount", this.props.weatherResults);
+      // const markerArray = this.props.weatherResults;
+      // this.setState({
+      //   markerInfo: markerArray
+      // })
       const DirectionsService = new window.google.maps.DirectionsService();
       DirectionsService.route(
         {
@@ -146,7 +153,7 @@ const MapWithADirectionsRenderer = compose(
           ),
           travelMode:
             window.google.maps.TravelMode[
-            this.props.userTripPreferences.travelMode
+              this.props.userTripPreferences.travelMode
             ],
           drivingOptions: {
             departureTime: new Date(this.props.originDateTime)
@@ -160,33 +167,81 @@ const MapWithADirectionsRenderer = compose(
           if (status === window.google.maps.DirectionsStatus.OK) {
             console.log(result);
             this.props.saveSearchResults(result);
-            this.setState({ directions: result });
+            this.setState({
+              directions: result
+              //markerInfo: this.props.weatherResults
+            });
           } else {
             console.error(`error fetching directions ${result}`);
           }
         }
       );
     },
-    componentDidUpdate(prevProps) {
-      console.log(new Date(this.props.originDateTime));
+    componentDidUpdate(prevProps, prevState, snapshot) {
+      console.log("inside cdu, i have updated", this.props.weatherResults);
+      console.log("vars", prevProps, prevState, snapshot);
+      // console.log(new Date(this.props.originDateTime));
+      // console.log(this.props.weatherResults, prevProps.weatherResults);
+      const DirectionsService = new window.google.maps.DirectionsService();
+      if (
+        this.props.weatherResults.length !== prevProps.weatherResults.length
+      ) {
+        console.log("i am running if statement inside cdu");
 
-      if (this.props.markerInfo !== prevProps.markerInfo) {
-        const markerArray = Object.entries(this.props.weatherResults);
-        console.log(markerArray, 'markerarray');
-        this.setState({
-          markerInfo: markerArray
-        });
+        this.setState({ markerInfo: this.props.weatherResults });
+        console.log("i am marker info inside cdu", this.state.markerInfo);
+
+        DirectionsService.route(
+          {
+            origin: new window.google.maps.LatLng(
+              this.props.originData.latitude,
+              this.props.originData.longitude
+            ),
+            destination: new window.google.maps.LatLng(
+              this.props.destinationData.latitude,
+              this.props.destinationData.longitude
+            ),
+            travelMode:
+              window.google.maps.TravelMode[
+                this.props.userTripPreferences.travelMode
+              ],
+            drivingOptions: {
+              departureTime: new Date(this.props.originDateTime)
+            },
+            provideRouteAlternatives: true,
+            avoidFerries: this.props.userTripPreferences.avoidFerries,
+            avoidHighways: this.props.userTripPreferences.avoidHighways,
+            avoidTolls: this.props.userTripPreferences.avoidTolls
+          },
+          (result, status) => {
+            if (status === window.google.maps.DirectionsStatus.OK) {
+              console.log(result);
+              this.props.saveSearchResults(result);
+              this.setState({ directions: result });
+            } else {
+              console.error(`error fetching directions ${result}`);
+            }
+          }
+        );
       }
+      console.log(
+        "i am marker info inside cdu but outside if statement",
+        this.state.markerInfo
+      );
     }
   })
 )(props => (
   <div>
+    {console.log("props", props)}
+    {/* {console.log('inside render', 'weather length',props.weatherResults.length, 'markerinfo length', this.state.markerInfo.length)} */}
     <GoogleMap
       defaultZoom={7}
       defaultCenter={new window.google.maps.LatLng(41.85073, -87.65126)}
       defaultOptions={{ styles: stylesArray }}
+      weatherResults={props.weatherResults}
     >
-      {props.directions &&
+      {/* Old Directions renderer with multiple routes */}
+      {/* {props.directions &&
         props.directions.routes.map((item, i) => {
           return (
             <div>
@@ -207,7 +262,32 @@ const MapWithADirectionsRenderer = compose(
               <Directions directions={props.directions} routeIndex={i} />
             </div>
           );
-        })}
+        })} */}
+
+      {props.directions && (
+        <div>
+          <DirectionsRenderer
+            directions={props.directions}
+            routeIndex={1}
+            suppressInfoWindows={true}
+            options={{
+              polylineOptions: {
+                strokeColor: "#f9d549",
+                strokeOpacity: 0.75,
+                strokeWeight: 6
+              },
+              markerOptions: { opacity: 1, clickable: false }
+            }}
+            onClick={props.handleDirClick}
+          />
+          <Directions directions={props.directions} routeIndex={1} />
+
+          {props.directions.routes.length > 1 &&
+            props.directions.routes.map(route => {
+              return <button id={route}>{route.summary}</button>;
+            })}
+        </div>
+      )}
 
       {/* {props.markers && props.markers.map(marker => {
         return <div>
@@ -222,22 +302,38 @@ const MapWithADirectionsRenderer = compose(
           </div>;
       })
       } */}
-
-      {props.markerInfo &&
-        props.markerInfo.map(result => {
-          console.log(result);
-          // return <div>
-          //     <MarkerWithLabel position={{ lat: result[1].latitude, lng: result[1].longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: "lightgrey", fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={true} onClick={props.handleMarkerClick}>
-          //       <div>
-          //         <p>
-          //           Location: ({result[1].latitude}, {result[1].longitude})
-          //         </p>
-          //         <p>
-          //           {result[1].currently.summary} ({result[1].currently.temperature}°F)
-          //         </p>
-          //       </div>
-          //     </MarkerWithLabel>
-          //   </div>;
+      {console.log('this is our beautiful marker array', markerArray)}
+      {console.log('this is our beautiful spliced array', markerArray.slice(Math.max(markerArray.length - 5, 1)))}
+      {props.weatherResults &&
+        props.weatherResults.map(result => {
+          // console.log(result);
+          return (
+            <div>
+              <MarkerWithLabel
+                position={{ lat: result.latitude, lng: result.longitude }}
+                labelAnchor={new window.google.maps.Point(0, 0)}
+                labelStyle={{
+                  backgroundColor: "lightgrey",
+                  fontSize: "0.7rem",
+                  padding: "10px",
+                  textAlign: "left",
+                  width: "200px"
+                }}
+                labelVisible={true}
+                onClick={props.handleMarkerClick}
+              >
+                <div>
+                  <p>
+                    Location: ({result.latitude}, {result.longitude})
+                  </p>
+                  <p>
+                    {result.currently.summary} ({result.currently.temperature}
+                    °F)
+                  </p>
+                </div>
+              </MarkerWithLabel>
+            </div>
+          );
         })}
     </GoogleMap>
   </div>

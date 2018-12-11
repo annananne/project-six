@@ -1,16 +1,43 @@
 import React, { Component } from "react";
 import MapWithADirectionsRenderer from "./DirectionsMap.js";
+import Markers from './Markers'
+
+// let markerArray = [];
 
 class CurrentTripInfo extends Component {
+  constructor(){
+    super();
+    this.state = {
+      weatherResults: [],
+      arrayBuilt: false,
+    }
+  }
+  componentDidUpdate(prevProps){
+    // console.log('prev props and props inside current trip info', prevProps, this.props)
+    if (this.props.weatherResults.length === 5 && this.state.arrayBuilt !== false) {
+      console.log('its 5');
+      this.setState({
+        weatherResults: this.props.weatherResults,
+        arrayBuilt: true
+      })
+      // markerArray = this.props.weatherResults;
+      // console.log(markerArray)
+      // this.forceUpdate();
+    }
+  }
   render() {
+    console.log(this.props)
     return <div>
         <MapWithADirectionsRenderer originDateTime={this.props.originDateTime} userTripPreferences={this.props.userTripPreferences} markers={this.props.markers} saveSearchResults={this.props.saveSearchResults} originData={this.props.originData} destinationData={this.props.destinationData} handleDirClick={this.props.handleDirClick} weatherResults={this.props.weatherResults}/>
+        <Markers weatherResults={this.state.weatherResults}/>
       </div>;
   }
 }
 
+// export function getMarkersArray() {
+//   return markerArray;
+// }
 export default CurrentTripInfo;
-
 // 1. Exactly what data we can pull to send to our users
 // 2 API calls for both user inputs (point A, point B)
   // -lat
