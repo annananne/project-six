@@ -44,7 +44,6 @@ h3 {
 .narrow-wrapper {
   max-width: 650px;
   margin: 0 auto;
-  border: solid 1px red;
 }
 
 .main-title {
@@ -133,7 +132,6 @@ fieldset label {
 .date-time {
   font-size: 1rem;
   margin-top: 20px;
-  color: blue;
 }
 
 .date-time label {
@@ -144,4 +142,8 @@ fieldset label {
 .alltrips-wrapper {
   background: #F2F2F2;
   height: 100vh;
+}
+
+.mockInput {
+  font-size: 1.5rem;
 }
