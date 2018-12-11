@@ -1,12 +1,18 @@
 import React from "react";
-import { compose, withProps, withHandlers, withState, lifecycle } from "recompose";
+import {
+  compose,
+  withProps,
+  withHandlers,
+  withState,
+  lifecycle
+} from "recompose";
 import apiKeys from "../data/secrets";
 import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
   GoogleMapsEvent,
-  DirectionsRenderer,
+  DirectionsRenderer
 } from "react-google-maps";
 import Directions from "./Directions.js";
 // import markers from "../markers";
@@ -126,10 +132,8 @@ const MapWithADirectionsRenderer = compose(
   //   // }
   // }),
   lifecycle({
-    componentDidMount() {
+    componentDidMount(){
       const DirectionsService = new window.google.maps.DirectionsService();
-
-      console.log(new Date(this.props.originDateTime));
       DirectionsService.route(
         {
           origin: new window.google.maps.LatLng(
@@ -142,7 +146,7 @@ const MapWithADirectionsRenderer = compose(
           ),
           travelMode:
             window.google.maps.TravelMode[
-              this.props.userTripPreferences.travelMode
+            this.props.userTripPreferences.travelMode
             ],
           drivingOptions: {
             departureTime: new Date(this.props.originDateTime)
@@ -164,11 +168,11 @@ const MapWithADirectionsRenderer = compose(
       );
     },
     componentDidUpdate(prevProps) {
-      console.log(prevProps);
+      console.log(new Date(this.props.originDateTime));
+
       if (this.props.markerInfo !== prevProps.markerInfo) {
         const markerArray = Object.entries(this.props.weatherResults);
-        console.log(markerArray);
-        console.log('ana')
+        console.log(markerArray, 'markerarray');
         this.setState({
           markerInfo: markerArray
         });
@@ -205,7 +209,7 @@ const MapWithADirectionsRenderer = compose(
           );
         })}
 
-      {props.markers && props.markers.map(marker => {
+      {/* {props.markers && props.markers.map(marker => {
         return <div>
             <MarkerWithLabel position={{ lat: marker.latitude, lng: marker.longitude }} labelAnchor={new window.google.maps.Point(0, 0)} labelStyle={{ backgroundColor: "lightgrey", fontSize: "0.7rem", padding: "10px", textAlign: "left", width: "200px" }} labelVisible={marker.isLabelVisible} onClick={props.handleMarkerClick}>
               <div>
@@ -217,7 +221,7 @@ const MapWithADirectionsRenderer = compose(
             </MarkerWithLabel>
           </div>;
       })
-      }
+      } */}
 
       {props.markerInfo &&
         props.markerInfo.map(result => {

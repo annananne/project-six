@@ -13,12 +13,14 @@ import CurrentTripInfo from "./components/CurrentTripInfo";
 import LoginPage from "./components/LoginPage";
 import DateTimeInput from "./components/DateTimeInput";
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
+import NewTripManager from "./components/NewTripManager";
 import moment from "moment";
 import {
   BrowserRouter as Router,
   Route,
   Link,
-  Redirect
+  Redirect,
+  Switch
 } from "react-router-dom";
 
 class App extends Component {
@@ -71,7 +73,7 @@ class App extends Component {
         }
       ],
       user: null,
-      guest: null,
+      guest: null
     };
   }
 
@@ -100,8 +102,8 @@ class App extends Component {
       console.log(result);
       this.setState(
         {
-          user: result.user, 
-          guest: false,
+          user: result.user,
+          guest: false
         },
         () => {
           // create reference specific to user
@@ -243,8 +245,8 @@ class App extends Component {
         contentType: "json"
       })
       .then(res => {
-        console.log(`Got weather data successfully for ${pointName}`);
-        console.log(res.data);
+        // console.log(`Got weather data successfully for ${pointName}`);
+        // console.log(res.data);
         this.setState({
           weatherResults: {
             ...this.state.weatherResults,
@@ -273,7 +275,7 @@ class App extends Component {
       window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
       window.google.maps.geometry.spherical.computeHeading(p1, p2)
     );
-    console.log("Point coordinates found", middleLatLng);
+    // console.log("Point coordinates found", middleLatLng);
     return middleLatLng;
   };
   //Method to handle change in Google Places autocomplete entry field
@@ -303,7 +305,7 @@ class App extends Component {
           placeID: results[0].place_id,
           address: results[0].formatted_address
         };
-
+        console.log('data object in geocode', dataObject);
         this.setState({ [currentId]: dataObject });
 
         // Run results from geocodeByAddress through function that gets latitude and longitude based on address
@@ -314,6 +316,7 @@ class App extends Component {
         const updatedDataObject = this.state[currentId];
         updatedDataObject.latitude = latLng.lat;
         updatedDataObject.longitude = latLng.lng;
+        console.log('updatedDataObject in LatLng', updatedDataObject)
         this.setState({ [currentId]: updatedDataObject });
       })
       .catch(error => console.error("Error", error));
@@ -332,12 +335,12 @@ class App extends Component {
     const tripInSeconds = result.routes[0].legs[0].duration.value;
     // Get origin time (Unix) from state
     const originTime = this.state.originDateTimeInSec;
-    console.log("trip in seconds", tripInSeconds, "origin time", originTime);
+    // console.log("trip in seconds", tripInSeconds, "origin time", originTime);
     // Add two times together
     const time = tripInSeconds + originTime;
     // Get destination time in correct format using moment.js
     const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
-    console.log("origin time", originTime, "destination time", destinationTime);
+    // console.log("origin time", originTime, "destination time", destinationTime);
 
     // Set trip data and destination date/time in state
     this.setState({
@@ -348,6 +351,7 @@ class App extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    console.log('submitted')
     {
       if (
         this.state.originData.latitude &&
@@ -355,6 +359,7 @@ class App extends Component {
         this.state.destinationData.latitude &&
         this.state.destinationData.longitude
       ) {
+        console.log("all vals");
         this.setState({
           hasUserSubmitted: true
         });
@@ -395,12 +400,8 @@ class App extends Component {
   };
 
   handleMarkerClick = marker => {
-    console.log(marker);
     const markerTitle = marker.wa.target.title;
     console.log(markerTitle);
-    // const markerLat = marker.latLng.lat();
-    // const markerLng = marker.latLng.lng();
-    // console.log(markerTitle, markerLat, markerLng);
     const markersArray = this.state.markers;
     markersArray.forEach(marker => {
       if ((marker.title = markerTitle)) {
@@ -414,38 +415,77 @@ class App extends Component {
 
   handleDirClick = e => {
     console.log("i am clicked");
-    // console.log(e);
   };
 
   continueAsGuest = () => {
     this.setState({
       guest: true
-    })
-  }
+    });
+  };
   render() {
-    return <Router>
+    return (
+      <Router>
         <div className="App">
-         
           <div className="narrow-wrapper">
             <h1 className="main-title">Wayfarer</h1>
             <p className="main-slogan">Plan Your Perfect Trip.</p>
-              {this.state.user ? <button className="main-button" onClick={this.logOut}>
-                  Log Out
-                </button> : <button className="main-button" onClick={this.logIn}>Log In</button>
-              }
-              <Link to="/dashboard">Home</Link>
+            {this.state.user ? (
+              <button className="main-button" onClick={this.logOut}>
+                Log Out
+              </button>
+            ) : (
+              <button className="main-button" onClick={this.logIn}>
+                Log In
+              </button>
+            )}
+            <Link to="/dashboard">Home</Link>
           </div>
-          
 
           <div>
             {this.state.user && <Redirect to="/dashboard" />}
             {this.state.guest && <Redirect to="/dashboard" />}
             <Route exact path="/" component={LoginPage} />
-            <Route path="/dashboard" render={props => <Dashboard {...props} user={this.state.user} guest={this.state.guest}/>} />
-          
-            <Route path="/newtrip" render={props => <NewTripForm {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} />
-            {this.state.hasUserSubmitted && <Redirect to="/tripdetails" />}
-            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} originData={this.state.originData} destinationData={this.state.destinationData} handleDirClick={this.handleDirClick} weatherResults={this.state.weatherResults} />} />
+            <Route
+              path="/dashboard"
+              render={props => (
+                <Dashboard
+                  {...props}
+                  user={this.state.user}
+                  guest={this.state.guest}
+                />
+              )}
+            />
+
+            {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
+            <Route
+              path="/newtrip"
+              render={props => (
+                <NewTripManager
+                  {...props}
+                  originData={this.state.originData}
+                  destinationData={this.state.destinationData}
+                  userTripPreferences={this.state.userTripPreferences}
+                  userTripPreferences={this.state.userTripPreferences}
+                  originDateTime={this.state.originDateTime}
+                  saveSearchResults={this.saveSearchResults}
+                  handleDirClick={this.handleDirClick}
+                  handleMarkerClick={this.handleMarkerClick}
+                  markers={this.state.markers}
+                  handleReset={this.handleReset}
+                  handleSubmit={this.handleSubmit}
+                  handleChange={this.handleChange}
+                  handleSelect={this.handleSelect}
+                  handleDateTimeChange={this.handleDateTimeChange}
+                  handleRadioChange={this.handleRadioChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  weatherResults={this.state.weatherResults}
+                  hasUserSubmitted={this.state.hasUserSubmitted}
+                />
+              )}
+            />
+
+            {/* {this.state.hasUserSubmitted && <Redirect to="/tripdetails" />} */}
+            {/* <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} originData={this.state.originData} destinationData={this.state.destinationData} handleDirClick={this.handleDirClick} weatherResults={this.state.weatherResults} />} /> */}
             <Route path="/alltrips" component={TripList} />
           </div>
 
@@ -463,7 +503,8 @@ class App extends Component {
           // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
           } */}
         </div>
-      </Router>;
+      </Router>
+    );
   }
 }
 
