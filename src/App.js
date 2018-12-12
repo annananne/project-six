@@ -402,16 +402,34 @@ class App extends Component {
             <h1 className="main-title">Wayfarer</h1>
             <p className="main-slogan">Plan Your Perfect Trip.</p>
             {this.state.user ? (
-              <button className="main-button" onClick={this.logOut}>
+              <button className="main-button button" onClick={this.logOut}>
                 Log Out
               </button>
             ) : (
-              <button className="main-button" onClick={this.logIn}>
+              <button className="main-button button" onClick={this.logIn}>
                 Log In
               </button>
             )}
+
+
+            
             <Link to="/dashboard">Home</Link>
           </div>
+
+          {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
+
+          {/* {this.state.user ?
+            <div>
+              <div className="user-profile clearfix">
+                <img className="photoURL" src={this.state.user.photoURL} />
+              </div>
+              <p className="your-name">Hello, {this.state.user.displayName}!</p>
+              </div>
+            :
+              <div>
+                <p>You must be logged in to see.</p>
+              </div>
+          } */}
 
           <div>
             {this.state.user && <Redirect to="/dashboard" />}
@@ -421,12 +439,12 @@ class App extends Component {
               path="/dashboard"
               render={props => (
                 <Dashboard
-                  {...props}
-                  user={this.state.user}
-                  guest={this.state.guest}
+                {...props}
+                user={this.state.user}
+                guest={this.state.guest}
                 />
-              )}
-            />
+                )}
+                />
 
             {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
 

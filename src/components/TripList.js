@@ -44,12 +44,12 @@ class TripList extends Component {
   render() {
     return (
 
-      <div class="alltrips-wrapper">
+      <div class="alltrips-wrapper clearfix">
         <header>
           <h3>All Trips!</h3>
         </header>
         <section className="mockInput">
-          <form action="" onSubmit={this.handleSubmit}>
+          <form className="mockInput" action="" onSubmit={this.handleSubmit}>
             <label htmlFor="tripName">Enter Trip Name</label>
             <input
               type="text"
@@ -77,7 +77,7 @@ class TripList extends Component {
               value={this.state.endPoint}
             />
 
-            <button>Save Trip!</button>
+            <button className="save-btn button">Save Trip!</button>
           </form>
         </section>
 
