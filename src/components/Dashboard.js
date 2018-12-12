@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Switch } from "react-router-dom";
 
 import car from "../assets/car.svg";
 import travel from "../assets/travel.svg";
