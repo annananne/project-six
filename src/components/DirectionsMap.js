@@ -249,12 +249,10 @@ const MapWithADirectionsRenderer = compose(
               onClick={props.handleDirClick}
               panel={document.getElementById('right-panel')}
             />
-<<<<<<< HEAD
             <div style={{ background: 'white' }}>
               <button onClick={props.handleSidebarChange}>Directions</button>
               <button onClick={props.handleSidebarChange}>Overview</button>
-=======
-
+            </div>
 
 
             {/* 
@@ -263,13 +261,13 @@ const MapWithADirectionsRenderer = compose(
               I've kept the previous version below
               (commented out in case we need it)
              */}
-            <SidebarMain
+            {/* <SidebarMain
               // info for directions tab
               directions={props.directions}
               routeIndex={1}
               // info for weather summary tab
               weatherData={props.weatherResults}
-            />
+            /> */}
         
             {/* OLD VERSION: COMMENTED OUT */}
             {/* <button onClick={props.handleSidebarChange}>Directions</button>
@@ -279,25 +277,15 @@ const MapWithADirectionsRenderer = compose(
             <SidebarDirections directions={props.directions} routeIndex={1} /> : <SidebarOverview weatherData={props.weatherResults} />} */}
 
 
-
->>>>>>> 7449f7f42d013e05df1724ebf5daa4251dcc932f
-
               {props.areDirectionsVisible ?
-                <div id="right-panel"></div> : <SidebarOverview />}
+              <div id="right-panel"></div> : <SidebarMain directions={props.directions}
+                routeIndex={1} weatherData={props.weatherResults}/>}
             </div>
-
-            {/* {props.directions.routes.length > 1 && props.directions.routes.map(route => {
-              return <button id={route}>{route.summary}</button>;
-            })} */}
-          </div>
+          
         )}
 
         {props.weatherResults &&
           props.weatherResults.map((result, i) => {
-<<<<<<< HEAD
-            // console.log(result);
-=======
->>>>>>> 7449f7f42d013e05df1724ebf5daa4251dcc932f
             return (
               <div>
                 <MarkerWithLabel
@@ -306,7 +294,7 @@ const MapWithADirectionsRenderer = compose(
                   labelStyle={{
                     backgroundColor: "rgba(255,255,255,0.75)",
                     border: "rgba(0,0,0,0.2) 0.5px solid",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     textTransform: "uppercase",
                     letterSpacing: "0.05rem",
                     padding: "0 15px",
@@ -319,17 +307,16 @@ const MapWithADirectionsRenderer = compose(
                   onClick={() => { props.handleMarkerClick(i) }}
                 >
                   <div>
-<<<<<<< HEAD
                     <p>
-                      {result.currently.summary}<span style={{ fontSize: '12px' }}> ({Math.round(result.latitude * 100) / 100}, {Math.round(result.longitude * 100) / 100})</span>
+                      {result.currently.summary}<span style={{ fontSize: '12px', opacity: '0.75' }}> ({Math.round(result.latitude * 100) / 100}, {Math.round(result.longitude * 100) / 100})</span>
+                      
                     </p>
                     <p>
-                      {Math.ceil((5 / 9) * (result.currently.temperature - 32))}°C
+                      {Math.ceil((5 / 9) * (result.currently.temperature - 32))}°C 
+                      <span style={{ fontSize: '12px', marginLeft: '10px', opacity: '0.75', marginRight: '5px' }}> feels like</span>
+                      {Math.ceil((5 / 9) * (result.currently.apparentTemperature - 32))}°C 
                   </p>
-=======
-                    <p>Location: ({result.latitude}, {result.longitude})</p>
-                    <p>{result.currently.summary} ({result.currently.temperature}°F)</p>
->>>>>>> 7449f7f42d013e05df1724ebf5daa4251dcc932f
+                    {result.precipType && <p>{result.currently.precipProbability}%<span style={{ fontSize: '12px', opacity: '0.75' }}> chance of {result.currently.precipType}</span></p>}
                   </div>
                 </MarkerWithLabel>
               </div>
