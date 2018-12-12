@@ -11,7 +11,6 @@ class TripList extends Component {
     };
   }
  
-
   handleSubmit = (e) => {
     e.preventDefault();
     const dbRef = firebase.database().ref(`${this.props.user.uid}`)
@@ -39,13 +38,10 @@ class TripList extends Component {
   removeTrip = (e) => {
     const tripID = e.target.id;
     const tripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
-    // console.log(e.target.id);
-    // const tripRef = firebase.database().ref(e.target.id);
     tripRef.remove();
   };
 
   render() {
-    // console.log(this.props.user.uid)
     return (
 
       <div class="alltrips-wrapper">
