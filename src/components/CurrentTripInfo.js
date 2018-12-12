@@ -2,13 +2,9 @@ import React, { Component } from "react";
 import MapWithADirectionsRenderer from "./DirectionsMap.js";
 
 class CurrentTripInfo extends Component {
-  
-
   render() {
     console.log('this.props.weatherResults inside CurrentTripInfo');
     console.log(this.props.weatherResults);
-
-    // return this.props.receivedAllWeatherData
 
     return (
       <div>

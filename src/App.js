@@ -14,7 +14,8 @@ import CurrentTripInfo from './components/CurrentTripInfo';
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
 import NewTripManager from "./components/NewTripManager";
 import LoginPage from './components/LoginPage';
-import SidebarMain from './components/SidebarMain'
+import SidebarMain from './components/SidebarMain';
+import MainNav from './components/MainNav.js'
 import moment from "moment";
 import {
   BrowserRouter as Router,
@@ -30,7 +31,7 @@ const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
 class App extends Component {
-  
+
   constructor() {
     super();
     this.state = {
@@ -39,7 +40,7 @@ class App extends Component {
       originData: { address: "" },
       destinationData: { address: "" },
       directions: null,
-      userTripPreferences: { 
+      userTripPreferences: {
         travelMode: "DRIVING",
         avoidFerries: false,
         avoidHighways: false,
@@ -101,7 +102,8 @@ class App extends Component {
   logOut = () => {
     auth.signOut().then(() => {
       this.setState({
-        user: null
+        user: null,
+        guest: null
       });
     });
   };
@@ -112,11 +114,11 @@ class App extends Component {
       this.state.tripData !== previousState.tripData &&
       previousState.tripData === null
     ) {
-    // if (this.state.hasUserSubmitted) {
-    //   alert('runs');
+      // if (this.state.hasUserSubmitted) {
+      //   alert('runs');
       // COORDS calculations
       // Calculate point coordinates and prepare them for weather requests
-      
+
       const originLat = this.state.originData.latitude;
       const originLng = this.state.originData.longitude;
       const destinationLat = this.state.destinationData.latitude;
@@ -133,7 +135,7 @@ class App extends Component {
       const middleSecondHalfCoords = this.getMiddlePoint(middleMainLat, middleMainLng, destinationLat, destinationLng);
 
       // maybe we should also calculate and put in the time
-      
+
       // TIME calculations
       const { originDateTime } = this.state;
       const originMoment = moment(originDateTime);
@@ -141,7 +143,7 @@ class App extends Component {
       // duration of the trip in seconds
       // if there are ever multiple legs, we can use legs[legsArray.length-1]
       const tripSeconds = this.state.tripData.routes[0].legs[0].duration.value;
-      
+
       const middleFirstHalfMoment = moment(originMoment).add(Math.round(tripSeconds * 0.25), 'seconds');
       const middleMainMoment = moment(originMoment).add(Math.round(tripSeconds * 0.5), 'seconds');
       const middleSecondHalfMoment = moment(originMoment).add(Math.round(tripSeconds * 0.75), 'seconds');
@@ -192,7 +194,7 @@ class App extends Component {
     let weatherRequestURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${apiKeys.darkSky}/`;
     // adding relevant parameters for the request
     weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
-    
+
     // send the weather request to the API
     return (
       axios
@@ -375,8 +377,8 @@ class App extends Component {
     // console.log('ive been clicked', marker);
     const updatedArray = this.state.isLabelVisible;
     updatedArray[markerIndex] = !updatedArray[markerIndex];
-   this.setState({
-     isLabelVisible: updatedArray
+    this.setState({
+      isLabelVisible: updatedArray
     });
   };
 
@@ -393,27 +395,10 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <div className="narrow-wrapper">
-            <h1 className="main-title">Wayfarer</h1>
-            <p className="main-slogan">Plan Your Perfect Trip.</p>
-            {this.state.user ? (
-              <button className="main-button button" onClick={this.logOut}>
-                Log Out
-              </button>
-            ) : (
-              <button className="main-button button" onClick={this.logIn}>
-                Log In
-              </button>
-            )}
+        <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut}/>
+        {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
 
-
-            
-            <Link to="/dashboard">Home</Link>
-          </div>
-
-          {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
-
-          {/* {this.state.user ?
+        {/* {this.state.user ?
             <div>
               <div className="user-profile clearfix">
                 <img className="photoURL" src={this.state.user.photoURL} />
@@ -426,66 +411,61 @@ class App extends Component {
               </div>
           } */}
 
-          <div>
-            {this.state.user && <Redirect to="/dashboard" />}
-            {this.state.guest && <Redirect to="/dashboard" />}
-            <Route exact path="/" component={LoginPage} />
-            <Route
-              path="/dashboard"
-              render={props => (
-                <Dashboard
+        <div>
+          {this.state.user && <Redirect to="/dashboard" />}
+          {this.state.guest && <Redirect to="/dashboard" />}
+          <Route exact path="/" component={LoginPage} />
+          <Route
+            path="/dashboard"
+            render={props => (
+              <Dashboard
                 {...props}
                 user={this.state.user}
                 guest={this.state.guest}
-                />
-                )}
-                />
+              />
+            )}
+          />
 
-            {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
+          {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
 
-            <Route
-              path="/newtrip"
-              render={props => (
-                <NewTripManager
-                  {...props}
-                  originData={this.state.originData}
-                  destinationData={this.state.destinationData}
-                  userTripPreferences={this.state.userTripPreferences}
-                  userTripPreferences={this.state.userTripPreferences}
-                  originDateTime={this.state.originDateTime}
-                  saveSearchResults={this.saveSearchResults}
-                  handleDirClick={this.handleDirClick}
-                  handleMarkerClick={this.handleMarkerClick}
-                  isLabelVisible={this.state.isLabelVisible}
-                  markers={this.state.markers}
-                  handleReset={this.handleReset}
-                  handleSubmit={this.handleSubmit}
-                  handleChange={this.handleChange}
-                  handleSelect={this.handleSelect}
-                  handleDateTimeChange={this.handleDateTimeChange}
-                  handleRadioChange={this.handleRadioChange}
-                  handleCheckboxChange={this.handleCheckboxChange}
-                  weatherResults={this.state.weatherResults}
-                  hasUserSubmitted={this.state.hasUserSubmitted} // new
-                  receivedAllWeatherData={this.state.receivedAllWeatherData}
-                  areDirectionsVisible={this.state.areDirectionsVisible}
-                  handleSidebarChange={this.state.handleSidebarChange}
-                />
-              )}
-            />
-            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange}/>}  />
+          <Route
+            path="/newtrip"
+            render={props => (
+              <NewTripManager
+                {...props}
+                originData={this.state.originData}
+                destinationData={this.state.destinationData}
+                userTripPreferences={this.state.userTripPreferences}
+                userTripPreferences={this.state.userTripPreferences}
+                originDateTime={this.state.originDateTime}
+                saveSearchResults={this.saveSearchResults}
+                handleDirClick={this.handleDirClick}
+                handleMarkerClick={this.handleMarkerClick}
+                isLabelVisible={this.state.isLabelVisible}
+                markers={this.state.markers}
+                handleReset={this.handleReset}
+                handleSubmit={this.handleSubmit}
+                handleChange={this.handleChange}
+                handleSelect={this.handleSelect}
+                handleDateTimeChange={this.handleDateTimeChange}
+                handleRadioChange={this.handleRadioChange}
+                handleCheckboxChange={this.handleCheckboxChange}
+                weatherResults={this.state.weatherResults}
+                hasUserSubmitted={this.state.hasUserSubmitted} // new
+                receivedAllWeatherData={this.state.receivedAllWeatherData}
+                areDirectionsVisible={this.state.areDirectionsVisible}
+                handleSidebarChange={this.state.handleSidebarChange}
+              />
+            )}
+          />
+          <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange} />} />
           <Route path="/alltrips" render={() => (
             <TripList
               user={this.state.user}
               listOfTrips={this.state.listOfTrips}
             />
           )} />
-          </div>
-
-
-        {/* {this.state.weatherResults.origin !== null && this.state.weatherResults.destination !== null && <PointWeatherDisplay originWeatherData={this.state.weatherResults.origin} destinationWeatherData={this.state.weatherResults.destination} originAddress={this.state.originData.address} destinationAddress={this.state.destinationData.address} />
-          // tempOrigin={this.state.weatherResults.origin.currently.temperature} tempDest={this.state.weatherResults.destination.currently.temperature}
-        } */}
+        </div>
         </div>
       </Router>
     );

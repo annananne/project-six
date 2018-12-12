@@ -17,6 +17,7 @@ import {
 // import SidebarDirections from "./SidebarDirections.js";
 // import SidebarOverview from './SidebarOverview.js';
 import SidebarMain from './SidebarMain';
+import target from '../assets/target.svg';
 
 
 // import markers from "../markers";
@@ -244,7 +245,7 @@ const MapWithADirectionsRenderer = compose(
                   strokeOpacity: 0.5,
                   strokeWeight: 6
                 },
-                markerOptions: { opacity: 0, clickable: false }
+                markerOptions: { opacity: 0, clickable: false}
               }}
               onClick={props.handleDirClick}
               panel={document.getElementById('right-panel')}
@@ -290,16 +291,16 @@ const MapWithADirectionsRenderer = compose(
                     backgroundColor: "rgba(255,255,255,0.75)",
                     border: "rgba(0,0,0,0.2) 0.5px solid",
                     fontSize: "16px",
-                    textTransform: "uppercase",
                     letterSpacing: "0.05rem",
                     padding: "0 15px",
                     textAlign: "left",
                     width: "250px",
-                    height: "150px",
-                    overflowY: "scroll"
+                    height: "250px",
+                    overflow: "scroll"
                   }}
                   labelVisible={props.isLabelVisible[i]}
                   onClick={() => { props.handleMarkerClick(i) }}
+                  icon={target}
                 >
                   <div>
                     <p>
@@ -311,6 +312,12 @@ const MapWithADirectionsRenderer = compose(
                       {Math.ceil((5 / 9) * (result.currently.apparentTemperature - 32))}°C 
                   </p>
                     {result.precipType && <p>{result.currently.precipProbability}%<span style={{ fontSize: '12px', opacity: '0.75' }}> chance of {result.currently.precipType}</span></p>}
+                    <p>{Math.round(result.currently.pressure / 10)}<span style={{ fontSize: '12px' }}> kPa (pressure)</span></p>
+                    <p>{result.currently.windSpeed}<span style={{ fontSize: '12px', opacity: '0.75'}}> km/h winds</span></p>
+                    <p>{result.currently.visibility * 1.60934}<span style={{ fontSize: '12px', opacity: '0.75' }}> km (visibility)</span></p>
+                    <p>{result.currently.uvIndex}<span style={{ fontSize: '12px', opacity: '0.75' }}> (UV Index)</span></p>
+                    <p>{result.currently.humidity * 10}%<span style={{ fontSize: '12px', opacity: '0.75' }}> humidity</span></p>
+
                   </div>
                 </MarkerWithLabel>
               </div>
