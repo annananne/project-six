@@ -14,7 +14,11 @@ import {
   GoogleMapsEvent,
   DirectionsRenderer
 } from "react-google-maps";
-import Directions from "./Directions.js";
+// import SidebarDirections from "./SidebarDirections.js";
+// import SidebarOverview from './SidebarOverview.js';
+import SidebarMain from './SidebarMain';
+
+
 // import markers from "../markers";
 
 // const { compose, withProps, lifecycle } = require("recompose");
@@ -111,28 +115,34 @@ const MapWithADirectionsRenderer = compose(
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `400px` }} />,
     mapElement: (
-      <div style={{ height: `100vh`, minHeight: `650px`, width: `100%` }} />
+      <div style={{ height: `100vh`, minHeight: `650px`, width: `65%` }} />
     ),
   }
 }),
   withState({
-    markerInfo: null
+    markerInfo: null,
   }),
   withScriptjs,
   withGoogleMap,
-  // withHandlers({
-  //   // handleMarkerClick: () => marker => {
-  //   //   // const markerTitle = marker.wa.target.title;
-  //   //   // const markerLat = marker.latLng.lat();
-  //   //   // const markerLng = marker.latLng.lng();
-  //   //   // console.log(markerTitle, markerLat, markerLng);
-  //   //   // const markersArray = this.state.markers;
-  //   //   // markersArray[markerTitle].isShown = !markersArray[markerTitle].isShown;
-  //   //   // this.setState({
-  //   //   //   markers: markersArray
-  //   //   // });
-  //   // }
-  // }),
+  withHandlers({
+    // handleMarkerClick: () => marker => {
+    //   // const markerTitle = marker.wa.target.title;
+    //   // const markerLat = marker.latLng.lat();
+    //   // const markerLng = marker.latLng.lng();
+    //   // console.log(markerTitle, markerLat, markerLng);
+    //   // const markersArray = this.state.markers;
+    //   // markersArray[markerTitle].isShown = !markersArray[markerTitle].isShown;
+    //   // this.setState({
+    //   //   markers: markersArray
+    //   // });
+    // }
+    // handleSidebarChange: () => element => {
+    //   const self = this;
+    //   this.setState({
+    //     areDirectionsVisible: !self.state.areDirectionsVisible
+    //   })
+    // }
+  }),
   lifecycle({
     componentDidMount() {
       console.log('inside component did mount', this.props.weatherResults)
@@ -169,8 +179,6 @@ const MapWithADirectionsRenderer = compose(
             this.props.saveSearchResults(result);
             this.setState({
               directions: result,
-              // new
-              // weatherResults: this.props.weatherResults,
               markerInfo: this.props.weatherResults
             });
           } else {
@@ -268,19 +276,47 @@ const MapWithADirectionsRenderer = compose(
               suppressInfoWindows={true}
               options={{
                 polylineOptions: {
-                  strokeColor: "#f9d549",
+                  strokeColor: "#222449",
                   strokeOpacity: 0.75,
                   strokeWeight: 6
                 },
                 markerOptions: { opacity: 1, clickable: false }
               }}
               onClick={props.handleDirClick}
+              // panel={document.getElementById('right-panel')}
             />
-            <Directions directions={props.directions} routeIndex={1} />
 
-            {props.directions.routes.length > 1 && props.directions.routes.map(route => {
+
+
+            {/* 
+              Experimental - component to switch between the
+              directions and weather summary
+              I've kept the previous version below
+              (commented out in case we need it)
+             */}
+            <SidebarMain
+              // info for directions tab
+              directions={props.directions}
+              routeIndex={1}
+              // info for weather summary tab
+              weatherData={props.weatherResults}
+            />
+        
+            {/* OLD VERSION: COMMENTED OUT */}
+            {/* <button onClick={props.handleSidebarChange}>Directions</button>
+            <button onClick={props.handleSidebarChange}>Overview</button> */}
+
+            {/* { props.areDirectionsVisible ?
+            <SidebarDirections directions={props.directions} routeIndex={1} /> : <SidebarOverview weatherData={props.weatherResults} />} */}
+
+
+
+
+            {/* <div id="right-panel" style={{width: "35%", float: "left"}}></div> */}
+
+            {/* {props.directions.routes.length > 1 && props.directions.routes.map(route => {
               return <button id={route}>{route.summary}</button>;
-            })}
+            })} */}
           </div>
         )}
 
@@ -301,9 +337,7 @@ const MapWithADirectionsRenderer = compose(
       } */}
 
         { props.weatherResults &&
-          props.weatherResults.map(result => {
-            console.log('##########################')
-            console.log(result);
+          props.weatherResults.map((result, i) => {
             return (
               <div>
                 <MarkerWithLabel
@@ -316,17 +350,12 @@ const MapWithADirectionsRenderer = compose(
                     textAlign: "left",
                     width: "200px"
                   }}
-                  labelVisible={true}
-                  onClick={props.handleMarkerClick}
+                  labelVisible={props.isLabelVisible[i]}
+                  onClick={() => { props.handleMarkerClick(i) } }
                 >
                   <div>
-                    <p>
-                      Location: ({result.latitude}, {result.longitude})
-                  </p>
-                    <p>
-                      {result.currently.summary} (
-                    {result.currently.temperature}°F)
-                  </p>
+                    <p>Location: ({result.latitude}, {result.longitude})</p>
+                    <p>{result.currently.summary} ({result.currently.temperature}°F)</p>
                   </div>
                 </MarkerWithLabel>
               </div>
