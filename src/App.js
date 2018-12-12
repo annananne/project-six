@@ -29,6 +29,7 @@ const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
 class App extends Component {
+  
   constructor() {
     super();
     this.state = {
