@@ -14,6 +14,7 @@ import CurrentTripInfo from './components/CurrentTripInfo';
 import PointWeatherDisplay from "./components/PointWeatherDisplay";
 import NewTripManager from "./components/NewTripManager";
 import LoginPage from './components/LoginPage';
+import SidebarMain from './components/SidebarMain'
 import moment from "moment";
 import {
   BrowserRouter as Router,
