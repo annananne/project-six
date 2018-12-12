@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../firebase.js";
 
-// const dbRef = firebase.database().ref();
-// const provider = new firebase.auth.GoogleAuthProvider(); 
-// const auth = firebase.auth();
-
 class TripList extends Component {
   constructor() {
     super();
@@ -14,54 +10,7 @@ class TripList extends Component {
       endPoint: ""
     };
   }
-  // componentDidMount (){
-  //   if (this.props.user) {
-  //     console.log('recognizing user')
-  //     this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
-  //     this.dbRef.on("value", (snapshot) => {
-  //       this.setState({ listOfTrips: snapshot.val() || {} });
-  //     });
-  //   }
-  // }
-
-  // componentDidMount() {
-  //   console.log("I MOUNTED")
-  //   if (this.props.user) {
-  //     this.dbRef = firebase.database().ref(`/${this.props.user.uid}`)
-  //     console.log(this.dbRef)
-  //       this.dbRef.on('value', (snapshot) => {
-  //         this.setState({
-  //           listOfTrips: snapshot.val() || {}
-  //         });
-  //       })
-  //   }
-    // auth.onAuthStateChanged((user) => {
-    //   if (user) {
-    //     this.setState({
-    //       user: user
-    //     }, () => {
-    //       this.dbRef = firebase.database().ref(`/${this.props.user.uid}`);
-    //       this.dbRef.on('value', (snapshot) => {
-    //         this.setState({
-    //           listOfTrips: snapshot.val() || {}
-    //         });
-    //       })
-    //     })
-    //   }
-    // })
-    // dbRef.on("value", (snapshot) => {
-    //   const newTripList = snapshot.val() === null ? {} : snapshot.val();
-    //   const newState = [];
-    //   for (let tripKey in newTripList) {
-    //     newTripList[tripKey].key = tripKey;
-    //     newState.push(newTripList[tripKey]);
-    //   }
-    //   console.log(newState);
-    //   this.setState({
-    //     listOfTrips: newState
-    //   });
-    // });
-  // }
+ 
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -136,16 +85,16 @@ class TripList extends Component {
           </form>
         </section>
 
-        <section>
+        <section className="display-trips">
           <ul>
             {Object.entries(this.props.listOfTrips).map((item) => {
               console.log(item, "bananas")
               return (
-                <li key={item[0]}>
-                  <h3>{item[1].title}</h3>
+                <li className="trip-items" key={item[0]}>
+                  <h4>{item[1].title}</h4>
                   <p>Origin: {item[1].origin}</p>
                   <p>Destination: {item[1].destination}</p>
-                  <button id={item[0]} onClick={this.removeTrip}>
+                  <button className="remove-btn button" id={item[0]} onClick={this.removeTrip}>
                     Remove Trip!
                   </button>
                 </li>
