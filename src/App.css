@@ -426,3 +426,12 @@ img:hover {
 .weather-special-title {
   font-weight: bold;
 }
+
+/* SIDEBAR MAIN */
+.tab-content {
+  display: none;
+}
+
+.tab-content-shown {
+  display: block !important;
+}

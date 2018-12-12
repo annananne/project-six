@@ -3,7 +3,7 @@
 // and manages the state 
 // to show one or another
 import React, { Component } from 'react';
-
+import "./App.css";
 import SidebarDirections from './SidebarDirections';
 import SidebarOverview from './SidebarOverview';
 
@@ -47,27 +47,34 @@ class SidebarMain extends Component {
           <button
             className="main-button sidebar-tab-button"
             onClick={this.handleShowDirections}
-          >Directions</button>
+            >Directions
+          </button>
           <button
             className="main-button sidebar-tab-button"
             onClick={this.handleShowWeatherSummary}
-          >Weather Summary</button>
+            >Weather Summary
+          </button>
         </div>
         {/* Container for the content */}
         <div>
+         
           {/* case 0 */}
-          {this.state.indexOfTabShown === 0 && <div id="right-panel" directions={this.props.directions}
-            routeIndex={1}></div>
-          // <SidebarDirections  
-          //   directions={this.props.directions} 
-          //   routeIndex={this.props.routeIndex}
-          // /> 
-        }
+          <div
+            className={`tab-content ${this.state.indexOfTabShown === 0 ? 'tab-content-shown' : ''}`}
+            id="right-panel"
+            directions={this.props.directions}
+            routeIndex={1}>
+          </div>
+          {/* <SidebarDirections  
+          directions={this.props.directions} 
+          routeIndex={this.props.routeIndex}
+          /> */}
 
           {/* case 1 */}
-          {this.state.indexOfTabShown === 1 && <SidebarOverview 
+          <SidebarOverview 
+            className={`tab-content ${this.state.indexOfTabShown === 0 ? 'tab-content-shown' : ''}`}
             weatherData={this.props.weatherData}
-          /> }
+          />
         </div>
 
       </div>
