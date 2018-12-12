@@ -115,6 +115,10 @@ a {
 }
 
 /* Dashboard.js STYLING */
+
+
+
+
 .dashboard {
   background: var(--lightGreyShade);
 }
@@ -158,6 +162,43 @@ a {
   font-size: 2rem;
   color: var(--darkBlueShade);
 }
+
+
+.travel-passport {
+  padding-left: 4rem;
+  /* margin-left: 4rem; */
+}
+
+@media only screen and (max-width: 1070px) {
+  .dashboard-wrapper {
+    width: 800px;
+  }
+
+  .circles {
+    width: 300px;
+    height: 300px;
+  }
+} 
+
+@media only screen and (max-width: 700px) {
+  .dashboard-wrapper {
+    width: 600px;
+  }
+
+  .circles {
+    width: 300px;
+    height: 300px;
+  }
+
+  .first-circle {
+    display: block;
+  }
+
+  .second-circle {
+    display: block;
+    float: none;
+  }
+} 
 
 /* FOR FUN: Add a circle that moves around the circles lol */
 
@@ -337,7 +378,7 @@ img:hover {
 #right-panel {
   width: 35%;
   float: left;
-  display: block;
+  /* display: block; */
   background: white;
   height: 96.5vh;
   min-height: 625px;
@@ -384,4 +425,13 @@ img:hover {
 
 .weather-special-title {
   font-weight: bold;
+}
+
+/* SIDEBAR MAIN */
+.tab-content {
+  display: none;
+}
+
+.tab-content-shown {
+  display: block !important;
 }

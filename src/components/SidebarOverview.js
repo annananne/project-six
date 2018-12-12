@@ -56,9 +56,6 @@ const SidebarOverview = (props) => {
     weatherData,
   } = props;
 
-  // console.log("SIDEBAR OVERVIEW RECEIVED WEATHER DATA");
-  // console.log(weatherData);
-
   if (!weatherData || weatherData.length === 0) {
     return <p>Loading weather...</p>;
   }
@@ -101,7 +98,6 @@ const SidebarOverview = (props) => {
       <div className='weather-record'>
         <p>
           <span>Wind Speed Avg: </span>
-          {/* check what units are these? m/s? */}
           {`${convertMilesToKilometers(findWeatherAverage('windSpeed', currentWeather))} km/h`}
         </p>
       </div>
@@ -131,13 +127,6 @@ const SidebarOverview = (props) => {
           {`${findWeatherAverage('precipProbability', currentWeather)*100}%`}
         </p>
       </div>
-      {/* precip intensity -> in inches of liquid water per hour */}
-      {/* <div className='weather-record'>
-        <p>
-          <span>Precip Intensity Avg: </span>
-          {`${findWeatherAverage('precipIntensity', currentWeather) * 100}%`}
-        </p>
-      </div> */}
       
       <div className='weather-record'>
         <p>
