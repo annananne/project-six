@@ -9,19 +9,52 @@ import CurrentTripInfo from "./CurrentTripInfo";
 // styling
 import "../App.css";
 import mockImage from "../assets/mockImage.jpg";
+
+//Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircle, faEllipsisV, faMapMarkerAlt} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCircle, faEllipsisV, faMapMarkerAlt); 
+
 class NewTripForm extends Component {
   render() {
     return <div className="main-wrapper clearfix">
-        <div className="newtripform-wrapper">
+
+        <div className="newtripform-wrapper clearfix">
+
           <h3>New trip</h3>
           <ReactDependentScript scripts={[`https://maps.googleapis.com/maps/api/js?key=${apiKeys.googleMaps}&libraries=places,geometry,drawing`]}>
             <form className="new-trip-form clearfix" action="" onSubmit={this.props.handleSubmit}>
               {/* <form action="" onSubmit={this.handleSubmit}> */}
               {/* Input for origin point search */}
+
+              <div className= "font-awesome clearfix">
+                <div className= "icon">
+                  <FontAwesomeIcon className="circle" icon="circle" /> 
+                </div>
+                <div className="icon">
+                  <FontAwesomeIcon className="dotdots" icon="ellipsis-v" />
+                </div>
+                <div className="icon">
+                  <FontAwesomeIcon className= "markymark" icon="map-marker-alt" />
+                </div>
+              </div>
+
+              <div className="location-search-input-wrapper">
               <LocationSearchInput id="originData" address={this.props.originData.address} originData={this.props.originData} handleChange={this.props.handleChange} handleSelect={this.props.handleSelect} />
               {/* Input for destination point search */}
               <LocationSearchInput id="destinationData" address={this.props.destinationData.address} destinationData={this.props.destinationData} handleChange={this.props.handleChange} handleSelect={this.props.handleSelect} />
+
               <DateTimeInput dateString={this.props.originDateTime} handleDateTimeChange={this.props.handleDateTimeChange} />
+              
+              </div>
+
+              {/* <LocationSearchInput id="originData" address={this.props.originData.address} originData={this.props.originData} handleChange={this.props.handleChange} handleSelect={this.props.handleSelect} /> */}
+              {/* Input for destination point search */}
+              {/* <LocationSearchInput id="destinationData" address={this.props.destinationData.address} destinationData={this.props.destinationData} handleChange={this.props.handleChange} handleSelect={this.props.handleSelect} />
+              <DateTimeInput dateString={this.props.originDateTime} handleDateTimeChange={this.props.handleDateTimeChange} /> */}
+
 
               <ul className="transportation">
                 <fieldset>
@@ -38,7 +71,8 @@ class NewTripForm extends Component {
                 </fieldset>
               </ul>
 
-              <fieldset>
+
+              <fieldset className="avoid-mode">
                 <label htmlFor="ferries">Avoid ferries</label>
                 <input type="checkbox" id="ferries" name="avoidFerries" onChange={this.props.handleCheckboxChange} />
 
@@ -48,15 +82,24 @@ class NewTripForm extends Component {
                 <label htmlFor="tolls">Avoid tolls</label>
                 <input type="checkbox" id="tolls" name="avoidTolls" onChange={this.props.handleCheckboxChange} />
               </fieldset>
-              <input type="submit" value="Get recommendation" />
+
+              {/* <Link to="/tripdetails"> */}
+                <input className="main-button" type="submit" value="Get recommendation" />
+              {/* </Link> */}
+
+              {/* <input type="submit" value="Get recommendation" /> */}
+
             </form>
           </ReactDependentScript>
         </div>
+         < img src={mockImage} alt="A person in the passenger seat of a car looking at a map." />
+      </div>
+  //     }
 
-        <div className="image-wrapper">
-          <img src={mockImage} alt="A person in the passenger seat of a car looking at a map." />
-        </div>
-      </div>;
+  //       <div className="image-wrapper">
+  //         <img src={mockImage} alt="A person in the passenger seat of a car looking at a map." />
+  //       </div>
+  //     </div>;
   }
 }
 

@@ -4,32 +4,81 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
+/* GENERAL STYLING */
+
 @import url('https://fonts.googleapis.com/css?family=Cabin|PT+Serif:400,700');
 
-body {
+:root {
+  /* colors */
+  --accentColor: #f9d549;
+  --lightBlueShade: #c2ebd7;
+  --darkBlueShade: #222449;
+  --blackShade: #000000;
+  --lightGreyShade: #f2f2f2;
+  --whiteShade: #ffffff;
+  /* fonts */
+  --headerFont: 'PT Serif', serif;
+  --bodyFont: 'Cabin', sans-serif;
+}
+
+html {
   font-size: 62.5%;
-  font-family: 'Cabin', sans-serif;
-  background: #222449;
+}
+
+body {
+  font-family: var(--bodyFont);
+  background: var(--darkBlueShade);
+  font-size: 1.6rem;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+h1 {
+  font-family: var(--headerFont);
+  font-size: 11rem;
+}
+
+h2 {
+  font-size: 9rem;
 }
 
 h3 {
-  font-size: 3.5rem;
-  font-family: 'PT Serif', serif;
+  font-size: 7rem;
+  font-family: var(--headerFont);
+  color: var(--darkBlueShade);
 }
 
+h4 {
+  text-transform: uppercase;
+}
+
+a {
+  text-decoration: none;
+}
+
+    /* button styling */
 .main-button {
   padding: 20px 40px;
-  background: #f9d549;
-  border: #f9d549;
+  background: var(--accentColor);
+  border: var(--accentColor);
   border-radius: 40px;
-  color: #222449;
+  color: var(--darkBlueShade);
   font-size: 1.5rem;
   font-weight: 700;
   cursor: pointer;
-  font-family: 'Cabin', sans-serif; 
+  font-family: var(--bodyFont); 
   text-transform: uppercase;
   letter-spacing: 2px;
 }
+
+.main-button:hover {
+  color: var(--accentColor);
+  background: var(--darkBlueShade);
+}
+
 
 .App {
   text-align: center;
@@ -47,16 +96,14 @@ h3 {
 }
 
 .main-title {
-  color: #fff;
-  font-size: 9rem;
-  font-family: 'PT Serif', serif;
+  color: var(--whiteShade);
   font-weight: 700;
-  margin: 30px 0 0 0;
+  margin: 20rem 0 0 0;
   text-align: right;
 }
 
 .main-slogan {
-  color: #fff;
+  color: var(--whiteShade);
   font-size: 2rem;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -64,54 +111,151 @@ h3 {
   margin: 0 0 30px 0;
   text-align: right;
 }
-/* font-family: 'PT Serif', serif;
-font-family: 'Cabin', sans-serif; */
 
+/* Dashboard.js STYLING */
+.dashboard {
+  background: var(--lightGreyShade);
+}
+
+.dashboard-wrapper {
+  position: relative;
+  width: 1000px;
+  height: 100vh;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.circles {
+  background: var(--lightBlueShade);
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  padding-top: 180px;
+  position: absolute;
+  top: 25%;
+  transform: translateY(-50%);
+}
+
+.circles:hover {
+  background: var(--accentColor);
+}
+
+.first-circle {
+  float: left;
+  left: 25%;
+  transform: translateX(-50%);
+}
+
+.second-circle {
+  float: right;
+  left: 75%;
+  transform: translateX(-50%);
+}
+
+.start-trip, .all-trips {
+  font-size: 2rem;
+  color: var(--darkBlueShade);
+}
+
+/* FOR FUN: Add a circle that moves around the circles lol */
+
+.circle-fun { 
+  width:100px; 
+  height:100px;
+  border-radius: 50%;
+  transform-origin:200% center; position:relative; 
+  animation:rotate 5s linear infinite; 
+  z-index: -1;
+}
+
+.circle-fun:before { 
+  content:''; 
+  position:absolute; 
+  height:100%; 
+  width:100%; 
+  border-radius: 50%;
+  background: var(--accentColor); 
+  animation:rotate 5s linear reverse infinite; 
+}
+
+@keyframes rotate { 100% { transform:rotate(-360deg); } }
+
+.clockwise {
+  animation:clockwise 5s linear infinite; 
+}
+@keyframes clockwise { 100% { transform:rotate(360deg); } }
 
 
 /* NewTripForm.js STYLING */
 
 .main-wrapper {
+  background: var(--lightBlueShade);
   max-width: 1600px;
+  height: 100vh;
+  text-align: left;
 }
+
+/* @media only screen and (max-width: 1070px) {
+  .main-wrapper {
+    
+  }
+} */
 
 .newtripform-wrapper {
-  min-width: 50%;
+  padding: 4rem 0 0 7rem ;
+  width: 50%;
   float: left;
-  background: #C2EBD7;
-  height: 100vh;
+} 
+
+.font-awesome {
+  float: left;
+  width: 20px;
+  /* border: 1px solid red; */
+  margin-top: 1rem;
+  margin-right: 10px;
+  color: var(--darkBlueShade);
 }
 
-.image-wrapper {
-  min-width: 50%;
-  float: right;
-  background:#C2EBD7;
-  height: 100vh;
-}
 
-.image-wrapper:hover {
-  filter: grayscale(10);
-}
-
-img {
+.icon {
+  /* border: 1px solid blue; */
+  margin-top: 10px;
+  font-size: 2rem;
   width: 100%;
-  height: 100vh;
 }
 
+.circle {
+  font-size: 1.5rem;
+  margin-left: 1px;
+}
+
+.dotdots {
+  margin-left: 5px;
+}
+
+.markymark {
+  margin-left: 1px;
+}
+
+.circle:hover, .markymark:hover {
+  color: var(--accentColor);
+}
+
+.location-search-input-wrapper {
+  margin: 0 3rem;
+}
 
 #originData, #destinationData {
- background: #C2EBD7;
- font-size: 1rem;
- border: none;
- border-bottom: 1px solid #222449;
- margin: 15px 0;
+  background: var(--lightBlueShade);
+  font-size: 3rem;
+  border: none;
+  border-bottom: 1px solid var(--darkBlueShade);
+  margin: 15px 0;
 }
 
 fieldset {
   display: block;
-  margin: 20px 0;
   border: none;
-  font-size: 1rem;
 }
 
 fieldset label {
@@ -120,22 +264,43 @@ fieldset label {
 
 .transportation {
   list-style: none;
-  margin: 0;
+  /* margin: 0;
   padding: 0;
-  overflow: auto;
+  overflow: auto; */
   letter-spacing: 1px;
 }
 
+.avoid-mode {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+img {
+  width: 50%;
+  float: right;
+  height: 100%;
+  object-fit: cover;
+}
+
+img:hover {
+  filter: grayscale(10);
+}
 
 /* DateTimeInput.js STYLING */
 
 .date-time {
-  font-size: 1rem;
+  /* margin-left: 23px; */
   margin-top: 20px;
 }
 
 .date-time label {
   margin-right: 10px;
+}
+
+#date-time-input {
+  background: var(--lightBlueShade);
+  border: none;
+  border-bottom: 1px solid var(--darkBlueShade)
 }
 
 /* TripList.js STYLING */
@@ -146,4 +311,23 @@ fieldset label {
 
 .mockInput {
   font-size: 1.5rem;
+}
+
+.display-trips {
+  border: 1px solid red;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.trip-items {
+  list-style-type: none;
+  width: 70%;
+  background: var(--lightBlueShade);
+  border: 1px solid var(--lightBlueShade);
+  margin: 20px auto;
+  line-height: 1px;
+}
+
+.remove-btn{
+  margin-bottom: 10px;
 }

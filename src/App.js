@@ -23,6 +23,8 @@ import {
   Switch
 } from "react-router-dom";
 
+
+// Google provider & auth module
 const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
