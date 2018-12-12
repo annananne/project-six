@@ -383,12 +383,6 @@ class App extends Component {
     console.log("i am clicked");
   };
 
-  handleSidebarChange = element => {
-    this.setState({
-      areDirectionsVisible: !this.state.areDirectionsVisible
-    })
-  }
-
   continueAsGuest = () => {
     this.setState({
       guest: true

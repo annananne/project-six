@@ -56,10 +56,13 @@ class SidebarMain extends Component {
         {/* Container for the content */}
         <div>
           {/* case 0 */}
-          { this.state.indexOfTabShown === 0 && <SidebarDirections  
-            directions={this.props.directions} 
-            routeIndex={this.props.routeIndex}
-          /> }
+          {this.state.indexOfTabShown === 0 && <div id="right-panel" directions={this.props.directions}
+            routeIndex={1}></div>
+          // <SidebarDirections  
+          //   directions={this.props.directions} 
+          //   routeIndex={this.props.routeIndex}
+          // /> 
+        }
 
           {/* case 1 */}
           {this.state.indexOfTabShown === 1 && <SidebarOverview 

@@ -249,10 +249,6 @@ const MapWithADirectionsRenderer = compose(
               onClick={props.handleDirClick}
               panel={document.getElementById('right-panel')}
             />
-            <div style={{ background: 'white' }}>
-              <button onClick={props.handleSidebarChange}>Directions</button>
-              <button onClick={props.handleSidebarChange}>Overview</button>
-            </div>
 
 
             {/* 
@@ -261,13 +257,13 @@ const MapWithADirectionsRenderer = compose(
               I've kept the previous version below
               (commented out in case we need it)
              */}
-            {/* <SidebarMain
+            <SidebarMain
               // info for directions tab
               directions={props.directions}
               routeIndex={1}
               // info for weather summary tab
               weatherData={props.weatherResults}
-            /> */}
+            />
         
             {/* OLD VERSION: COMMENTED OUT */}
             {/* <button onClick={props.handleSidebarChange}>Directions</button>
@@ -277,11 +273,10 @@ const MapWithADirectionsRenderer = compose(
             <SidebarDirections directions={props.directions} routeIndex={1} /> : <SidebarOverview weatherData={props.weatherResults} />} */}
 
 
-              {props.areDirectionsVisible ?
-              <div id="right-panel"></div> : <SidebarMain directions={props.directions}
-                routeIndex={1} weatherData={props.weatherResults}/>}
+              {/* {props.areDirectionsVisible ?
+              : <SidebarMain directions={props.directions}
+                routeIndex={1} weatherData={props.weatherResults}/>} */}
             </div>
-          
         )}
 
         {props.weatherResults &&
@@ -309,7 +304,6 @@ const MapWithADirectionsRenderer = compose(
                   <div>
                     <p>
                       {result.currently.summary}<span style={{ fontSize: '12px', opacity: '0.75' }}> ({Math.round(result.latitude * 100) / 100}, {Math.round(result.longitude * 100) / 100})</span>
-                      
                     </p>
                     <p>
                       {Math.ceil((5 / 9) * (result.currently.temperature - 32))}°C 
