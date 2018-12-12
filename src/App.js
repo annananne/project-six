@@ -43,6 +43,7 @@ class App extends Component {
       destinationDateTime: "",
       weatherRequestInfo: {},
       weatherResults: [],
+      receivedAllWeatherData: false,
       markers: [
         {
           title: "Kingston",
@@ -126,6 +127,8 @@ class App extends Component {
       this.state.tripData !== previousState.tripData &&
       previousState.tripData === null
     ) {
+    // if (this.state.hasUserSubmitted) {
+    //   alert('runs');
       // COORDS calculations
       // Calculate point coordinates and prepare them for weather requests
 
@@ -219,7 +222,6 @@ class App extends Component {
       });
       // sendWeatherData requests right away
       this.getWeather(weatherRequestInfo);
-      
     }
   }
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
@@ -234,24 +236,26 @@ class App extends Component {
     weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
 
     // send the weather request to the API
-     return axios
-      .get(weatherRequestURL, {
-        method: "GET",
-        contentType: "json"
-      })
-      // .then(res => {
-      //   // console.log(`Got weather data successfully for ${pointName}`);
-      //   // console.log(res.data);
-      //   this.setState({
-      //     weatherResults: {
-      //       ...this.state.weatherResults,
-      //       [pointName]: res.data
-      //     }
-      //   });
-      // })
-      .catch(error => {
-        console.log(`Error when getting weather for ${pointName}: ${error}`);
-      });
+    return (
+      axios
+        .get(weatherRequestURL, {
+          method: "GET",
+          contentType: "json"
+        })
+        // .then(res => {
+        //   // console.log(`Got weather data successfully for ${pointName}`);
+        //   // console.log(res.data);
+        //   this.setState({
+        //     weatherResults: {
+        //       ...this.state.weatherResults,
+        //       [pointName]: res.data
+        //     }
+        //   });
+        // })
+        .catch(error => {
+          console.log(`Error when getting weather for ${pointName}: ${error}`);
+        })
+    );
   };
 
   // gets weather for all the points
@@ -259,17 +263,27 @@ class App extends Component {
     const weatherArray = [];
     Object.keys(weatherRequestInfo).forEach(pointName => {
       const point = weatherRequestInfo[pointName];
-      weatherArray.push(this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName));
+      weatherArray.push(
+        this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName)
+      );
     });
     Promise.all(weatherArray).then(res => {
       res.map(object => {
-        const weatherMarkerData = this.state.weatherResults;
-        weatherMarkerData.push(object.data);
+        const weatherResults = res.map(object => {
+          return object.data;
+        });
+        // const weatherMarkerData = this.state.weatherResults;
+        // weatherMarkerData.push(object.data);
+
+        // const receivedResults = weatherMarkerData;
+        const gotAllWeather = weatherResults.length === 5;
+        // debugger
         this.setState({
-          weatherResults: weatherMarkerData
-        })
-      })
-    })
+          weatherResults: weatherResults,
+          receivedAllWeatherData: gotAllWeather,
+        });
+      });
+    });
   };
 
   getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
@@ -310,7 +324,7 @@ class App extends Component {
           placeID: results[0].place_id,
           address: results[0].formatted_address
         };
-        console.log('data object in geocode', dataObject);
+        console.log("data object in geocode", dataObject);
         this.setState({ [currentId]: dataObject });
 
         // Run results from geocodeByAddress through function that gets latitude and longitude based on address
@@ -321,7 +335,7 @@ class App extends Component {
         const updatedDataObject = this.state[currentId];
         updatedDataObject.latitude = latLng.lat;
         updatedDataObject.longitude = latLng.lng;
-        console.log('updatedDataObject in LatLng', updatedDataObject)
+        console.log("updatedDataObject in LatLng", updatedDataObject);
         this.setState({ [currentId]: updatedDataObject });
       })
       .catch(error => console.error("Error", error));
@@ -356,7 +370,7 @@ class App extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log('submitted')
+    console.log("submitted");
     {
       if (
         this.state.originData.latitude &&
@@ -377,7 +391,7 @@ class App extends Component {
       originData: {},
       destinationData: {},
       hasUserSubmitted: false,
-      weatherResults: [],
+      weatherResults: []
     });
   };
 
@@ -479,7 +493,8 @@ class App extends Component {
                   handleRadioChange={this.handleRadioChange}
                   handleCheckboxChange={this.handleCheckboxChange}
                   weatherResults={this.state.weatherResults}
-                  hasUserSubmitted={this.state.hasUserSubmitted}
+                  hasUserSubmitted={this.state.hasUserSubmitted} // new
+                  receivedAllWeatherData={this.state.receivedAllWeatherData}
                 />
               )}
             />
