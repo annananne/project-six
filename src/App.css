@@ -331,3 +331,15 @@ img:hover {
 .remove-btn{
   margin-bottom: 10px;
 }
+
+#right-panel {
+  width: 35%;
+  float: left;
+  display: block;
+  background: white;
+  height: 96.5vh;
+  min-height: 625px;
+  overflow: scroll;
+  border:none;
+  font-family: 'Cabin', sans-serif;
+}

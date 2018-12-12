@@ -6,9 +6,9 @@ const NewTripManager = props => {
   // return props.hasUserSubmitted ? (
 
   const allW = props.receivedAllWeatherData;
-  console.log("YEEEEEEEEEEEEEEEES inside NewTripManager");
-  console.log(allW);
-  console.log(props.weatherResults);
+  // console.log("YEEEEEEEEEEEEEEEES inside NewTripManager");
+  // console.log(allW);
+  // console.log(props.weatherResults);
   // debugger
 
   // return props.receivedAllWeatherData ? (
