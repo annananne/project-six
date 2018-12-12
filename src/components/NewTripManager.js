@@ -14,7 +14,6 @@ const NewTripManager = props => {
   // return props.receivedAllWeatherData ? (
   return props.hasUserSubmitted ? (
     <CurrentTripInfo
-      markers={props.markers}
       userTripPreferences={props.userTripPreferences}
       originDateTime={props.originDateTime}
       saveSearchResults={props.saveSearchResults}
@@ -23,6 +22,11 @@ const NewTripManager = props => {
       handleDirClick={props.handleDirClick}
       weatherResults={props.weatherResults}
       receivedAllWeatherData={props.receivedAllWeatherData}
+      handleMarkerClick={props.handleMarkerClick}
+      isLabelVisible={props.isLabelVisible}
+      areDirectionsVisible={props.areDirectionsVisible}
+      handleSidebarChange={props.handleSidebarChange}
+      
     />
   ) : (
     <NewTripForm
@@ -33,8 +37,6 @@ const NewTripManager = props => {
       originDateTime={props.originDateTime}
       saveSearchResults={props.saveSearchResults}
       handleDirClick={props.handleDirClick}
-      handleMarkerClick={props.handleMarkerClick}
-      markers={props.markers}
       handleReset={props.handleReset}
       handleSubmit={props.handleSubmit}
       handleChange={props.handleChange}
