@@ -291,14 +291,12 @@ const MapWithADirectionsRenderer = compose(
                     backgroundColor: "rgba(255,255,255,0.75)",
                     border: "rgba(0,0,0,0.2) 0.5px solid",
                     fontSize: "16px",
-                    // textTransform: "uppercase",
                     letterSpacing: "0.05rem",
                     padding: "0 15px",
                     textAlign: "left",
                     width: "250px",
                     height: "250px",
-                    overflow: "scroll",
-                    // fontFamily: 'Arial'
+                    overflow: "scroll"
                   }}
                   labelVisible={props.isLabelVisible[i]}
                   onClick={() => { props.handleMarkerClick(i) }}

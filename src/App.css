@@ -6,19 +6,22 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 
 /* GENERAL STYLING */
 
-@import url('https://fonts.googleapis.com/css?family=Cabin|PT+Serif:400,700');
+@import url('https://fonts.googleapis.com/css?family=Cabin:400,700|PT+Serif:400,700');
 
 :root {
   /* colors */
   --accentColor: #f9d549;
   --lightBlueShade: #c2ebd7;
-  --darkBlueShade: #222449;
-  --blackShade: #000000;
-  --lightGreyShade: #f2f2f2;
-  --whiteShade: #ffffff;
+  --backgroundColor: #222449;
+  --darkText: #000000;
+  --lightText: #f2f2f2;
   /* fonts */
   --headerFont: 'PT Serif', serif;
   --bodyFont: 'Cabin', sans-serif;
+}
+
+.App {
+  text-align: center;
 }
 
 html {
@@ -27,7 +30,7 @@ html {
 
 body {
   font-family: var(--bodyFont);
-  background: var(--darkBlueShade);
+  background: var(--backgroundColor);
   font-size: 1.6rem;
 }
 
@@ -38,7 +41,7 @@ img {
 
 h1 {
   font-family: var(--headerFont);
-  font-size: 11rem;
+  font-size: 12rem;
 }
 
 h2 {
@@ -48,7 +51,7 @@ h2 {
 h3 {
   font-size: 7rem;
   font-family: var(--headerFont);
-  color: var(--darkBlueShade);
+  color: var(--backgroundColor);
 }
 
 h4 {
@@ -59,68 +62,52 @@ a {
   text-decoration: none;
 }
 
-    /* button styling */
-.main-button {
-  padding: 20px 40px;
-  background: var(--darkBlueShade);
-  border-radius: 40px;
-  color: var(--darkBlueShade);
-  color: var(--accentColor);
-  font-size: 1.5rem;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: var(--bodyFont); 
-  text-transform: uppercase;
-  letter-spacing: 2px;
-
-  border: 2px solid var(--accentColor);
-}
-
-.main-button:hover {
-  background: var(--accentColor);
-  color: var(--darkBlueShade);
-}
-
-
-.App {
-  text-align: center;
-}
-
 .no-display {
   display: none;
 }
 
-/* Landing Page STYLING in App.js */
-
-.narrow-wrapper {
-  max-width: 650px;
-  margin: 0 auto;
+    /* button styling */
+.button {
+  padding: 15px 30px;
+  background: var(--accentColor);
+  border-radius: 40px;
+  color: var(--backgroundColor);
+  font-size: 1.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--bodyFont);
+  text-transform: uppercase;
+  letter-spacing: 0.25rem;
+  border: 2px solid var(--accentColor);
+  transform: scale(1);
+  transition: 0.2s all ease;
 }
 
+.button:hover {
+  transform: scale(1.05);
+  transition: 0.2s all ease;
+}
+
+/* LOGIN PAGE */
+
 .main-title {
-  color: var(--whiteShade);
+  color: var(--lightText);
   font-weight: 700;
-  margin: 20rem 0 0 0;
-  text-align: right;
+  margin: 0;
 }
 
 .main-slogan {
-  color: var(--whiteShade);
+  color: var(--lightText);
   font-size: 2rem;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 0.15rem;
   font-weight: bold;
-  margin: 0 0 30px 0;
-  text-align: right;
+  margin: 2rem 0;
 }
 
 /* Dashboard.js STYLING */
-
-
-
-
 .dashboard {
-  background: var(--lightGreyShade);
+  background: var(--lightText);
 }
 
 .dashboard-wrapper {
@@ -160,7 +147,7 @@ a {
 
 .start-trip, .all-trips {
   font-size: 2rem;
-  color: var(--darkBlueShade);
+  color: var(--backgroundColor);
 }
 
 
@@ -256,7 +243,7 @@ a {
   /* border: 1px solid red; */
   margin-top: 1rem;
   margin-right: 10px;
-  color: var(--darkBlueShade);
+  color: var(--backgroundColor);
 }
 
 
@@ -292,7 +279,7 @@ a {
   background: var(--lightBlueShade);
   font-size: 3rem;
   border: none;
-  border-bottom: 1px solid var(--darkBlueShade);
+  border-bottom: 1px solid var(--backgroundColor);
   margin: 15px 0;
 }
 
@@ -343,7 +330,7 @@ img:hover {
 #date-time-input {
   background: var(--lightBlueShade);
   border: none;
-  border-bottom: 1px solid var(--darkBlueShade)
+  border-bottom: 1px solid var(--backgroundColor)
 }
 
 /* TripList.js STYLING */
@@ -401,13 +388,13 @@ img:hover {
   padding: 10px;
   font-size: 2rem;
   background: white;
-  color: var(--darkBlueShade);
-  border: 2px solid var(--darkBlueShade);
+  color: var(--backgroundColor);
+  border: 2px solid var(--backgroundColor);
 }
 
 .SidebarMain .sidebar-tab-button:active,
 .SidebarMain .sidebar-tab-button:hover {
-  background: var(--darkBlueShade);
+  background: var(--backgroundColor);
   color: white;
 }
 */

@@ -76,6 +76,9 @@ class SidebarMain extends Component {
               weatherData={this.props.weatherData}
             />
           </div>
+          <button>Save trip</button>
+          <button>Reset</button>
+
         </div>
 
       </div>
