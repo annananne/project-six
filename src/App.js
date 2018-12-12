@@ -29,6 +29,7 @@ const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
 class App extends Component {
+  
   constructor() {
     super();
     this.state = {
@@ -50,31 +51,12 @@ class App extends Component {
       weatherRequestInfo: {},
       weatherResults: [],
       receivedAllWeatherData: false,
-      markers: [
-        {
-          title: "Kingston",
-          latitude: 44.2312,
-          longitude: -76.486,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.3)"
-        },
-        {
-          title: "Brockville",
-          latitude: 44.5895,
-          longitude: -75.6843,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.3)"
-        },
-        {
-          title: "Ottawa",
-          latitude: 45.4215,
-          longitude: -75.6972,
-          isLabelVisible: false,
-          backgroundColor: "rgba(255, 255, 255, 0.3)"
-        }
-      ],
       user: null,
-      guest: null
+      guest: null,
+      isLabelVisible: [
+        false, false, false, false, false
+      ],
+      areDirectionsVisible: true,
     };
   }
 
@@ -387,17 +369,13 @@ class App extends Component {
     });
   };
 
-  handleMarkerClick = marker => {
-    const markerTitle = marker.wa.target.title;
-    console.log(markerTitle);
-    const markersArray = this.state.markers;
-    markersArray.forEach(marker => {
-      if ((marker.title = markerTitle)) {
-        marker.isLabelVisible = !marker.isLabelVisible;
-      }
-    });
-    this.setState({
-      markers: markersArray
+  handleMarkerClick = markerIndex => {
+    // const markerTitle = marker.wa.target.title;
+    // console.log('ive been clicked', marker);
+    const updatedArray = this.state.isLabelVisible;
+    updatedArray[markerIndex] = !updatedArray[markerIndex];
+   this.setState({
+     isLabelVisible: updatedArray
     });
   };
 
@@ -477,6 +455,7 @@ class App extends Component {
                   saveSearchResults={this.saveSearchResults}
                   handleDirClick={this.handleDirClick}
                   handleMarkerClick={this.handleMarkerClick}
+                  isLabelVisible={this.state.isLabelVisible}
                   markers={this.state.markers}
                   handleReset={this.handleReset}
                   handleSubmit={this.handleSubmit}
@@ -488,10 +467,12 @@ class App extends Component {
                   weatherResults={this.state.weatherResults}
                   hasUserSubmitted={this.state.hasUserSubmitted} // new
                   receivedAllWeatherData={this.state.receivedAllWeatherData}
+                  areDirectionsVisible={this.state.areDirectionsVisible}
+                  handleSidebarChange={this.state.handleSidebarChange}
                 />
               )}
             />
-          <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} />} />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange}/>}  />
           <Route path="/alltrips" render={() => (
             <TripList
               user={this.state.user}

@@ -36,32 +36,12 @@ img {
   display: block;
 }
 
-
-.photoURL {
-  width: 100px;
-  border-radius: 50%;
-}
-
-.your-name {
-  margin: 100px 10px 0 0;
-  font-size: 2rem;
-  float: right;
-  padding: 20px 40px;
-  background: var(--accentColor);
-  border: var(--accentColor);
-  border-radius: 40px;
-  color: var(--darkBlueShade);
-  font-weight: 700;
-  text-align: center;
-}
-
 h1 {
   font-family: var(--headerFont);
   font-size: 11rem;
 }
 
 h2 {
-  font-family: var(--headerFont);
   font-size: 9rem;
 }
 
@@ -72,7 +52,6 @@ h3 {
 }
 
 h4 {
-  font-size: 4rem;
   text-transform: uppercase;
 }
 
@@ -81,27 +60,25 @@ a {
 }
 
     /* button styling */
-.button {
+.main-button {
   padding: 20px 40px;
-  background: var(--accentColor);
-  border: var(--accentColor);
+  background: var(--darkBlueShade);
   border-radius: 40px;
   color: var(--darkBlueShade);
+  color: var(--accentColor);
   font-size: 1.5rem;
   font-weight: 700;
   cursor: pointer;
   font-family: var(--bodyFont); 
   text-transform: uppercase;
   letter-spacing: 2px;
-}
 
-.button:hover {
-  color: var(--accentColor);
-  background: var(--darkBlueShade);
+  border: 2px solid var(--accentColor);
 }
 
 .main-button:hover {
-  background: var(--lightBlueShade)
+  background: var(--accentColor);
+  color: var(--darkBlueShade);
 }
 
 
@@ -159,7 +136,7 @@ a {
   width: 400px;
   height: 400px;
   border-radius: 50%;
-  padding-top: 160px;
+  padding-top: 180px;
   position: absolute;
   top: 25%;
   transform: translateY(-50%);
@@ -182,10 +159,10 @@ a {
 }
 
 .start-trip, .all-trips {
-  font-size: 3rem;
-  margin: 0 auto 0 45px;
+  font-size: 2rem;
   color: var(--darkBlueShade);
 }
+
 
 .travel-passport {
   padding-left: 4rem;
@@ -341,11 +318,6 @@ fieldset label {
   margin-bottom: 20px;
 }
 
-.transportation label, .avoid-mode label {
-  font-size: 2rem;
-}
-
-
 img {
   width: 50%;
   float: right;
@@ -365,14 +337,13 @@ img:hover {
 }
 
 .date-time label {
-  font-size: 2rem;
   margin-right: 10px;
 }
 
 #date-time-input {
   background: var(--lightBlueShade);
   border: none;
-  border-bottom: 1px solid var(--darkBlueShade);
+  border-bottom: 1px solid var(--darkBlueShade)
 }
 
 /* TripList.js STYLING */
@@ -386,21 +357,9 @@ img:hover {
 }
 
 .display-trips {
-  /* border: 1px solid red; */
+  border: 1px solid red;
   max-width: 1000px;
   margin: 0 auto;
-}
-
-.mockInput label {
-  display: none;
-}
-
-.mockInput input{
-  margin: 0 7px;
-  font-size: 2rem;
-  background: var(--lightGreyShade);
-  border: none;
-  border-bottom: 1px solid var(--darkBlueShade);
 }
 
 .trip-items {
@@ -412,12 +371,58 @@ img:hover {
   line-height: 1px;
 }
 
-.trip-items p {
-  font-size: 2.5rem;
-  line-height: 10px;
-}
-
-
 .remove-btn{
   margin-bottom: 10px;
+}
+
+#right-panel {
+  width: 35%;
+  float: left;
+  display: block;
+  background: white;
+  height: 96.5vh;
+  min-height: 625px;
+  overflow: scroll;
+  border:none;
+  font-family: 'Cabin', sans-serif;
+}
+/* Sidebar Main */
+
+.SidebarMain .tab-container {
+  padding-top: 30px;
+}
+
+.SidebarMain .sidebar-tab-button {
+  margin: 20px;
+}
+
+/*
+.SidebarMain .sidebar-tab-button {
+  padding: 10px;
+  font-size: 2rem;
+  background: white;
+  color: var(--darkBlueShade);
+  border: 2px solid var(--darkBlueShade);
+}
+
+.SidebarMain .sidebar-tab-button:active,
+.SidebarMain .sidebar-tab-button:hover {
+  background: var(--darkBlueShade);
+  color: white;
+}
+*/
+
+/* Sidebar Overview */
+
+.SidebarOverview h2 {
+  color: white;
+}
+
+.SidebarOverview .weather-record p {
+  color: white;
+  font-size: 2rem;
+}
+
+.weather-special-title {
+  font-weight: bold;
 }
