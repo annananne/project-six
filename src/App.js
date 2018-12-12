@@ -15,6 +15,8 @@ import PointWeatherDisplay from "./components/PointWeatherDisplay";
 import moment from "moment";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
+
+
 // Google provider & auth module
 const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
