@@ -23,6 +23,8 @@ class CurrentTripInfo extends Component {
           handleMarkerClick={this.props.handleMarkerClick}
           weatherResults={this.props.weatherResults}
           isLabelVisible={this.props.isLabelVisible}
+          areDirectionsVisible={this.props.areDirectionsVisible}
+          handleSidebarChange={this.props.handleSidebarChange}
         />
       </div>
     );

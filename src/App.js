@@ -54,7 +54,8 @@ class App extends Component {
       guest: null,
       isLabelVisible: [
         false, false, false, false, false
-      ]
+      ],
+      areDirectionsVisible: true,
     };
   }
 
@@ -381,6 +382,12 @@ class App extends Component {
     console.log("i am clicked");
   };
 
+  handleSidebarChange = element => {
+    this.setState({
+      areDirectionsVisible: !this.state.areDirectionsVisible
+    })
+  }
+
   continueAsGuest = () => {
     this.setState({
       guest: true
@@ -447,10 +454,12 @@ class App extends Component {
                   weatherResults={this.state.weatherResults}
                   hasUserSubmitted={this.state.hasUserSubmitted} // new
                   receivedAllWeatherData={this.state.receivedAllWeatherData}
+                  areDirectionsVisible={this.state.areDirectionsVisible}
+                  handleSidebarChange={this.state.handleSidebarChange}
                 />
               )}
             />
-          <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} />} />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange}/>}  />
           <Route path="/alltrips" render={() => (
             <TripList
               user={this.state.user}

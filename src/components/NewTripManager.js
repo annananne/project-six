@@ -24,6 +24,8 @@ const NewTripManager = props => {
       receivedAllWeatherData={props.receivedAllWeatherData}
       handleMarkerClick={props.handleMarkerClick}
       isLabelVisible={props.isLabelVisible}
+      areDirectionsVisible={props.areDirectionsVisible}
+      handleSidebarChange={props.handleSidebarChange}
       
     />
   ) : (
