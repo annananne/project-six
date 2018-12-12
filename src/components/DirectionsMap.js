@@ -301,9 +301,9 @@ const MapWithADirectionsRenderer = compose(
       } */}
 
         { props.weatherResults &&
-          props.weatherResults.map(result => {
-            console.log('##########################')
-            console.log(result);
+          props.weatherResults.map((result, i) => {
+            // console.log('##########################')
+            // console.log(result);
             return (
               <div>
                 <MarkerWithLabel
@@ -316,8 +316,8 @@ const MapWithADirectionsRenderer = compose(
                     textAlign: "left",
                     width: "200px"
                   }}
-                  labelVisible={true}
-                  onClick={props.handleMarkerClick}
+                  labelVisible={props.isLabelVisible[i]}
+                  onClick={() => { props.handleMarkerClick(i) } }
                 >
                   <div>
                     <p>

@@ -20,7 +20,9 @@ class CurrentTripInfo extends Component {
           originData={this.props.originData}
           destinationData={this.props.destinationData}
           handleDirClick={this.props.handleDirClick}
+          handleMarkerClick={this.props.handleMarkerClick}
           weatherResults={this.props.weatherResults}
+          isLabelVisible={this.props.isLabelVisible}
         />
       </div>
     );
