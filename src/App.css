@@ -378,7 +378,7 @@ img:hover {
 #right-panel {
   width: 35%;
   float: left;
-  display: block;
+  /* display: block; */
   background: white;
   height: 96.5vh;
   min-height: 625px;
