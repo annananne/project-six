@@ -62,21 +62,23 @@ a {
     /* button styling */
 .main-button {
   padding: 20px 40px;
-  background: var(--accentColor);
-  border: var(--accentColor);
+  background: var(--darkBlueShade);
   border-radius: 40px;
   color: var(--darkBlueShade);
+  color: var(--accentColor);
   font-size: 1.5rem;
   font-weight: 700;
   cursor: pointer;
   font-family: var(--bodyFont); 
   text-transform: uppercase;
   letter-spacing: 2px;
+
+  border: 2px solid var(--accentColor);
 }
 
 .main-button:hover {
-  color: var(--accentColor);
-  background: var(--darkBlueShade);
+  background: var(--accentColor);
+  color: var(--darkBlueShade);
 }
 
 
@@ -330,4 +332,45 @@ img:hover {
 
 .remove-btn{
   margin-bottom: 10px;
+}
+
+/* Sidebar Main */
+
+.SidebarMain .tab-container {
+  padding-top: 30px;
+}
+
+.SidebarMain .sidebar-tab-button {
+  margin: 20px;
+}
+
+/*
+.SidebarMain .sidebar-tab-button {
+  padding: 10px;
+  font-size: 2rem;
+  background: white;
+  color: var(--darkBlueShade);
+  border: 2px solid var(--darkBlueShade);
+}
+
+.SidebarMain .sidebar-tab-button:active,
+.SidebarMain .sidebar-tab-button:hover {
+  background: var(--darkBlueShade);
+  color: white;
+}
+*/
+
+/* Sidebar Overview */
+
+.SidebarOverview h2 {
+  color: white;
+}
+
+.SidebarOverview .weather-record p {
+  color: white;
+  font-size: 2rem;
+}
+
+.weather-special-title {
+  font-weight: bold;
 }

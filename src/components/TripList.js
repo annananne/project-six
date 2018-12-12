@@ -11,7 +11,6 @@ class TripList extends Component {
     };
   }
  
-
   handleSubmit = (e) => {
     e.preventDefault();
     const dbRef = firebase.database().ref(`${this.props.user.uid}`)

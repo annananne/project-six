@@ -14,8 +14,11 @@ import {
   GoogleMapsEvent,
   DirectionsRenderer
 } from "react-google-maps";
-import SidebarDirections from "./SidebarDirections.js";
-import SidebarOverview from './SidebarOverview.js';
+// import SidebarDirections from "./SidebarDirections.js";
+// import SidebarOverview from './SidebarOverview.js';
+import SidebarMain from './SidebarMain';
+
+
 // import markers from "../markers";
 
 // const { compose, withProps, lifecycle } = require("recompose");
@@ -282,10 +285,32 @@ const MapWithADirectionsRenderer = compose(
               onClick={props.handleDirClick}
               // panel={document.getElementById('right-panel')}
             />
-            <button onClick={props.handleSidebarChange}>Directions</button>
-            <button onClick={props.handleSidebarChange}>Overview</button>
-            {props.areDirectionsVisible ?
-            <SidebarDirections directions={props.directions} routeIndex={1}/> : <SidebarOverview />}
+
+
+
+            {/* 
+              Experimental - component to switch between the
+              directions and weather summary
+              I've kept the previous version below
+              (commented out in case we need it)
+             */}
+            <SidebarMain
+              // info for directions tab
+              directions={props.directions}
+              routeIndex={1}
+              // info for weather summary tab
+              weatherData={props.weatherResults}
+            />
+        
+            {/* OLD VERSION: COMMENTED OUT */}
+            {/* <button onClick={props.handleSidebarChange}>Directions</button>
+            <button onClick={props.handleSidebarChange}>Overview</button> */}
+
+            {/* { props.areDirectionsVisible ?
+            <SidebarDirections directions={props.directions} routeIndex={1} /> : <SidebarOverview weatherData={props.weatherResults} />} */}
+
+
+
 
             {/* <div id="right-panel" style={{width: "35%", float: "left"}}></div> */}
 
@@ -313,8 +338,6 @@ const MapWithADirectionsRenderer = compose(
 
         { props.weatherResults &&
           props.weatherResults.map((result, i) => {
-            // console.log('##########################')
-            // console.log(result);
             return (
               <div>
                 <MarkerWithLabel
@@ -331,13 +354,8 @@ const MapWithADirectionsRenderer = compose(
                   onClick={() => { props.handleMarkerClick(i) } }
                 >
                   <div>
-                    <p>
-                      Location: ({result.latitude}, {result.longitude})
-                  </p>
-                    <p>
-                      {result.currently.summary} (
-                    {result.currently.temperature}°F)
-                  </p>
+                    <p>Location: ({result.latitude}, {result.longitude})</p>
+                    <p>{result.currently.summary} ({result.currently.temperature}°F)</p>
                   </div>
                 </MarkerWithLabel>
               </div>
