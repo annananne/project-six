@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../firebase.js";
 
-
 class TripList extends Component {
   constructor() {
     super();
@@ -11,6 +10,7 @@ class TripList extends Component {
       endPoint: ""
     };
   }
+ 
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -82,16 +82,16 @@ class TripList extends Component {
           </form>
         </section>
 
-        <section>
+        <section className="display-trips">
           <ul>
             {Object.entries(this.props.listOfTrips).map((item) => {
               console.log(item, "bananas")
               return (
-                <li key={item[0]}>
-                  <h3>{item[1].title}</h3>
+                <li className="trip-items" key={item[0]}>
+                  <h4>{item[1].title}</h4>
                   <p>Origin: {item[1].origin}</p>
                   <p>Destination: {item[1].destination}</p>
-                  <button id={item[0]} onClick={this.removeTrip}>
+                  <button className="remove-btn button" id={item[0]} onClick={this.removeTrip}>
                     Remove Trip!
                   </button>
                 </li>
