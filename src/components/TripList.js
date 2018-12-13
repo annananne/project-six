@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import firebase from "../firebase.js";
+import moment from 'moment';
 
 class TripList extends Component {
   constructor() {
@@ -10,24 +11,6 @@ class TripList extends Component {
       endPoint: ""
     };
   }
- 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const dbRef = firebase.database().ref(`${this.props.user.uid}`)
-    const newTrip = {
-      title: this.state.tripName,
-      origin: this.state.startPoint,
-      destination: this.state.endPoint
-    };
-    console.log(this.props.user.uid)
-    console.log(newTrip);
-    dbRef.push(newTrip);
-    this.setState({
-      tripName: "",
-      startPoint: "",
-      endPoint: ""
-    });
-  };
 
   handleChange = (e) => {
     this.setState({
@@ -42,55 +25,36 @@ class TripList extends Component {
   };
 
   render() {
-    return (
+    const {
+      listOfTrips,
+    } = this.props;
 
+    // console.log('list of trips');
+    // console.log(listOfTrips);
+
+    return (
       <div class="alltrips-wrapper clearfix">
         <header>
           <h3>All Trips!</h3>
         </header>
-        <section className="mockInput">
-          <form className="mockInput" action="" onSubmit={this.handleSubmit}>
-            <label htmlFor="tripName">Enter Trip Name</label>
-            <input
-              type="text"
-              id="tripName"
-              placeholder="Trip Name"
-              onChange={this.handleChange}
-              value={this.state.tripName}
-            />
-
-            <label htmlFor="startPoint">Enter Starting Point</label>
-            <input
-              type="text"
-              id="startPoint"
-              placeholder="Your Location"
-              onChange={this.handleChange}
-              value={this.state.startPoint}
-            />
-
-            <label htmlFor="endPoint">Enter End Point</label>
-            <input
-              type="text"
-              id="endPoint"
-              placeholder="Destination"
-              onChange={this.handleChange}
-              value={this.state.endPoint}
-            />
-
-            <button className="save-btn button">Save Trip!</button>
-          </form>
-        </section>
 
         <section className="display-trips">
           <ul>
-            {Object.entries(this.props.listOfTrips).map((item) => {
-              console.log(item, "bananas")
+            {Object.keys(listOfTrips).map((tripKey) => {
+              const trip = listOfTrips[tripKey];
+              const displayDateTime = moment(trip.originDateTime).format('DD MMM YYYY, HH:MM');
+
               return (
-                <li className="trip-items" key={item[0]}>
-                  <h4>{item[1].title}</h4>
-                  <p>Origin: {item[1].origin}</p>
-                  <p>Destination: {item[1].destination}</p>
-                  <button className="remove-btn button" id={item[0]} onClick={this.removeTrip}>
+                <li className="trip-items" key={tripKey}>
+                  {/* <h4>{item[1].title}</h4> */}
+                  <p>Origin: {trip.origin.address}</p>
+                  <p>Destination: {trip.destination.address}</p>
+                  <p>Date Time of Origin: {displayDateTime}</p>
+                  <button 
+                    className="remove-btn button"
+                    id={tripKey}
+                    onClick={this.removeTrip}
+                  >
                     Remove Trip!
                   </button>
                 </li>
@@ -102,6 +66,5 @@ class TripList extends Component {
     );
   }
 }
-
 
 export default TripList;

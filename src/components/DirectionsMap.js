@@ -264,6 +264,8 @@ const MapWithADirectionsRenderer = compose(
               routeIndex={1}
               // info for weather summary tab
               weatherData={props.weatherResults}
+              // handler for saving trips to db
+              handleSavingTripToDB={props.handleSavingTripToDB}
             />
         
             {/* OLD VERSION: COMMENTED OUT */}

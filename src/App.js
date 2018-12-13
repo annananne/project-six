@@ -109,6 +109,16 @@ class App extends Component {
     });
   };
 
+  saveTripToDB = () => {
+    alert('save trip to db runs');
+    const tripInfo = {
+      origin: this.state.originData,
+      destination: this.state.destinationData,
+      originDateTime: this.state.originDateTime
+    }
+    this.dbRef.push(tripInfo);
+  }
+
   componentDidUpdate(previousProps, previousState) {
     // only calculate the middle points when the tripData first gets into the App state
     if (
@@ -456,6 +466,9 @@ class App extends Component {
                 receivedAllWeatherData={this.state.receivedAllWeatherData}
                 areDirectionsVisible={this.state.areDirectionsVisible}
                 handleSidebarChange={this.state.handleSidebarChange}
+
+                // new
+                handleSavingTripToDB={this.saveTripToDB}
               />
             )}
           />

@@ -21,6 +21,9 @@ class CurrentTripInfo extends Component {
           isLabelVisible={this.props.isLabelVisible}
           areDirectionsVisible={this.props.areDirectionsVisible}
           handleSidebarChange={this.props.handleSidebarChange}
+
+          // handler for saving trips to db
+          handleSavingTripToDB={this.props.handleSavingTripToDB}
         />
       </div>
     );

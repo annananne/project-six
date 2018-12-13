@@ -26,6 +26,9 @@ const NewTripManager = props => {
       isLabelVisible={props.isLabelVisible}
       areDirectionsVisible={props.areDirectionsVisible}
       handleSidebarChange={props.handleSidebarChange}
+
+      // handler for saving trips to db
+      handleSavingTripToDB={props.handleSavingTripToDB}
       
     />
   ) : (

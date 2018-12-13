@@ -38,6 +38,7 @@ class SidebarMain extends Component {
       directions,
       routeIndex, // for directions
       weatherData,
+      handleSavingTripToDB,
     } = this.props;
 
     return (
@@ -76,7 +77,7 @@ class SidebarMain extends Component {
               weatherData={this.props.weatherData}
             />
           </div>
-          <button>Save trip</button>
+          <button onClick={this.props.handleSavingTripToDB}>Save trip</button>
           <button>Reset</button>
 
         </div>
