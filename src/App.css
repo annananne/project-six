@@ -408,3 +408,12 @@ img:hover {
 .tab-content-shown {
   display: block !important;
 }
+
+/* BEGIN styles disable the link to the all trips */
+.disabled-link-to-all-trips {
+  pointer-events: none;
+}
+.disabled-link-to-all-trips .second-circle {
+  background-color: #DDD;
+}
+/* END styles disable the link to the all trips */

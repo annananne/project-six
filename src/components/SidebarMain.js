@@ -77,8 +77,16 @@ class SidebarMain extends Component {
               weatherData={this.props.weatherData}
             />
           </div>
-          <button onClick={this.props.handleSavingTripToDB}>Save trip</button>
-          <button>Reset</button>
+          <button
+            onClick={this.props.handleSavingTripToDB}
+          >
+            Save trip
+          </button>
+          <button
+            onClick={this.props.handleReset}
+          >
+            Reset
+          </button>
 
         </div>
 

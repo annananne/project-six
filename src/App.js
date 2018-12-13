@@ -110,7 +110,10 @@ class App extends Component {
   };
 
   saveTripToDB = () => {
-    alert('save trip to db runs');
+    alert('trip successfully saved!');
+    if (this.props.user === null) {
+      return;
+    }
     const tripInfo = {
       origin: this.state.originData,
       destination: this.state.destinationData,
@@ -358,11 +361,26 @@ class App extends Component {
   };
 
   handleReset = () => {
+    // alert('reset handle run');
     this.setState({
+      hasUserSubmitted: false,
       originData: {},
       destinationData: {},
-      hasUserSubmitted: false,
-      weatherResults: []
+      // new
+      directions: null,
+      tripData: null,
+      // reset it to not deal with issue of inability 
+      // to request google maps directions for
+      // time in the past
+      originDateTimeInSec: new Date().getTime() / 1000,
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      destinationDateTime: "",
+      weatherRequestInfo: {},
+      weatherResults: [],
+      receivedAllWeatherData: false,
+      isLabelVisible: [
+        false, false, false, false, false
+      ],
     });
   };
 

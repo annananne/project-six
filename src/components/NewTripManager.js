@@ -29,6 +29,8 @@ const NewTripManager = props => {
 
       // handler for saving trips to db
       handleSavingTripToDB={props.handleSavingTripToDB}
+
+      handleReset={props.handleReset}
       
     />
   ) : (
