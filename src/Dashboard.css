@@ -1,6 +1,7 @@
-/* Dashboard.js STYLING */
 .dashboard {
   background: var(--lightText);
+  height: 80vh;
+  min-height: 650px;
 }
 
 .circles {
