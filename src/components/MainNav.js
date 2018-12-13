@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const MainNav = (props) => {
-  return <div>
+  return <div className="MainNav">
     {props.user ? (
       <button className="button" onClick={props.logOut}>
         Log Out
@@ -10,9 +10,9 @@ const MainNav = (props) => {
     ) : (
         <button className="button" onClick={props.logIn}>
           Log In
-              </button>
+        </button>
       )}
-    <Link to="/dashboard">Home</Link>
+    <Link className="button home-button" to="/dashboard">Home</Link>
   </div>
 }
 
