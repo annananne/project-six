@@ -1,14 +1,20 @@
-.main-title {
-  color: var(--lightText);
-  font-weight: 700;
-  margin: 0;
-}
-
-.main-slogan {
+.login-page p {
   color: var(--lightText);
   font-size: 2rem;
   text-transform: uppercase;
-  letter-spacing: 0.15rem;
+  letter-spacing: 0.2rem;
   font-weight: bold;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
+}
+
+.login-page .wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-page .button {
+  display: block;
+  margin: 5rem auto 0.75rem;
 }

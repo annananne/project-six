@@ -32,6 +32,8 @@ body {
   font-family: var(--bodyFont);
   background: var(--backgroundColor);
   font-size: 1.6rem;
+  height: 100vh;
+  min-height: 650px;
 }
 
 img {
@@ -41,15 +43,20 @@ img {
 
 h1 {
   font-family: var(--headerFont);
+  color: var(--lightText);
   font-size: 12rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 h2 {
   font-size: 9rem;
+  font-family: var(--headerFont);
+  color: var(--backgroundColor);
 }
 
 h3 {
-  font-size: 7rem;
+  font-size: 6rem;
   font-family: var(--headerFont);
   color: var(--backgroundColor);
 }
@@ -66,9 +73,15 @@ a {
   display: none;
 }
 
+.wrapper {
+  width: 80%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
     /* button styling */
 .button {
-  padding: 15px 30px;
+  padding: 1.5rem 3rem;
   background: var(--accentColor);
   border-radius: 40px;
   color: var(--backgroundColor);
@@ -95,111 +108,15 @@ a {
   color: var(--lightText);
   background: none;
   border: none;
-  border-bottom: 1.5px solid var(--lightText);
+  border-bottom: 1px solid var(--lightText);
   text-align: center;
+  padding: 1rem 0 0.25rem;
 }
 
-/* Dashboard.js STYLING */
-.dashboard {
-  background: var(--lightText);
+.link:hover {
+  color: var(--accentColor);
+  border-bottom: 1px solid var(--accentColor);
 }
-
-.circles {
-  background: var(--lightBlueShade);
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  padding-top: 180px;
-  position: absolute;
-  top: 25%;
-  transform: translateY(-50%);
-}
-
-.circles:hover {
-  background: var(--accentColor);
-}
-
-.first-circle {
-  float: left;
-  left: 25%;
-  transform: translateX(-50%);
-}
-
-.second-circle {
-  float: right;
-  left: 75%;
-  transform: translateX(-50%);
-}
-
-.start-trip, .all-trips {
-  font-size: 2rem;
-  color: var(--backgroundColor);
-}
-
-
-.travel-passport {
-  padding-left: 4rem;
-  /* margin-left: 4rem; */
-}
-
-@media only screen and (max-width: 1070px) {
-  .dashboard-wrapper {
-    width: 800px;
-  }
-
-  .circles {
-    width: 300px;
-    height: 300px;
-  }
-} 
-
-@media only screen and (max-width: 700px) {
-  .dashboard-wrapper {
-    width: 600px;
-  }
-
-  .circles {
-    width: 300px;
-    height: 300px;
-  }
-
-  .first-circle {
-    display: block;
-  }
-
-  .second-circle {
-    display: block;
-    float: none;
-  }
-} 
-
-/* FOR FUN: Add a circle that moves around the circles lol */
-
-.circle-fun { 
-  width:100px; 
-  height:100px;
-  border-radius: 50%;
-  transform-origin:200% center; position:relative; 
-  animation:rotate 5s linear infinite; 
-  z-index: -1;
-}
-
-.circle-fun:before { 
-  content:''; 
-  position:absolute; 
-  height:100%; 
-  width:100%; 
-  border-radius: 50%;
-  background: var(--accentColor); 
-  animation:rotate 5s linear reverse infinite; 
-}
-
-@keyframes rotate { 100% { transform:rotate(-360deg); } }
-
-.clockwise {
-  animation:clockwise 5s linear infinite; 
-}
-@keyframes clockwise { 100% { transform:rotate(360deg); } }
 
 
 /* NewTripForm.js STYLING */

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 import "./LoginPage.css";
+import "./Dashboard.css";
 import ReactDependentScript from "react-dependent-script";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
@@ -87,16 +88,23 @@ class App extends Component {
   }
 
   // function to login
-  logIn = () => {
-    auth.signInWithPopup(provider).then(result => {
-      console.log(result);
-      this.setState(
-        {
-          user: result.user,
-          guest: false
-        }
-      );
-    });
+  logIn = (e) => {
+    if (e.target.id === 'guest') {
+      this.setState({
+        guest: true
+      })
+    } else {
+      auth.signInWithPopup(provider).then(result => {
+        console.log(result);
+        this.setState(
+          {
+            user: result.user,
+            guest: false
+          }
+        );
+      });
+    }
+    
   };
 
   // function to logout
@@ -104,7 +112,7 @@ class App extends Component {
     auth.signOut().then(() => {
       this.setState({
         user: null,
-        guest: null
+        guest: false
       });
     });
   };
@@ -411,10 +419,6 @@ class App extends Component {
     });
   };
 
-  handleDirClick = e => {
-    console.log("i am clicked");
-  };
-
   continueAsGuest = () => {
     this.setState({
       guest: true
@@ -424,7 +428,8 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-        <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut}/>
+        {this.state.user !== null || this.state.guest === true && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut}/>
+        }
         {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
 
         {/* {this.state.user ?
@@ -443,7 +448,14 @@ class App extends Component {
         <div>
           {this.state.user && <Redirect to="/dashboard" />}
           {this.state.guest && <Redirect to="/dashboard" />}
-          <Route exact path="/" component={LoginPage} />
+            <Route exact path="/" render={props => (
+              <LoginPage
+                {...props}
+                user={this.state.user}
+                guest={this.state.guest}
+                logIn={this.logIn}
+              />
+            )}/>
           <Route
             path="/dashboard"
             render={props => (
