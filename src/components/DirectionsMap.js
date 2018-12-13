@@ -266,6 +266,8 @@ const MapWithADirectionsRenderer = compose(
               weatherData={props.weatherResults}
               // handler for saving trips to db
               handleSavingTripToDB={props.handleSavingTripToDB}
+              // for reset
+              handleReset={props.handleReset}
             />
         
             {/* OLD VERSION: COMMENTED OUT */}

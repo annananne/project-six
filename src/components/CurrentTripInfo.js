@@ -24,6 +24,8 @@ class CurrentTripInfo extends Component {
 
           // handler for saving trips to db
           handleSavingTripToDB={this.props.handleSavingTripToDB}
+
+          handleReset={this.props.handleReset}
         />
       </div>
     );
