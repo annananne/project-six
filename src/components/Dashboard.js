@@ -4,7 +4,11 @@ import { Link, Switch } from "react-router-dom";
 import car from "../assets/car.svg";
 import travel from "../assets/travel.svg";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
+  const {
+    user,
+  } = props;
+
   return <div className="dashboard">
       <div className="dashboard-wrapper clearfix">
         <h2>Dashboard</h2>
@@ -16,7 +20,7 @@ const Dashboard = () => {
             </div>
           </Link>
 
-          <Link to="/alltrips">
+          <Link to="/alltrips" className={user === null ? 'disabled-link-to-all-trips' : ''}>
             <div className="second-circle circles">
               <img className="travel-passport" src={travel} attribution="Travel by Chanut is Industries from the Noun Project" alt="An image of a passport." />
               <p className="all-trips">See all trips</p>
