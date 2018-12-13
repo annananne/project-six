@@ -6,7 +6,6 @@ import React from "react";
 //   return sum / arr.length;
 // }
 
-
 const findWeatherAverage = (measurementType, weatherArr) => {
   const sum = weatherArr.reduce((sum, item) => {
     return sum + item[measurementType];
@@ -135,7 +134,7 @@ const SidebarOverview = (props) => {
         </p>
       </div>
       
-      <div className="weather-record">
+      {/* <div className="weather-record">
         <p className="weather-special-title">Weather summary by point:</p>
         {
           currentWeather.map((item, i) => {
@@ -147,7 +146,7 @@ const SidebarOverview = (props) => {
             )
           })
         }
-      </div>
+      </div> */}
     </div>
   )
 }
