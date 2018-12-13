@@ -39,6 +39,7 @@ class SidebarMain extends Component {
       routeIndex, // for directions
       weatherData,
       handleSavingTripToDB,
+      user,
     } = this.props;
 
     return (
@@ -78,9 +79,10 @@ class SidebarMain extends Component {
             />
           </div>
           <button
+            disabled={user === null}
             onClick={this.props.handleSavingTripToDB}
           >
-            Save trip
+            { user !== null ? 'Save trip' : 'Log in to save trip' }
           </button>
           <button
             onClick={this.props.handleReset}

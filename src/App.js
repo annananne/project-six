@@ -487,6 +487,10 @@ class App extends Component {
 
                 // new
                 handleSavingTripToDB={this.saveTripToDB}
+
+                // new (used for disabling the save trip button)
+                user={this.state.user}
+
               />
             )}
           />

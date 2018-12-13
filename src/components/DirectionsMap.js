@@ -268,6 +268,9 @@ const MapWithADirectionsRenderer = compose(
               handleSavingTripToDB={props.handleSavingTripToDB}
               // for reset
               handleReset={props.handleReset}
+
+              // user
+              user={props.user}
             />
         
             {/* OLD VERSION: COMMENTED OUT */}
