@@ -428,7 +428,8 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} />
+          { window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} />
+          }
         {/* {this.state.user !== null || this.state.guest === true && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut}/>
         } */}
         {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
