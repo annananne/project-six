@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 import "./LoginPage.css";
+import "./Dashboard.css";
 import ReactDependentScript from "react-dependent-script";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
@@ -87,16 +88,23 @@ class App extends Component {
   }
 
   // function to login
-  logIn = () => {
-    auth.signInWithPopup(provider).then(result => {
-      console.log(result);
-      this.setState(
-        {
-          user: result.user,
-          guest: false
-        }
-      );
-    });
+  logIn = (e) => {
+    if (e.target.id === 'guest') {
+      this.setState({
+        guest: true
+      })
+    } else {
+      auth.signInWithPopup(provider).then(result => {
+        console.log(result);
+        this.setState(
+          {
+            user: result.user,
+            guest: false
+          }
+        );
+      });
+    }
+    
   };
 
   // function to logout
@@ -411,10 +419,6 @@ class App extends Component {
     });
   };
 
-  handleDirClick = e => {
-    console.log("i am clicked");
-  };
-
   continueAsGuest = () => {
     this.setState({
       guest: true
@@ -443,7 +447,14 @@ class App extends Component {
         <div>
           {this.state.user && <Redirect to="/dashboard" />}
           {this.state.guest && <Redirect to="/dashboard" />}
-          <Route exact path="/" component={LoginPage} />
+            <Route exact path="/" render={props => (
+              <LoginPage
+                {...props}
+                user={this.state.user}
+                guest={this.state.guest}
+                logIn={this.logIn}
+              />
+            )}/>
           <Route
             path="/dashboard"
             render={props => (

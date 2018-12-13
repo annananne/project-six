@@ -1,12 +1,14 @@
 import React from "react";
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   return (
-    <div>
-      <h1 className="main-title">Wayfarer</h1>
-      <p className="main-slogan">Plan Your Perfect Trip.</p>
-      <button class="button">Login</button>
-      <button class="link">Continue as guest</button>
+    <div className="login-page">
+    <div className="wrapper">
+      <h1>Wayfarer</h1>
+      <p>Plan your perfect trip.</p>
+      <button className="button" onClick={props.logIn}>Log In</button>
+      <button className="link" onClick={props.logIn} id="guest">Continue as a guest</button>
+    </div>
     </div>
   )
 }
