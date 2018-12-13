@@ -320,33 +320,71 @@ img:hover {
 }
 
 /* TripList.js STYLING */
+
+
 .alltrips-wrapper {
   background: #F2F2F2;
   height: 100vh;
 }
 
-.mockInput {
-  font-size: 1.5rem;
+.alltrips-heading {
+  padding-top: 30px;
+  margin-bottom: 10px;
+  font-size: 5rem;
 }
 
 .display-trips {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   max-width: 1000px;
   margin: 0 auto;
+  height: 600px;
+}
+
+.display-trips ul {
+  height: 600px;
+  overflow-y: scroll;
 }
 
 .trip-items {
   list-style-type: none;
-  width: 70%;
+  width: 90%;
   background: var(--lightBlueShade);
   border: 1px solid var(--lightBlueShade);
   margin: 20px auto;
   line-height: 1px;
+  /* padding: 0 10px; */
+  padding-top: 20px;
+  padding-bottom: 25px;
+
+  
+}
+
+.trip-items p {
+  width: 90%;
+  margin: 30px auto;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  text-align: left;
+  font-weight: normal;
+}
+
+.trip-items p span {
+  width: 200px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.trip-items-content {
+  width: 75%;
+  float: left;
 }
 
 .remove-btn{
   margin-bottom: 10px;
+  margin-right: 10px;
+  float: right;
 }
+
 
 #right-panel {
   width: 35%;
@@ -389,6 +427,7 @@ img:hover {
 
 .SidebarOverview h2 {
   color: white;
+  font-size: 4rem;
 }
 
 .SidebarOverview .weather-record p {

@@ -33,9 +33,10 @@ class TripList extends Component {
     // console.log(listOfTrips);
 
     return (
-      <div class="alltrips-wrapper clearfix">
+      // <div class="alltrips-wrapper clearfix">
+        <div class="alltrips-wrapper">
         <header>
-          <h3>All Trips!</h3>
+          <h3 className="alltrips-heading">All Trips!</h3>
         </header>
 
         <section className="display-trips">
@@ -45,17 +46,20 @@ class TripList extends Component {
               const displayDateTime = moment(trip.originDateTime).format('DD MMM YYYY, HH:MM');
 
               return (
-                <li className="trip-items" key={tripKey}>
+                <li className="trip-items clearfix" key={tripKey}>
                   {/* <h4>{item[1].title}</h4> */}
-                  <p>Origin: {trip.origin.address}</p>
-                  <p>Destination: {trip.destination.address}</p>
-                  <p>Date Time of Origin: {displayDateTime}</p>
+                  <div className="trip-items-content">
+                    <p><span>Origin: </span>{trip.origin.address}</p>
+                    <p><span>Destination: </span>{trip.destination.address}</p>
+                    {/* Date Time of Origin: */}
+                    <p><span>Departure Time: </span>{displayDateTime}</p>
+                  </div>
                   <button 
                     className="remove-btn button"
                     id={tripKey}
                     onClick={this.removeTrip}
                   >
-                    Remove Trip!
+                    Remove
                   </button>
                 </li>
               );
