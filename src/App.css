@@ -101,6 +101,10 @@ a {
   transition: 0.2s all ease;
 }
 
+.home-button {
+  margin-left: 20px;
+}
+
 .link {
   font-weight: 700;
   letter-spacing: 0.025rem;
@@ -118,6 +122,11 @@ a {
   border-bottom: 1px solid var(--accentColor);
 }
 
+
+.MainNav {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
 
 /* NewTripForm.js STYLING */
 
@@ -234,6 +243,13 @@ img:hover {
   background: var(--lightBlueShade);
   border: none;
   border-bottom: 1px solid var(--backgroundColor)
+}
+
+
+/* Dashboard */
+.dashboard h2 {
+  /* margin: 30px auto; */
+  /* font-size: 5rem; */
 }
 
 /* TripList.js STYLING */
