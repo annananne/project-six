@@ -88,34 +88,20 @@ a {
   transition: 0.2s all ease;
 }
 
-/* LOGIN PAGE */
-
-.main-title {
-  color: var(--lightText);
+.link {
   font-weight: 700;
-  margin: 0;
-}
-
-.main-slogan {
+  letter-spacing: 0.025rem;
+  display: inline-block;
   color: var(--lightText);
-  font-size: 2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15rem;
-  font-weight: bold;
-  margin: 2rem 0;
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid var(--lightText);
+  text-align: center;
 }
 
 /* Dashboard.js STYLING */
 .dashboard {
   background: var(--lightText);
-}
-
-.dashboard-wrapper {
-  position: relative;
-  width: 1000px;
-  height: 100vh;
-  margin: 0 auto;
-  margin-top: 50px;
 }
 
 .circles {

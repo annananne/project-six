@@ -84,7 +84,7 @@ class NewTripForm extends Component {
               </fieldset>
 
               {/* <Link to="/tripdetails"> */}
-                <input className="button" type="submit" value="Get recommendation" />
+                <input className="button" type="submit" value="Let's go" />
               {/* </Link> */}
 
               {/* <input type="submit" value="Get recommendation" /> */}
