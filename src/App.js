@@ -110,7 +110,10 @@ class App extends Component {
   };
 
   saveTripToDB = () => {
-    alert('save trip to db runs');
+    alert('trip successfully saved!');
+    if (this.props.user === null) {
+      return;
+    }
     const tripInfo = {
       origin: this.state.originData,
       destination: this.state.destinationData,
