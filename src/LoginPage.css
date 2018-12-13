@@ -1,0 +1,14 @@
+.main-title {
+  color: var(--lightText);
+  font-weight: 700;
+  margin: 0;
+}
+
+.main-slogan {
+  color: var(--lightText);
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  font-weight: bold;
+  margin: 2rem 0;
+}
