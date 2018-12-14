@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import '../styles/DateTimeInput.css';
 
+//Component begins
 class DateTimeInput extends Component {
   render() {
     return(

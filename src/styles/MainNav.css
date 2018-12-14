@@ -1,0 +1,44 @@
+.mainNav {
+  background: var(--backgroundColor);
+  padding: 1.5rem 0;
+  margin: 0;
+  height: 75px;
+}
+
+.mainNav h1 {
+  color: var(--lightText);
+  font-size: 4rem;
+  float: left;
+  line-height: 1.1;
+  text-align: left;
+}
+
+.mainNav h1:hover {
+  color: var(--accentColor);
+}
+
+.mainNav-right {
+  float: right;
+}
+
+.mainNav .link {
+  display: block;
+  border-bottom: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  float: left;
+  text-align: right;
+  padding: 0;
+  margin-right: 2rem;
+  font-size: 1.3rem;
+}
+
+.mainNav .link:hover {
+  color: var(--lightText);
+}
+
+.mainNav .button {
+  float: left;
+  padding: 1rem 2rem;
+  font-size: 1.3rem;
+}

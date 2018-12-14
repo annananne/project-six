@@ -1,0 +1,82 @@
+.new-trip-form {
+  background: var(--lightBlueShade);
+}
+
+.image {
+  background: url('../assets/mockImage.jpg');
+  background-position: bottom left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 0;
+}
+
+.image:hover {
+  filter: grayscale(10);
+}
+/* 
+.font-awesome {
+  float: left;
+  width: 20px;
+  margin-top: 1rem;
+  margin-right: 10px;
+  color: var(--backgroundColor);
+}
+
+.icon {
+  margin-top: 10px;
+  font-size: 2rem;
+  width: 100%;
+}
+
+.circle {
+  font-size: 1.5rem;
+  margin-left: 1px;
+}
+
+.dotdots {
+  margin-left: 5px;
+}
+
+.markymark {
+  margin-left: 1px;
+}
+
+.circle:hover, .markymark:hover {
+  color: var(--accentColor);
+}
+
+.location-search-input-wrapper {
+  margin: 0 3rem;
+}
+
+#originData, #destinationData {
+  background: var(--lightBlueShade);
+  font-size: 3rem;
+  border: none;
+  border-bottom: 1px solid var(--backgroundColor);
+  margin: 15px 0;
+}
+
+fieldset {
+  display: block;
+  border: none;
+}
+
+fieldset label {
+  margin-left: 1rem;
+}
+
+.transportation {
+  list-style: none;
+  letter-spacing: 1px;
+}
+
+.avoid-mode {
+  font-size: 2rem;
+  margin-bottom: 20px;
+} */
+
+
+
+

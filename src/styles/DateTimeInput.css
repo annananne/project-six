@@ -1,0 +1,14 @@
+.date-time {
+  /* margin-left: 23px; */
+  margin-top: 20px;
+}
+
+.date-time label {
+  margin-right: 10px;
+}
+
+#date-time-input {
+  background: var(--lightBlueShade);
+  border: none;
+  border-bottom: 1px solid var(--backgroundColor)
+}

@@ -1,7 +1,7 @@
 import React from "react";
 
+//Component begins
 const SidebarDirections = (props) => {
-  // return <p>Hello</p>
   function createMarkup(instruction) {
     return { __html: instruction };
   }

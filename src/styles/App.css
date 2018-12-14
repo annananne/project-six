@@ -33,7 +33,7 @@ body {
   font-family: var(--bodyFont);
   background: var(--backgroundColor);
   font-size: 1.6rem;
-  height: 100vh;
+  height: calc(100vh - 70px);
   min-height: 650px;
 }
 
@@ -48,16 +48,23 @@ h1 {
   font-size: 12rem;
   font-weight: 700;
   margin: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
 }
 
 h2 {
-  font-size: 9rem;
+  font-size: 6rem;
+  text-align: left;
   font-family: var(--headerFont);
   color: var(--backgroundColor);
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin:4rem 0 1rem;
 }
 
 h3 {
   font-size: 6rem;
+  text-align: left;
   font-family: var(--headerFont);
   color: var(--backgroundColor);
 }
@@ -68,6 +75,10 @@ h4 {
 
 a {
   text-decoration: none;
+}
+
+ul {
+  padding: 0;
 }
 
 .no-display {
@@ -91,7 +102,7 @@ a {
   cursor: pointer;
   font-family: var(--bodyFont);
   text-transform: uppercase;
-  letter-spacing: 0.25rem;
+  letter-spacing: 0.2rem;
   border: 2px solid var(--accentColor);
   transform: scale(1);
   transition: 0.2s all ease;
@@ -103,7 +114,38 @@ a {
 }
 
 .home-button {
-  margin-left: 20px;
+  display: block;
+  z-index: 100;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 2rem 0 0;
+  transform: translateX(0);
+  transition: 0.2s ease all;
+}
+
+.home-button:hover {
+  transform: translateX(-0.1rem);
+  transition: 0.2s ease all;
+}
+
+.home-button p {
+  float: left;
+  margin: 0.75rem 0;
+  margin-left: 1rem;
+  font-size: 1.4rem;
+}
+
+.home-button .icon {
+  float: left;
+  padding: 0;
+  margin: 1rem 0;
+  font-size: 1.4rem;
+}
+
+.home-button:hover p,
+.home-button:hover .icon {
+  opacity: 0.9;
 }
 
 .link {
@@ -123,268 +165,30 @@ a {
   border-bottom: 1px solid var(--accentColor);
 }
 
-
-.MainNav {
-  padding-top: 10px;
-  padding-bottom: 20px;
+.thin-text {
+  font-weight: 400;
 }
 
-/* NewTripForm.js STYLING */
-
-.main-wrapper {
-  background: var(--lightBlueShade);
-  max-width: 1600px;
-  height: 100vh;
+.half-section {
+  width: 50%;
+  float: left;
+  height: calc(100vh - 70px);
   text-align: left;
 }
 
-/* @media only screen and (max-width: 1070px) {
-  .main-wrapper {
-    
-  }
-} */
-
-.newtripform-wrapper {
-  padding: 4rem 0 0 7rem ;
-  width: 50%;
-  float: left;
-} 
-
-.font-awesome {
-  float: left;
-  width: 20px;
-  /* border: 1px solid red; */
-  margin-top: 1rem;
-  margin-right: 10px;
-  color: var(--backgroundColor);
-}
-
-
-.icon {
-  /* border: 1px solid blue; */
-  margin-top: 10px;
-  font-size: 2rem;
-  width: 100%;
-}
-
-.circle {
-  font-size: 1.5rem;
-  margin-left: 1px;
-}
-
-.dotdots {
-  margin-left: 5px;
-}
-
-.markymark {
-  margin-left: 1px;
-}
-
-.circle:hover, .markymark:hover {
-  color: var(--accentColor);
-}
-
-.location-search-input-wrapper {
-  margin: 0 3rem;
-}
-
-#originData, #destinationData {
-  background: var(--lightBlueShade);
-  font-size: 3rem;
-  border: none;
-  border-bottom: 1px solid var(--backgroundColor);
-  margin: 15px 0;
-}
-
-fieldset {
-  display: block;
-  border: none;
-}
-
-fieldset label {
-  margin-left: 1rem;
-}
-
-.transportation {
-  list-style: none;
-  /* margin: 0;
-  padding: 0;
-  overflow: auto; */
-  letter-spacing: 1px;
-}
-
-.avoid-mode {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-img {
-  width: 50%;
-  float: right;
-  height: 100%;
-  object-fit: cover;
-}
-
-img:hover {
-  filter: grayscale(10);
-}
-
-/* DateTimeInput.js STYLING */
-
-.date-time {
-  /* margin-left: 23px; */
-  margin-top: 20px;
-}
-
-.date-time label {
-  margin-right: 10px;
-}
-
-#date-time-input {
-  background: var(--lightBlueShade);
-  border: none;
-  border-bottom: 1px solid var(--backgroundColor)
-}
-
-
-/* Dashboard */
-.dashboard h2 {
-  /* margin: 30px auto; */
-  /* font-size: 5rem; */
-}
-
-/* TripList.js STYLING */
-
-
-.alltrips-wrapper {
-  background: #F2F2F2;
-  height: 100vh;
-}
-
-.alltrips-heading {
-  padding-top: 30px;
-  margin-bottom: 10px;
-  font-size: 5rem;
-}
-
-.display-trips {
-  /* border: 1px solid red; */
-  max-width: 1000px;
-  margin: 0 auto;
-  height: 600px;
-}
-
-.display-trips ul {
-  height: 600px;
-  overflow-y: scroll;
-}
-
-.trip-items {
-  list-style-type: none;
-  width: 90%;
-  background: var(--lightBlueShade);
-  border: 1px solid var(--lightBlueShade);
-  margin: 20px auto;
-  line-height: 1px;
-  /* padding: 0 10px; */
-  padding-top: 20px;
-  padding-bottom: 25px;
-}
-
-.trip-items p {
-  width: 90%;
-  margin: 30px auto;
-  font-size: 2rem;
-  margin-bottom: 25px;
-  text-align: left;
-  font-weight: normal;
-}
-
-.trip-items p span {
-  width: 200px;
-  display: inline-block;
-  font-weight: bold;
-}
-
-.trip-items-content {
-  width: 75%;
-  float: left;
-}
-
-.remove-btn{
-  margin-bottom: 10px;
-  margin-right: 10px;
-  float: right;
-}
-
-
-#right-panel {
-  width: 35%;
-  float: left;
-  /* display: block; */
-  background: white;
-  height: 96.5vh;
-  min-height: 625px;
-  overflow: scroll;
-  border:none;
-  font-family: 'Cabin', sans-serif;
-}
-/* Sidebar Main */
-
-.SidebarMain .tab-container {
-  padding-top: 30px;
-}
-
-.SidebarMain .sidebar-tab-button {
-  margin: 20px;
-}
-
-/*
-.SidebarMain .sidebar-tab-button {
-  padding: 10px;
-  font-size: 2rem;
-  background: white;
-  color: var(--backgroundColor);
+.blue-btn {
+  background: none;
   border: 2px solid var(--backgroundColor);
+  display: block;
+  float: left;
+  transform: scale(1);
+  margin: 6.5rem 0 0 4rem;
+  padding: 1rem 2rem;
+  font-size: 1.3rem;
 }
 
-.SidebarMain .sidebar-tab-button:active,
-.SidebarMain .sidebar-tab-button:hover {
+.blue-btn:hover {
+  transform: scale(1);
   background: var(--backgroundColor);
-  color: white;
+  color: var(--lightText);
 }
-*/
-
-/* Sidebar Overview */
-
-.SidebarOverview h2 {
-  color: white;
-  font-size: 4rem;
-}
-
-.SidebarOverview .weather-record p {
-  color: white;
-  font-size: 2rem;
-}
-
-.weather-special-title {
-  font-weight: bold;
-}
-
-/* SIDEBAR MAIN */
-.tab-content {
-  display: none;
-}
-
-.tab-content-shown {
-  display: block !important;
-}
-
-/* BEGIN styles disable the link to the all trips */
-.disabled-link-to-all-trips {
-  pointer-events: none;
-}
-.disabled-link-to-all-trips .second-circle {
-  background-color: #DDD;
-}
-/* END styles disable the link to the all trips */

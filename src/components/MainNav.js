@@ -1,11 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+//Component begins
 const MainNav = (props) => {
-  return <div className="mainNav">
+  return <div className="mainNav section">
   <div className="wrapper clearfix">
-    <h1>Wayfarer</h1>
-      {window.location.pathname !== '/dashboard' && <Link className="button home-button" to="/dashboard">Home</Link>}
+      <Link to="/dashboard">
+        <h1>Wayfarer</h1>
+      </Link>
+    <div className="mainNav-right">
+      <p className="link"><span className="thin-text">Hello, </span>{props.user ? props.user.displayName : 'guest' }</p>
     {props.user ? (
       <button className="button" onClick={props.logOut}>
         Log Out
@@ -15,7 +19,7 @@ const MainNav = (props) => {
           Log In
         </button>
       )}
-      
+      </div>
   </div>
   </div>
 }

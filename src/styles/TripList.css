@@ -1,0 +1,119 @@
+.tripList h2 {
+  clear: both;
+}
+
+/* .tripList .home-button {
+  display: inline;
+  text-align: left;
+} */
+
+.display-trips {
+  /* border: 1px solid red; */
+  max-width: 1080px;
+  margin: 0 auto 3rem;
+  height: 600px;
+  position: relative;
+}
+
+.display-trips ul {
+  display: block;
+  height: 600px;
+  padding: 3rem;
+  overflow-y: scroll;
+}
+
+.trip-title {
+  padding-bottom: 1rem;
+  margin-left: 3rem;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.trip-icon {
+  height: 120px;
+  float: left;
+  margin: 0 5rem 0 0;
+  padding-top: 0.65rem;
+}
+
+.trip-details {
+  float: left;
+}
+
+.trip-items {
+  opacity: 0.9;
+  list-style-type: none;
+  width: 100%;
+  margin: 20px auto;
+  line-height: 1px;
+  padding: 2rem 0.5rem 2.5rem;
+  border-radius: 2px;
+  background: #eaeaea;
+  box-shadow: 2px 2px rgba(221, 221, 221, 0.75);
+  transform: scale(1);
+  transition: 0.25s all ease-in-out;
+}
+
+.trip-items:hover {
+  opacity: 1;
+  transform: scale(1.025);
+  transition: 0.25s all ease-in-out;
+}
+
+.trip-items p {
+  width: 100%;
+  margin: 30px auto;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  text-align: left;
+  font-weight: normal;
+}
+
+.trip-items p span {
+  width: 150px;
+  display: inline-block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  letter-spacing: 0.15rem;
+  color: var(--backgroundColor);
+  opacity: 0.9;
+}
+
+.trip-items-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.remove-btn {
+  display: block;
+  margin-right: 1.5rem;
+  padding: 0;
+  float: right;
+  background: none;
+  transition: 0.25s all ease-in-out;
+  transform: scale(1);
+  transform: rotate(0);
+  border: none;
+  border-radius: none;
+}
+
+.remove-btn:hover {
+  opacity: 0.5;
+  transition: 0.25s all ease-in-out;
+  transform: scale(1);
+  transform: rotate(90deg);
+}
+
+.remove-btn .icon {
+  font-size: 1.8rem;
+}
+
+.tripList .blue-btn {
+  float: none;
+  margin: 3rem auto 1rem;
+  display: block;
+  clear: both;
+  padding: 1rem 4rem;
+}

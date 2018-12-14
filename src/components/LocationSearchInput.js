@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-// import PlacesAutocomplete from 'react-places-autocomplete';
 import PlacesAutocomplete from './PlacesAutocomplete';
 import {
   geocodeByAddress,
   getLatLng
 } from "react-places-autocomplete";
 
+//Component begins
 class LocationSearchInput extends Component {
   render() {
     return <PlacesAutocomplete id={this.props.id} value={this.props.address} onChange={this.props.handleChange} onSelect={this.props.handleSelect}>

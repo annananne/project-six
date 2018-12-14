@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./App.css";
-import "./LoginPage.css";
-import "./MainNav.css";
-import "./Dashboard.css";
+import "./styles/App.css";
+import "./styles/LoginPage.css";
+import "./styles/MainNav.css";
+import "./styles/Dashboard.css";
 import ReactDependentScript from "react-dependent-script";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
@@ -105,7 +105,7 @@ class App extends Component {
         );
       });
     }
-    
+
   };
 
   // function to logout
@@ -119,11 +119,13 @@ class App extends Component {
   };
 
   saveTripToDB = () => {
-    alert('trip successfully saved!');
+    const tripName = window.prompt("Please enter a name for your trip.");
+    alert('Trip successfully saved!');
     if (this.props.user === null) {
       return;
     }
     const tripInfo = {
+      title: tripName,
       origin: this.state.originData,
       destination: this.state.destinationData,
       originDateTime: this.state.originDateTime
@@ -429,28 +431,11 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          { window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} />
+          {window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} />
           }
-        {/* {this.state.user !== null || this.state.guest === true && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut}/>
-        } */}
-        {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
-
-        {/* {this.state.user ?
-            <div>
-              <div className="user-profile clearfix">
-                <img className="photoURL" src={this.state.user.photoURL} />
-              </div>
-              <p className="your-name">Hello, {this.state.user.displayName}!</p>
-              </div>
-            :
-              <div>
-                <p>You must be logged in to see.</p>
-              </div>
-          } */}
-
-        <div>
-          {this.state.user && <Redirect to="/dashboard" />}
-          {this.state.guest && <Redirect to="/dashboard" />}
+          <div>
+            {this.state.user && <Redirect to="/dashboard" />}
+            {this.state.guest && <Redirect to="/dashboard" />}
             <Route exact path="/" render={props => (
               <LoginPage
                 {...props}
@@ -458,65 +443,62 @@ class App extends Component {
                 guest={this.state.guest}
                 logIn={this.logIn}
               />
-            )}/>
-          <Route
-            path="/dashboard"
-            render={props => (
-              <Dashboard
-                {...props}
-                user={this.state.user}
-                guest={this.state.guest}
-              />
-            )}
-          />
-
-          {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
-
-          <Route
-            path="/newtrip"
-            render={props => (
-              <NewTripManager
-                {...props}
-                originData={this.state.originData}
-                destinationData={this.state.destinationData}
-                userTripPreferences={this.state.userTripPreferences}
-                userTripPreferences={this.state.userTripPreferences}
-                originDateTime={this.state.originDateTime}
-                saveSearchResults={this.saveSearchResults}
-                handleDirClick={this.handleDirClick}
-                handleMarkerClick={this.handleMarkerClick}
-                isLabelVisible={this.state.isLabelVisible}
-                markers={this.state.markers}
-                handleReset={this.handleReset}
-                handleSubmit={this.handleSubmit}
-                handleChange={this.handleChange}
-                handleSelect={this.handleSelect}
-                handleDateTimeChange={this.handleDateTimeChange}
-                handleRadioChange={this.handleRadioChange}
-                handleCheckboxChange={this.handleCheckboxChange}
-                weatherResults={this.state.weatherResults}
-                hasUserSubmitted={this.state.hasUserSubmitted} // new
-                receivedAllWeatherData={this.state.receivedAllWeatherData}
-                areDirectionsVisible={this.state.areDirectionsVisible}
-                handleSidebarChange={this.state.handleSidebarChange}
-
-                // new
-                handleSavingTripToDB={this.saveTripToDB}
-
-                // new (used for disabling the save trip button)
-                user={this.state.user}
-
-              />
-            )}
-          />
-          <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange} />} />
-          <Route path="/alltrips" render={() => (
-            <TripList
-              user={this.state.user}
-              listOfTrips={this.state.listOfTrips}
+            )} />
+            <Route
+              path="/dashboard"
+              render={props => (
+                <Dashboard
+                  {...props}
+                  user={this.state.user}
+                  guest={this.state.guest}
+                />
+              )}
             />
-          )} />
-        </div>
+            <Route
+              path="/newtrip"
+              render={props => (
+                <NewTripManager
+                  {...props}
+                  originData={this.state.originData}
+                  destinationData={this.state.destinationData}
+                  userTripPreferences={this.state.userTripPreferences}
+                  userTripPreferences={this.state.userTripPreferences}
+                  originDateTime={this.state.originDateTime}
+                  saveSearchResults={this.saveSearchResults}
+                  handleDirClick={this.handleDirClick}
+                  handleMarkerClick={this.handleMarkerClick}
+                  isLabelVisible={this.state.isLabelVisible}
+                  markers={this.state.markers}
+                  handleReset={this.handleReset}
+                  handleSubmit={this.handleSubmit}
+                  handleChange={this.handleChange}
+                  handleSelect={this.handleSelect}
+                  handleDateTimeChange={this.handleDateTimeChange}
+                  handleRadioChange={this.handleRadioChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  weatherResults={this.state.weatherResults}
+                  hasUserSubmitted={this.state.hasUserSubmitted} // new
+                  receivedAllWeatherData={this.state.receivedAllWeatherData}
+                  areDirectionsVisible={this.state.areDirectionsVisible}
+                  handleSidebarChange={this.state.handleSidebarChange}
+
+                  // new
+                  handleSavingTripToDB={this.saveTripToDB}
+
+                  // new (used for disabling the save trip button)
+                  user={this.state.user}
+
+                />
+              )}
+            />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange} />} />
+            <Route path="/alltrips" render={() => (
+              <TripList
+                user={this.state.user}
+                listOfTrips={this.state.listOfTrips}
+              />
+            )} />
+          </div>
         </div>
       </Router>
     );

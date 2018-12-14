@@ -1,12 +1,8 @@
-// receives data for both 
-// the Overview and the Directions
-// and manages the state 
-// to show one or another
 import React, { Component } from 'react';
-// import "./SidebarMain.css";
-import SidebarDirections from './SidebarDirections';
 import SidebarOverview from './SidebarOverview';
+import { Link } from "react-router-dom";
 
+//Component begins
 class SidebarMain extends Component {
   constructor() {
     super();
@@ -14,12 +10,6 @@ class SidebarMain extends Component {
       indexOfTabShown: 0,
     }
   }
-
-  // handleIndexChange = (i) => {
-  //   this.setState({
-  //     indexOfTabShown: i,
-  //   });
-  // }
 
   handleShowDirections = () => {
     this.setState({
@@ -89,6 +79,9 @@ class SidebarMain extends Component {
           >
             Reset
           </button>
+          <Link className="button home-button" to="/dashboard">
+            <p>Dashboard</p>
+          </Link>
 
         </div>
 
