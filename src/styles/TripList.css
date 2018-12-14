@@ -92,18 +92,14 @@
   padding: 0;
   float: right;
   background: none;
-  transition: 0.25s all ease-in-out;
   transform: scale(1);
-  transform: rotate(0);
   border: none;
   border-radius: none;
 }
 
 .remove-btn:hover {
   opacity: 0.5;
-  transition: 0.25s all ease-in-out;
   transform: scale(1);
-  transform: rotate(90deg);
 }
 
 .remove-btn .icon {

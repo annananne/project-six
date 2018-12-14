@@ -32,7 +32,10 @@ class TripList extends Component {
 
   removeTrip = (e) => {
     const tripID = e.target.id;
+    console.log(tripID);
     const tripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
+    // console.log(tripRef);
+    // const trip = tripRef.child(tripID);
 
     const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
     if (confirmation === true) {
@@ -59,6 +62,7 @@ class TripList extends Component {
           <section className="display-trips">
             <ul>
               {Object.keys(listOfTrips).map((tripKey) => {
+                console.log('list of trips', listOfTrips)
                 const trip = listOfTrips[tripKey];
                 const displayDateTime = moment(trip.originDateTime).format('DD MMM YYYY, HH:MM');
 
@@ -71,7 +75,8 @@ class TripList extends Component {
                       id={tripKey}
                       onClick={this.removeTrip}
                     >
-                      <FontAwesomeIcon icon="times" className="icon" />
+                      {/* <FontAwesomeIcon icon="times" className="icon" id={tripKey}/> */}
+                      Remove
                     </button>
                     <h3 className="trip-title">{trip.title}</h3>
                     <div className="trip-items-content clearfix">
