@@ -434,6 +434,30 @@ class App extends Component {
       guest: true
     });
   };
+
+  removeTrip = (e) => {
+    const tripID = e.target.id;
+    console.log(tripID);
+    const tripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
+    // console.log(tripRef);
+    // const trip = tripRef.child(tripID);
+
+    const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
+    if (confirmation === true) {
+      tripRef.remove();
+    }
+  };
+
+  changeActiveTrip = (e) => {
+    console.log(e.target.id);
+    const tripID = e.target.id;
+    const activeTripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
+
+    console.log(activeTripRef);
+
+    
+  }
+
   render() {
     return (
       <Router>
@@ -503,6 +527,7 @@ class App extends Component {
               <TripList
                 user={this.state.user}
                 listOfTrips={this.state.listOfTrips}
+                changeActiveTrip={this.changeActiveTrip}
               />
             )} />
           </div>

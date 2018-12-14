@@ -23,12 +23,12 @@ class LocationSearchInput extends Component {
                 const id = `${this.props.id}`;
                 // inline style for demonstration purpose
                 const style = suggestion.active ? { backgroundColor: "#fafafa", cursor: "pointer" } : { backgroundColor: "#ffffff", cursor: "pointer" };
-                return <div {...getSuggestionItemProps(suggestion, {
+                return <div className="div-test" {...getSuggestionItemProps(suggestion, {
                       className,
                       id,
                       style
                     })}>
-                    <span id={this.props.id}>{suggestion.description}</span>
+                    <span id={this.props.id} className="span-test">{suggestion.description}</span>
                   </div>;
               })}
             </div>

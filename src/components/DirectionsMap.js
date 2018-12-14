@@ -214,7 +214,7 @@ const MapWithADirectionsRenderer = compose(
               suppressInfoWindows={true}
               options={{
                 polylineOptions: {
-                  strokeColor: "#222449",
+                  strokeColor: "#f9d549",
                   strokeOpacity: 0.5,
                   strokeWeight: 6
                 },

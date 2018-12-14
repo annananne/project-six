@@ -67,54 +67,52 @@ const SidebarOverview = (props) => {
 
   return (
     <div className="SidebarOverview">
-      <h2>Weather Summary</h2>
-      
       <div className='weather-record'>
         <p>
-          <span>Avg Temperature : </span>
+          <span>Average temperature</span>
           {`${convertFtoC(findWeatherAverage('temperature', currentWeather))} °C`}
         </p>
       </div>
       <div className='weather-record'>
         <p>
-          <span>Feels Like: </span>
+          <span>Feels like</span>
           {`${convertFtoC(findWeatherAverage('apparentTemperature', currentWeather))} °C`}
         </p>
       </div>
       <div className='weather-record'>
         <p>
-          <span>Lowest temperature: </span>
+          <span>Lowest temperature</span>
           {`${convertFtoC(findMin('temperature', currentWeather))} °C`}
         </p>
       </div>
       <div className='weather-record'>
         <p>
-          <span>Highest Temperature: </span>
+          <span>Highest temperature</span>
           {`${convertFtoC(findMax('temperature', currentWeather))} °C`}
         </p>
       </div>
       
       <div className='weather-record'>
         <p>
-          <span>Wind Speed Avg: </span>
+          <span>Average wind speed</span>
           {`${convertMilesToKilometers(findWeatherAverage('windSpeed', currentWeather))} km/h`}
         </p>
       </div>
       <div className='weather-record'>
         <p>
-          <span>Visibility: </span>
+          <span>Average visibility</span>
           {`${convertMilesToKilometers(findWeatherAverage('visibility', currentWeather))} km` }
         </p>
       </div>
       <div className='weather-record'>
         <p>
-          <span>Avg Humidity: </span>
+          <span>Average humidity</span>
           {`${findWeatherAverage('humidity', currentWeather)*100}%`}
         </p>
       </div>
       <div className='weather-record'>
         <p>
-          <span>Avg Pressure: </span>
+          <span>Average pressure</span>
           {`${convertMillibarsToKPa(findWeatherAverage('pressure', currentWeather))} kPa`}
         </p>
       </div>
@@ -122,14 +120,14 @@ const SidebarOverview = (props) => {
       <div className='weather-record'>
         <p>
           {/* is this in percentage? */}
-          <span>Precip Probability Avg: </span>
+          <span>Average precip. probability</span>
           {`${findWeatherAverage('precipProbability', currentWeather)*100}%`}
         </p>
       </div>
       
       <div className='weather-record'>
         <p>
-          <span>UV Index: </span>
+          <span>Average UV index</span>
           {findWeatherAverage('uvIndex', currentWeather)}
         </p>
       </div>

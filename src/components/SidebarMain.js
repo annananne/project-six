@@ -37,12 +37,12 @@ class SidebarMain extends Component {
         {/* Container for buttons */}
         <div className="tab-container">
           <button
-            className="main-button sidebar-tab-button"
+            className={`tab-content ${this.state.indexOfTabShown === 0 ? 'selected main-button sidebar-tab-button option-label' : 'main-button sidebar-tab-button option-label'}`}
             onClick={this.handleShowDirections}
           >Directions
           </button>
           <button
-            className="main-button sidebar-tab-button"
+            className={`tab-content ${this.state.indexOfTabShown === 1 ? 'selected main-button sidebar-tab-button option-label' : 'main-button sidebar-tab-button option-label'}`}
             onClick={this.handleShowWeatherSummary}
           >Weather Summary
           </button>
@@ -68,21 +68,21 @@ class SidebarMain extends Component {
               weatherData={this.props.weatherData}
             />
           </div>
-          <button
+          
+          
+          </div>
+        <div className="footer-buttons">
+          <button className="button"
             disabled={user === null}
             onClick={this.props.handleSavingTripToDB}
           >
-            { user !== null ? 'Save trip' : 'Log in to save trip' }
+            {user !== null ? 'Save trip' : 'Log in to save trip'}
           </button>
-          <button
+          <button className="button"
             onClick={this.props.handleReset}
           >
             Reset
           </button>
-          <Link className="button home-button" to="/dashboard">
-            <p>Dashboard</p>
-          </Link>
-
         </div>
 
       </div>

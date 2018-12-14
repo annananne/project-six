@@ -100,6 +100,21 @@ fieldset input {
   color: var(--lightText);
 }
 
+.autocomplete-dropdown-container {
+  width: 50%;
+  margin-left: 13rem;
+}
+
+/* .div-test {
+  padding: 2rem 0;
+  margin: 0;
+}
+
+.span-test {
+  margin: 0;
+  display: block;
+} */
+
 
 /* .font-awesome {
   float: left;

@@ -92,7 +92,7 @@ class TripList extends Component {
                     </div>
                       <button
                         className="blue-btn button"
-                      >Set active
+                      id={tripKey} onClick={this.props.changeActiveTrip}>Set active
                       </button>
                     
                   </li>
