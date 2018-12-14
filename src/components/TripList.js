@@ -83,8 +83,8 @@ class TripList extends Component {
                     <div>
                       <img src={tripListImg} alt="An image of a compass behind a cloud" className="trip-icon"/>
                       <div className="trip-details">
-                      <p><span>Origin </span>{trip.origin.address}</p>
-                      <p><span>Destination </span>{trip.destination.address}</p>
+                      <p><span>Origin </span>{trip.originData.address}</p>
+                      <p><span>Destination </span>{trip.destinationData.address}</p>
                       {/* Date Time of Origin: */}
                       <p><span>Departure Time </span>{displayDateTime}</p>
                       </div>

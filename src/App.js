@@ -126,8 +126,18 @@ class App extends Component {
     }
     const tripInfo = {
       title: tripName,
-      origin: this.state.originData,
-      destination: this.state.destinationData,
+      originData: {
+        address: this.state.originData.address,
+        latitude: this.state.originData.latitude,
+        longitude: this.state.originData.longitude,
+        placeID: this.state.originData.placeID,
+      },
+      destinationData: {
+        address: this.state.destinationData.address,
+        latitude: this.state.destinationData.latitude,
+        longitude: this.state.destinationData.longitude,
+        placeID: this.state.destinationData.placeID,
+      },
       originDateTime: this.state.originDateTime
     }
     this.dbRef.push(tripInfo);
@@ -438,7 +448,7 @@ class App extends Component {
   removeTrip = (e) => {
     const tripID = e.target.id;
     console.log(tripID);
-    const tripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
+    const tripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
     // console.log(tripRef);
     // const trip = tripRef.child(tripID);
 
@@ -451,9 +461,36 @@ class App extends Component {
   changeActiveTrip = (e) => {
     console.log(e.target.id);
     const tripID = e.target.id;
-    const activeTripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
+    console.log('list of trips change active', this.state.listOfTrips);
+    this.setState({
+      originData: this.state.listOfTrips[tripID].originData,
+      destinationData: this.state.listOfTrips[tripID].destinationData,
+      originDateTime: this.state.listOfTrips[tripID].originDateTime
+    }, () => {
+      {
+        if (
+          this.state.originData.latitude &&
+          this.state.originData.longitude &&
+          this.state.destinationData.latitude &&
+          this.state.destinationData.longitude
+        ) {
+          console.log("all vals");
+          this.setState({
+            hasUserSubmitted: true
+          });
+        }
+      }
+    })
+    
+    // console.log(this.state.user.uid)
+    // const activeTripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
+    // console.log(activeTripRef);
+    // console.log('origin', activeTripRef.originData, 'destination', activeTripRef.destinationData);
 
-    console.log(activeTripRef);
+    // Find activetrip info 
+    // Rerun function
+
+    // console.log(activeTripRef);
 
     
   }
