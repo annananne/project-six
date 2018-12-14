@@ -15,6 +15,7 @@ const formattedSuggestion = structured_formatting => ({
   secondaryText: structured_formatting.secondary_text
 })
 
+// Component begins
 class PlacesAutocomplete extends React.Component {
   constructor(props) {
     super(props);

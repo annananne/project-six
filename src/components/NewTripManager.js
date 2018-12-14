@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import NewTripForm from "./NewTripForm";
 import CurrentTripInfo from "./CurrentTripInfo";
 
+//Component begins
 const NewTripManager = props => {
-  // return props.hasUserSubmitted ? (
 
   const allW = props.receivedAllWeatherData;
   // console.log("YEEEEEEEEEEEEEEEES inside NewTripManager");

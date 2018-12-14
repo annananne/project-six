@@ -1,0 +1,108 @@
+#right-panel {
+  width: 35%;
+  float: left;
+  /* display: block; */
+  background: white;
+  height: calc(100vh - 220px);
+  overflow: scroll;
+  border:none;
+  font-family: 'Cabin', sans-serif;
+}
+/* Sidebar Main */
+.SidebarMain {
+  height: calc(100vh - 200px);
+  /* overflow-y: hidden; */
+}
+.SidebarMain .tab-container {
+  padding-top: 2px;
+}
+
+.SidebarMain .sidebar-tab-button {
+  margin: 1rem;
+}
+
+.SidebarMain .tab-label {
+  background: none;
+  border: none;
+}
+
+.SidebarMain .option-label {
+  background: none;
+  border: none;
+  border-radius: none;
+}
+
+.SidebarMain .option-label:hover {
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid var(--backgroundColor);
+  color: var(--backgroundColor);
+}
+
+.SidebarMain .option-label.selected {
+  border-bottom: 2px solid var(--backgroundColor);
+}
+
+
+/*
+.SidebarMain .sidebar-tab-button {
+  padding: 10px;
+  font-size: 2rem;
+  background: white;
+  color: var(--backgroundColor);
+  border: 2px solid var(--backgroundColor);
+}
+
+.SidebarMain .sidebar-tab-button:active,
+.SidebarMain .sidebar-tab-button:hover {
+  background: var(--backgroundColor);
+  color: white;
+}
+*/
+
+/* Sidebar Overview */
+
+.SidebarOverview .weather-record p {
+  color: var(--backgroundColor);
+  font-size: 2rem;
+}
+
+.weather-special-title {
+  font-weight: bold;
+}
+
+.SidebarOverview {
+padding: 5rem 0;
+background: white;
+}
+
+.weather-record p span {
+  display: inline-block;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  letter-spacing: 0.15rem;
+  color: var(--backgroundColor);
+  opacity: 0.85; 
+  margin-right: 3rem;
+}
+
+/* SIDEBAR MAIN */
+.tab-content {
+  display: none;
+}
+
+.tab-content-shown {
+  display: block !important;
+}
+
+.footer-buttons .button:nth-of-type(1) {
+  margin-right: 1rem;
+  margin-top: 2rem;
+}
+/* BEGIN styles disable the link to the all trips */
+
+/* .disabled-link-to-all-trips .second-circle {
+  background-color: #DDD;
+} */
+/* END styles disable the link to the all trips */

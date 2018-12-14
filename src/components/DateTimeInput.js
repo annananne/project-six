@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import '../styles/DateTimeInput.css';
 
+//Component begins
 class DateTimeInput extends Component {
   render() {
     return(
       <div className="date-time">
-        <label htmlFor="date-time-input">Choose date and time for departure:</label>
+        <label htmlFor="date-time-input" className="form-label">Choose a date and time for departure</label>
         <input
           type="datetime-local"
           id="date-time-input"

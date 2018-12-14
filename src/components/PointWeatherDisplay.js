@@ -5,9 +5,9 @@ const convertFtoC = (f) => {
   return Math.ceil((5 / 9) * (f - 32));
 }
 
+//Component begins
 class PointWeatherDisplay extends Component {
   render() {
-    
     const { 
       originWeatherData,
       destinationWeatherData,
@@ -21,7 +21,6 @@ class PointWeatherDisplay extends Component {
 
     return (
       <div>
-    
         { originWeatherData !== null && 
         <div>
           <p>{ originAddress }</p>
@@ -39,7 +38,6 @@ class PointWeatherDisplay extends Component {
     );
   }
 }
-
 
 export default PointWeatherDisplay;
 

@@ -14,27 +14,14 @@ import {
   GoogleMapsEvent,
   DirectionsRenderer
 } from "react-google-maps";
-// import SidebarDirections from "./SidebarDirections.js";
-// import SidebarOverview from './SidebarOverview.js';
 import SidebarMain from './SidebarMain';
 import target from '../assets/target.svg';
-
-
-// import markers from "../markers";
-
-// const { compose, withProps, lifecycle } = require("recompose");
-// const {
-//   withScriptjs,
-//   withGoogleMap,
-//   GoogleMap,
-//   DirectionsRenderer
-// } = require("react-google-maps");
-
-// const myMap = withScriptjs(withGoogleMap(props => <GoogleMap />));
+import '../styles/CurrentTripInfo.css';
 const {
   MarkerWithLabel
 } = require("react-google-maps/lib/components/addons/MarkerWithLabel");
 
+//Snazzy Maps styling
 const stylesArray = [
   {
     featureType: "landscape.natural",
@@ -107,16 +94,17 @@ const stylesArray = [
   }
 ];
 
+//Component begins
 const MapWithADirectionsRenderer = compose(
   withProps(props => {
     return {
       googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${
         apiKeys.googleMaps
         }&v=3.exp&libraries=geometry,drawing,places`,
-      loadingElement: <div style={{ height: `100%` }} />,
-      containerElement: <div style={{ height: `400px` }} />,
+      loadingElement: <div style={{ height: `calc(100vh - 70px)` }} />,
+      containerElement: <div style={{ height: `calc(100vh - 70px)` }} />,
       mapElement: (
-        <div style={{ height: `100vh`, minHeight: `650px`, width: `65%`, float: 'left', display: 'block' }} />
+        <div style={{ height: `calc(100vh - 70px)`, minHeight: `350px`, width: `65%`, float: 'left', display: 'block' }} />
       ),
     }
   }),
@@ -125,19 +113,6 @@ const MapWithADirectionsRenderer = compose(
   }),
   withScriptjs,
   withGoogleMap,
-  withHandlers({
-    // handleMarkerClick: () => marker => {
-    //   // const markerTitle = marker.wa.target.title;
-    //   // const markerLat = marker.latLng.lat();
-    //   // const markerLng = marker.latLng.lng();
-    //   // console.log(markerTitle, markerLat, markerLng);
-    //   // const markersArray = this.state.markers;
-    //   // markersArray[markerTitle].isShown = !markersArray[markerTitle].isShown;
-    //   // this.setState({
-    //   //   markers: markersArray
-    //   // });
-    // }
-  }),
   lifecycle({
     componentDidMount() {
       console.log('inside component did mount', this.props.weatherResults)
@@ -186,7 +161,6 @@ const MapWithADirectionsRenderer = compose(
       if (this.props.weatherResults !== prevProps.weatherResults) {
         console.log('i am running if statement inside cdu')
         this.setState({ markerInfo: this.props.weatherResults });
-        // console.log('i am marker info inside cdu', this.state.markerInfo)
 
         DirectionsService.route(
           {
@@ -221,7 +195,6 @@ const MapWithADirectionsRenderer = compose(
           }
         );
       }
-      // console.log('i am marker info inside cdu but outside if statement', this.state.markerInfo)
     }
   })
 )(props => {
@@ -241,7 +214,7 @@ const MapWithADirectionsRenderer = compose(
               suppressInfoWindows={true}
               options={{
                 polylineOptions: {
-                  strokeColor: "#222449",
+                  strokeColor: "#f9d549",
                   strokeOpacity: 0.5,
                   strokeWeight: 6
                 },

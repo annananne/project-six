@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import "./App.css";
-import "./LoginPage.css";
-import "./Dashboard.css";
+import "./styles/App.css";
+import "./styles/LoginPage.css";
+import "./styles/MainNav.css";
+import "./styles/Dashboard.css";
 import ReactDependentScript from "react-dependent-script";
 import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import apiKeys from "./data/secrets";
@@ -104,7 +105,7 @@ class App extends Component {
         );
       });
     }
-    
+
   };
 
   // function to logout
@@ -118,13 +119,25 @@ class App extends Component {
   };
 
   saveTripToDB = () => {
-    alert('trip successfully saved!');
+    const tripName = window.prompt("Please enter a name for your trip.");
+    alert('Trip successfully saved!');
     if (this.props.user === null) {
       return;
     }
     const tripInfo = {
-      origin: this.state.originData,
-      destination: this.state.destinationData,
+      title: tripName,
+      originData: {
+        address: this.state.originData.address,
+        latitude: this.state.originData.latitude,
+        longitude: this.state.originData.longitude,
+        placeID: this.state.originData.placeID,
+      },
+      destinationData: {
+        address: this.state.destinationData.address,
+        latitude: this.state.destinationData.latitude,
+        longitude: this.state.destinationData.longitude,
+        placeID: this.state.destinationData.placeID,
+      },
       originDateTime: this.state.originDateTime
     }
     this.dbRef.push(tripInfo);
@@ -374,6 +387,12 @@ class App extends Component {
       hasUserSubmitted: false,
       originData: {},
       destinationData: {},
+      userTripPreferences: {
+        travelMode: "DRIVING",
+        avoidFerries: false,
+        avoidHighways: false,
+        avoidTolls: false
+      },
       // new
       directions: null,
       tripData: null,
@@ -389,6 +408,7 @@ class App extends Component {
       isLabelVisible: [
         false, false, false, false, false
       ],
+      areDirectionsVisible: false,
     });
   };
 
@@ -424,32 +444,66 @@ class App extends Component {
       guest: true
     });
   };
+
+  removeTrip = (e) => {
+    const tripID = e.target.id;
+    console.log(tripID);
+    const tripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
+    // console.log(tripRef);
+    // const trip = tripRef.child(tripID);
+
+    const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
+    if (confirmation === true) {
+      tripRef.remove();
+    }
+  };
+
+  changeActiveTrip = (e) => {
+    console.log(e.target.id);
+    const tripID = e.target.id;
+    console.log('list of trips change active', this.state.listOfTrips);
+    this.setState({
+      originData: this.state.listOfTrips[tripID].originData,
+      destinationData: this.state.listOfTrips[tripID].destinationData,
+      originDateTime: this.state.listOfTrips[tripID].originDateTime
+    }, () => {
+      {
+        if (
+          this.state.originData.latitude &&
+          this.state.originData.longitude &&
+          this.state.destinationData.latitude &&
+          this.state.destinationData.longitude
+        ) {
+          console.log("all vals");
+          this.setState({
+            hasUserSubmitted: true
+          });
+        }
+      }
+    })
+    
+    // console.log(this.state.user.uid)
+    // const activeTripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
+    // console.log(activeTripRef);
+    // console.log('origin', activeTripRef.originData, 'destination', activeTripRef.destinationData);
+
+    // Find activetrip info 
+    // Rerun function
+
+    // console.log(activeTripRef);
+
+    
+  }
+
   render() {
     return (
       <Router>
         <div className="App">
-          { window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} />
+          {window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} handleReset={this.handleReset} />
           }
-        {/* {this.state.user !== null || this.state.guest === true && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut}/>
-        } */}
-        {/* TO SEE USER'S NAME AND PICTURE, I don't know where to put it: */}
-
-        {/* {this.state.user ?
-            <div>
-              <div className="user-profile clearfix">
-                <img className="photoURL" src={this.state.user.photoURL} />
-              </div>
-              <p className="your-name">Hello, {this.state.user.displayName}!</p>
-              </div>
-            :
-              <div>
-                <p>You must be logged in to see.</p>
-              </div>
-          } */}
-
-        <div>
-          {this.state.user && <Redirect to="/dashboard" />}
-          {this.state.guest && <Redirect to="/dashboard" />}
+          <div>
+            {this.state.user && <Redirect to="/dashboard" />}
+            {this.state.guest && <Redirect to="/dashboard" />}
             <Route exact path="/" render={props => (
               <LoginPage
                 {...props}
@@ -457,65 +511,63 @@ class App extends Component {
                 guest={this.state.guest}
                 logIn={this.logIn}
               />
-            )}/>
-          <Route
-            path="/dashboard"
-            render={props => (
-              <Dashboard
-                {...props}
-                user={this.state.user}
-                guest={this.state.guest}
-              />
-            )}
-          />
-
-          {/* <Route path="/newtrip" render={props => <TripManager {...props} originData={this.state.originData} destinationData={this.state.destinationData} userTripPreferences={this.state.userTripPreferences} userTripPreferences={this.state.userTripPreferences} originDateTime={this.state.originDateTime} saveSearchResults={this.saveSearchResults} handleDirClick={this.handleDirClick} handleMarkerClick={this.handleMarkerClick} markers={this.state.markers} handleReset={this.handleReset} handleSubmit={this.handleSubmit} handleChange={this.handleChange} handleSelect={this.handleSelect} handleDateTimeChange={this.handleDateTimeChange} handleRadioChange={this.handleRadioChange} handleCheckboxChange={this.handleCheckboxChange} />} /> */}
-
-          <Route
-            path="/newtrip"
-            render={props => (
-              <NewTripManager
-                {...props}
-                originData={this.state.originData}
-                destinationData={this.state.destinationData}
-                userTripPreferences={this.state.userTripPreferences}
-                userTripPreferences={this.state.userTripPreferences}
-                originDateTime={this.state.originDateTime}
-                saveSearchResults={this.saveSearchResults}
-                handleDirClick={this.handleDirClick}
-                handleMarkerClick={this.handleMarkerClick}
-                isLabelVisible={this.state.isLabelVisible}
-                markers={this.state.markers}
-                handleReset={this.handleReset}
-                handleSubmit={this.handleSubmit}
-                handleChange={this.handleChange}
-                handleSelect={this.handleSelect}
-                handleDateTimeChange={this.handleDateTimeChange}
-                handleRadioChange={this.handleRadioChange}
-                handleCheckboxChange={this.handleCheckboxChange}
-                weatherResults={this.state.weatherResults}
-                hasUserSubmitted={this.state.hasUserSubmitted} // new
-                receivedAllWeatherData={this.state.receivedAllWeatherData}
-                areDirectionsVisible={this.state.areDirectionsVisible}
-                handleSidebarChange={this.state.handleSidebarChange}
-
-                // new
-                handleSavingTripToDB={this.saveTripToDB}
-
-                // new (used for disabling the save trip button)
-                user={this.state.user}
-
-              />
-            )}
-          />
-          <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange} />} />
-          <Route path="/alltrips" render={() => (
-            <TripList
-              user={this.state.user}
-              listOfTrips={this.state.listOfTrips}
+            )} />
+            <Route
+              path="/dashboard"
+              render={props => (
+                <Dashboard
+                  {...props}
+                  user={this.state.user}
+                  guest={this.state.guest}
+                />
+              )}
             />
-          )} />
-        </div>
+            <Route
+              path="/newtrip"
+              render={props => (
+                <NewTripManager
+                  {...props}
+                  originData={this.state.originData}
+                  destinationData={this.state.destinationData}
+                  userTripPreferences={this.state.userTripPreferences}
+                  userTripPreferences={this.state.userTripPreferences}
+                  originDateTime={this.state.originDateTime}
+                  saveSearchResults={this.saveSearchResults}
+                  handleDirClick={this.handleDirClick}
+                  handleMarkerClick={this.handleMarkerClick}
+                  isLabelVisible={this.state.isLabelVisible}
+                  markers={this.state.markers}
+                  handleReset={this.handleReset}
+                  handleSubmit={this.handleSubmit}
+                  handleChange={this.handleChange}
+                  handleSelect={this.handleSelect}
+                  handleDateTimeChange={this.handleDateTimeChange}
+                  handleRadioChange={this.handleRadioChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  weatherResults={this.state.weatherResults}
+                  hasUserSubmitted={this.state.hasUserSubmitted} // new
+                  receivedAllWeatherData={this.state.receivedAllWeatherData}
+                  areDirectionsVisible={this.state.areDirectionsVisible}
+                  handleSidebarChange={this.state.handleSidebarChange}
+
+                  // new
+                  handleSavingTripToDB={this.saveTripToDB}
+
+                  // new (used for disabling the save trip button)
+                  user={this.state.user}
+
+                />
+              )}
+            />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange} />} />
+            <Route path="/alltrips" render={() => (
+              <TripList
+                user={this.state.user}
+                listOfTrips={this.state.listOfTrips}
+                changeActiveTrip={this.changeActiveTrip}
+              />
+            )} />
+          </div>
         </div>
       </Router>
     );

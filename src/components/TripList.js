@@ -1,6 +1,18 @@
 import React, { Component } from "react";
 import firebase from "../firebase.js";
 import moment from 'moment';
+import { Link } from "react-router-dom";
+import "../styles/TripList.css";
+import tripListImg from "../assets/tripdashboardicon.svg";
+
+//Font Awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
+
+
+library.add(faChevronLeft, faTimes);
+
 
 class TripList extends Component {
   constructor() {
@@ -20,8 +32,15 @@ class TripList extends Component {
 
   removeTrip = (e) => {
     const tripID = e.target.id;
+    console.log(tripID);
     const tripRef = firebase.database().ref(`${this.props.user.uid}/${tripID}`);
-    tripRef.remove();
+    // console.log(tripRef);
+    // const trip = tripRef.child(tripID);
+
+    const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
+    if (confirmation === true) {
+      tripRef.remove();
+    }
   };
 
   render() {
@@ -29,43 +48,59 @@ class TripList extends Component {
       listOfTrips,
     } = this.props;
 
-    // console.log('list of trips');
-    // console.log(listOfTrips);
 
     return (
-      // <div class="alltrips-wrapper clearfix">
-        <div class="alltrips-wrapper">
-        <header>
-          <h3 className="alltrips-heading">All Trips!</h3>
-        </header>
+      <div className="tripList section">
+        <div class="wrapper clearfix">
 
-        <section className="display-trips">
-          <ul>
-            {Object.keys(listOfTrips).map((tripKey) => {
-              const trip = listOfTrips[tripKey];
-              const displayDateTime = moment(trip.originDateTime).format('DD MMM YYYY, HH:MM');
+          <Link className="button home-button" to="/dashboard">
+            <FontAwesomeIcon icon="chevron-left" className="icon" />
+            <p>Dashboard</p>
+          </Link>
+          <h2>Your saved trips</h2>
 
-              return (
-                <li className="trip-items clearfix" key={tripKey}>
-                  {/* <h4>{item[1].title}</h4> */}
-                  <div className="trip-items-content">
-                    <p><span>Origin: </span>{trip.origin.address}</p>
-                    <p><span>Destination: </span>{trip.destination.address}</p>
-                    {/* Date Time of Origin: */}
-                    <p><span>Departure Time: </span>{displayDateTime}</p>
-                  </div>
-                  <button 
-                    className="remove-btn button"
-                    id={tripKey}
-                    onClick={this.removeTrip}
-                  >
-                    Remove
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+          <section className="display-trips">
+            <ul>
+              {Object.keys(listOfTrips).map((tripKey) => {
+                console.log('list of trips', listOfTrips)
+                const trip = listOfTrips[tripKey];
+                const displayDateTime = moment(trip.originDateTime).format('DD MMM YYYY, HH:MM');
+
+                return (
+                  <li className="trip-items clearfix" key={tripKey}>
+                    {/* <h4>{item[1].title}</h4> */}
+                    
+                    <button
+                      className="remove-btn button"
+                      id={tripKey}
+                      onClick={this.removeTrip}
+                    >
+                      {/* <FontAwesomeIcon icon="times" className="icon" id={tripKey}/> */}
+                      Remove
+                    </button>
+                    <h3 className="trip-title">{trip.title}</h3>
+                    <div className="trip-items-content clearfix">
+                    <div>
+                      <img src={tripListImg} alt="An image of a compass behind a cloud" className="trip-icon"/>
+                      <div className="trip-details">
+                      <p><span>Origin </span>{trip.originData.address}</p>
+                      <p><span>Destination </span>{trip.destinationData.address}</p>
+                      {/* Date Time of Origin: */}
+                      <p><span>Departure Time </span>{displayDateTime}</p>
+                      </div>
+                        </div>
+                    </div>
+                      <button
+                        className="blue-btn button"
+                      id={tripKey} onClick={this.props.changeActiveTrip}>Set active
+                      </button>
+                    
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </div>
       </div>
     );
   }

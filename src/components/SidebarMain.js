@@ -1,12 +1,8 @@
-// receives data for both 
-// the Overview and the Directions
-// and manages the state 
-// to show one or another
 import React, { Component } from 'react';
-// import "./SidebarMain.css";
-import SidebarDirections from './SidebarDirections';
 import SidebarOverview from './SidebarOverview';
+import { Link } from "react-router-dom";
 
+//Component begins
 class SidebarMain extends Component {
   constructor() {
     super();
@@ -14,12 +10,6 @@ class SidebarMain extends Component {
       indexOfTabShown: 0,
     }
   }
-
-  // handleIndexChange = (i) => {
-  //   this.setState({
-  //     indexOfTabShown: i,
-  //   });
-  // }
 
   handleShowDirections = () => {
     this.setState({
@@ -47,12 +37,12 @@ class SidebarMain extends Component {
         {/* Container for buttons */}
         <div className="tab-container">
           <button
-            className="main-button sidebar-tab-button"
+            className={`tab-content ${this.state.indexOfTabShown === 0 ? 'selected main-button sidebar-tab-button option-label' : 'main-button sidebar-tab-button option-label'}`}
             onClick={this.handleShowDirections}
           >Directions
           </button>
           <button
-            className="main-button sidebar-tab-button"
+            className={`tab-content ${this.state.indexOfTabShown === 1 ? 'selected main-button sidebar-tab-button option-label' : 'main-button sidebar-tab-button option-label'}`}
             onClick={this.handleShowWeatherSummary}
           >Weather Summary
           </button>
@@ -78,18 +68,21 @@ class SidebarMain extends Component {
               weatherData={this.props.weatherData}
             />
           </div>
-          <button
+          
+          
+          </div>
+        <div className="footer-buttons">
+          <button className="button"
             disabled={user === null}
             onClick={this.props.handleSavingTripToDB}
           >
-            { user !== null ? 'Save trip' : 'Log in to save trip' }
+            {user !== null ? 'Save trip' : 'Log in to save trip'}
           </button>
-          <button
+          <button className="button"
             onClick={this.props.handleReset}
           >
             Reset
           </button>
-
         </div>
 
       </div>
