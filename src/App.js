@@ -377,6 +377,12 @@ class App extends Component {
       hasUserSubmitted: false,
       originData: {},
       destinationData: {},
+      userTripPreferences: {
+        travelMode: "DRIVING",
+        avoidFerries: false,
+        avoidHighways: false,
+        avoidTolls: false
+      },
       // new
       directions: null,
       tripData: null,
@@ -392,6 +398,7 @@ class App extends Component {
       isLabelVisible: [
         false, false, false, false, false
       ],
+      areDirectionsVisible: false,
     });
   };
 
@@ -431,7 +438,7 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          {window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} />
+          {window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} handleReset={this.handleReset} />
           }
           <div>
             {this.state.user && <Redirect to="/dashboard" />}

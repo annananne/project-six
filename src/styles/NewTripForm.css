@@ -1,5 +1,22 @@
 .new-trip-form {
   background: var(--lightBlueShade);
+  text-align: center;
+  margin-right: 4rem;
+}
+
+.new-trip-form .wrapper {
+  overflow-y: scroll;
+}
+
+.new-trip-form h2 {
+  text-align: center;
+  clear: both;
+  margin-right: 4rem;
+  margin-bottom: 2rem;
+}
+
+.new-trip-form .button {
+  margin-bottom: 6rem;
 }
 
 .image {
@@ -14,8 +31,77 @@
 .image:hover {
   filter: grayscale(10);
 }
-/* 
-.font-awesome {
+
+fieldset {
+  display: block;
+  border: none;
+  padding: 0;
+  text-align: center;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-block-start: 0;
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+  padding-block-end: 0;
+  margin: 1rem auto 2rem;
+}
+
+fieldset input {
+  display: none;
+}
+
+.transportation {
+  list-style: none;
+  letter-spacing: 1px;
+}
+
+.form-label {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  color: var(--backgroundColor);
+  font-weight: 700;
+}
+
+#originData, #destinationData {
+  background: rgba(255,255,255,0.4);
+  font-size: 1.8rem;
+  border: none;
+  /* border-bottom: 1.25px solid var(--backgroundColor); */
+  margin: 0.5rem 0 1.5rem;
+  padding: 1rem;
+  width: 50%;
+  letter-spacing: 0.1rem;
+}
+
+.option-label {
+  border: 2px solid var(--backgroundColor);
+  border-radius: 2px;
+  color: var(--backgroundColor);
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  font-weight: 700;
+  margin-right: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.option-label:hover {
+  cursor: pointer;
+  background: var(--backgroundColor);
+  color: var(--lightText);
+}
+
+.active-label {
+  background: var(--backgroundColor);
+  color: var(--lightText);
+}
+
+
+/* .font-awesome {
   float: left;
   width: 20px;
   margin-top: 1rem;
@@ -48,34 +134,13 @@
 
 .location-search-input-wrapper {
   margin: 0 3rem;
-}
-
-#originData, #destinationData {
-  background: var(--lightBlueShade);
-  font-size: 3rem;
-  border: none;
-  border-bottom: 1px solid var(--backgroundColor);
-  margin: 15px 0;
-}
-
-fieldset {
-  display: block;
-  border: none;
-}
-
-fieldset label {
-  margin-left: 1rem;
-}
-
-.transportation {
-  list-style: none;
-  letter-spacing: 1px;
-}
-
-.avoid-mode {
-  font-size: 2rem;
-  margin-bottom: 20px;
 } */
+
+
+
+
+
+
 
 
 
