@@ -14,6 +14,8 @@ This project was built in React (bootstrapped with [Create React App](https://gi
 * Anna Ionova: [Github](https://github.com/anncrypt) | [Web](http://www.annaionova.com/)
 * Anne Phitsanoukanh: [Github](https://github.com/annephits) | [Web](http://www.annephits.com/)
 
+This project was made as part of the [HackerYou Web Development Immersive program](https://hackeryou.com/courses/bootcamp).
+
 ## Acknowledgements
 This application uses the following open source packages:
 * [React.js Google Maps](https://github.com/tomchentw/react-google-maps) by [Tom Chen](https://github.com/tomchentw)
