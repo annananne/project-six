@@ -11,7 +11,7 @@ This project was built in React (bootstrapped with [Create React App](https://gi
 
 ## Authors
 * Ana Maljkovic: [Github](https://github.com/anamaljkovic) | [Web](https://anamaljkovic.com)
-* Anna Ionova: [Github](https://github.com/anncrypt)** | [Web](http://www.annaionova.com/)
+* Anna Ionova: [Github](https://github.com/anncrypt) | [Web](http://www.annaionova.com/)
 * Anne Phitsanoukanh: [Github](https://github.com/annephits) | [Web](http://www.annephits.com/)
 
 ## Acknowledgements
