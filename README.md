@@ -1,44 +1,20 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Wayfarer
+**Wayfarer** is a road trip tool built using the **[Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/tutorial)** and **[DarkSky API](https://darksky.net/dev)**. Enter your origin, destination and departure time and receive route options, directions, real-time weather data for key points in your journey and tips on what to bring. Save trips to your dashboard and update or reuse your favourite journeys.
 
-## Available Scripts
+<!-- ## Features
+## How to Use
+## Methodology
+- Link to a Medium post; include info about this being part of HY bootcamp -->
 
-In the project directory, you can run:
+## Technologies and Frameworks Used
+This project was built in React (bootstrapped with [Create React App](https://github.com/facebook/create-react-app)) and styled using Sass. The application incorporates the **[React.js Google Maps integration component](https://github.com/tomchentw/react-google-maps)** and **[Recompose](https://github.com/acdlite/recompose)** utility belt to manage higher order components. The **[live site](https://wayfarerapp-23437.firebaseapp.com/)** was deployed via Firebase.
 
-### `npm start`
+## Authors
+**Ana Maljkovic**: **[Github](https://github.com/anamaljkovic)** | **[Web](https://anamaljkovic.com)**
+**Anna Ionova**: **[Github](https://github.com/anncrypt)** | **[Web](http://www.annaionova.com/)**
+**Anne Phitsanoukanh**: **[Github](https://github.com/annephits)** | **[Web](http://www.annephits.com/)**
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Acknowledgements
+This application uses the following open source packages:
+* [React.js Google Maps](https://github.com/tomchentw/react-google-maps) by [Tom Chen](https://github.com/tomchentw)
+* [Recompose](https://github.com/acdlite/recompose) by [Andrew Clark](https://github.com/acdlite)
