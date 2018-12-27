@@ -106,6 +106,7 @@ const SidebarOverview = (props) => {
       <div className='weather-record'>
         <p>
           <span>Average visibility</span>
+          {/* Verify that there is a visibility value before displaying; if no, display 'N/A' */}
           {findWeatherAverage('visibility', currentWeather) ? `${convertMilesToKilometers(findWeatherAverage('visibility', currentWeather))} km` : "N/A"}
         </p>
       </div>
@@ -127,6 +128,7 @@ const SidebarOverview = (props) => {
       <div className='weather-record'>
         <p>
           <span>Average precip. probability</span>
+          {/* Verify that there is a precipitation probability value before displaying; if no, display 'N/A' */}
           {findWeatherAverage('precipProbability', currentWeather) ? `${findWeatherAverage('precipProbability', currentWeather) * 100}%` : "N/A"}
         </p>
       </div>
