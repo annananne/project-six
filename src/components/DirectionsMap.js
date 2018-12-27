@@ -15,10 +15,7 @@ import {
   DirectionsRenderer
 } from "react-google-maps";
 
-// Import Google Maps Marker component
-const {
-  MarkerWithLabel
-} = require("react-google-maps/lib/components/addons/MarkerWithLabel");
+
 
 // Import API keys
 import apiKeys from "../data/secrets";
@@ -31,6 +28,11 @@ import '../styles/CurrentTripInfo.css';
 
 // Import SVG images
 import target from '../assets/target.svg';
+
+// Import Google Maps Marker component
+const {
+  MarkerWithLabel
+} = require("react-google-maps/lib/components/addons/MarkerWithLabel");
 
 // Snazzy Maps styling for Google Map
 const stylesArray = [
