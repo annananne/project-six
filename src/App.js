@@ -22,9 +22,9 @@ import moment from "moment";
 
 // Import all styles
 import "./styles/App.css";
+import "./styles/Dashboard.css";
 import "./styles/LoginPage.css";
 import "./styles/MainNav.css";
-import "./styles/Dashboard.css";
 
 // Import all components
 import TripList from "./components/TripList.js";
