@@ -56,7 +56,7 @@ class TripList extends Component {
     } = this.props;
     return (
       <div className="tripList section">
-        <div class="wrapper clearfix">
+        <div className="wrapper clearfix">
 
           <Link className="button home-button" to="/dashboard">
             <FontAwesomeIcon icon="chevron-left" className="icon" />

@@ -4,7 +4,8 @@ import axios from "axios";
 import {
   BrowserRouter as Router,
   Route,
-  Redirect
+  Redirect,
+  Switch
 } from "react-router-dom";
 
 // Import React Google Places Autocomplete package
@@ -362,28 +363,28 @@ class App extends Component {
   };
 
   // Method to change active trip displayed on map
-  changeActiveTrip = (e) => {
-    console.log(e.target.id);
-    const tripID = e.target.id;
-    console.log('list of trips change active', this.state.listOfTrips);
-    this.setState({
-      originData: this.state.listOfTrips[tripID].originData,
-      destinationData: this.state.listOfTrips[tripID].destinationData,
-      originDateTime: this.state.listOfTrips[tripID].originDateTime
-    }, () => {
-      if (
-        this.state.originData.latitude &&
-        this.state.originData.longitude &&
-        this.state.destinationData.latitude &&
-        this.state.destinationData.longitude
-      ) {
-        console.log("all vals");
-        this.setState({
-          hasUserSubmitted: true
-        });
-      }
-    })
-  }
+  // changeActiveTrip = (e) => {
+  //   console.log(e.target.id);
+  //   const tripID = e.target.id;
+  //   console.log('list of trips change active', this.state.listOfTrips);
+  //   this.setState({
+  //     originData: this.state.listOfTrips[tripID].originData,
+  //     destinationData: this.state.listOfTrips[tripID].destinationData,
+  //     originDateTime: this.state.listOfTrips[tripID].originDateTime
+  //   }, () => {
+  //     if (
+  //       this.state.originData.latitude &&
+  //       this.state.originData.longitude &&
+  //       this.state.destinationData.latitude &&
+  //       this.state.destinationData.longitude
+  //     ) {
+  //       console.log("all vals");
+  //       this.setState({
+  //         hasUserSubmitted: true
+  //       });
+  //     }
+  //   })
+  // }
 
   // Lifecycle method - component did mount
   componentDidMount() {
@@ -491,9 +492,6 @@ class App extends Component {
           {window.location.pathname !== '/' && <MainNav user={this.state.user} logIn={this.logIn} logOut={this.logOut} handleReset={this.handleReset} />
           }
           <div>
-            {/* If there is either a user or guest status is true, redirect to dashboard */}
-            {this.state.user && <Redirect to="/dashboard" />}
-            {this.state.guest && <Redirect to="/dashboard" />}
 
             {/* When exact path contains no pathname in URL, show login page */}
             <Route exact path="/" render={props => (
@@ -516,6 +514,9 @@ class App extends Component {
                 />
               )}
             />
+
+            {/* If there is either a user or guest status is true, redirect to dashboard */}
+            {(this.state.user || this.state.guest) && <Redirect to="/dashboard" />}
 
             {/* When path is "/newtrip", show new trip manager */}
             <Route
@@ -563,6 +564,7 @@ class App extends Component {
             )} />
           </div>
         </div>
+
       </Router>
     );
   }
