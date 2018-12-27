@@ -1,40 +1,44 @@
+// Import React, axios, React Router
 import React, { Component } from "react";
 import axios from "axios";
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect
+} from "react-router-dom";
+
+// Import React Google Places Autocomplete package
+import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+
+// Import Firebase
+import firebase from "./firebase.js";
+
+// Import API keys
+import apiKeys from "./data/secrets";
+
+// Import moment plugin
+import moment from "moment";
+
+// Import all styles
 import "./styles/App.css";
 import "./styles/LoginPage.css";
 import "./styles/MainNav.css";
 import "./styles/Dashboard.css";
-import ReactDependentScript from "react-dependent-script";
-import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
-import apiKeys from "./data/secrets";
-// import LocationSearchInput from "./components/LocationSearchInput";
-import firebase from "./firebase.js";
+
+// Import all components
 import TripList from "./components/TripList.js";
-// import NewTripForm from "./components/NewTripForm.js";
 import Dashboard from './components/Dashboard.js';
 import CurrentTripInfo from './components/CurrentTripInfo';
-// import DateTimeInput from "./components/DateTimeInput";
-import PointWeatherDisplay from "./components/PointWeatherDisplay";
 import NewTripManager from "./components/NewTripManager";
 import LoginPage from './components/LoginPage';
-import SidebarMain from './components/SidebarMain';
 import MainNav from './components/MainNav.js'
-import moment from "moment";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Redirect,
-  Switch
-} from "react-router-dom";
 
-
-// Google provider & auth module
+// Initialize Firebase provider and auth variables
 const provider = new firebase.auth.GoogleAuthProvider();
 const auth = firebase.auth();
 
+// App component begins
 class App extends Component {
-
   constructor() {
     super();
     this.state = {
@@ -65,6 +69,360 @@ class App extends Component {
     };
   }
 
+  
+
+  // Function to handle user login
+  logIn = (e) => {
+    if (e.target.id === 'guest') {
+      this.setState({
+        guest: true
+      })
+    } else {
+      auth.signInWithPopup(provider).then(result => {
+        console.log(result);
+        this.setState(
+          {
+            user: result.user,
+            guest: false
+          }
+        );
+      });
+    }
+
+  };
+
+  // Function to handle user logout
+  logOut = () => {
+    auth.signOut().then(() => {
+      this.setState({
+        user: null,
+        guest: false
+      });
+    });
+  };
+
+  // Method to allow user to continue as guest
+  continueAsGuest = () => {
+    this.setState({
+      guest: true
+    });
+  };
+
+  // Function to save current trip to Firebase database
+  saveTripToDB = () => {
+    if (this.props.user === null) {
+      return;
+    }
+    const tripName = window.prompt("Please enter a name for your trip.");
+    if (tripName === null) {
+      return;
+    } else {
+      const tripInfo = {
+        title: tripName,
+        originData: {
+          address: this.state.originData.address,
+          latitude: this.state.originData.latitude,
+          longitude: this.state.originData.longitude,
+          placeID: this.state.originData.placeID,
+        },
+        destinationData: {
+          address: this.state.destinationData.address,
+          latitude: this.state.destinationData.latitude,
+          longitude: this.state.destinationData.longitude,
+          placeID: this.state.destinationData.placeID,
+        },
+        originDateTime: this.state.originDateTime
+      }
+      this.dbRef.push(tripInfo);
+      alert('Trip successfully saved!');
+    }
+  }
+
+  
+
+  // Method to handle weather API call
+  // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
+  // change the hardcoded long & lat below, prob this will receive parameters with the location info
+  getWeatherForPoint = (lat, lng, datetime, pointName) => {
+    const dateTimeFormatted = `${datetime}:00`;
+    let weatherRequestURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${apiKeys.darkSky}/`;
+    // adding relevant parameters for the request
+    weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
+
+    // send the weather request to the API
+    return (
+      axios
+        .get(weatherRequestURL, {
+          method: "GET",
+          contentType: "json"
+        })
+        // .then(res => {
+        //   // console.log(`Got weather data successfully for ${pointName}`);
+        //   // console.log(res.data);
+        //   this.setState({
+        //     weatherResults: {
+        //       ...this.state.weatherResults,
+        //       [pointName]: res.data
+        //     }
+        //   });
+        // })
+        .catch(error => {
+          console.log(`Error when getting weather for ${pointName}: ${error}`);
+        })
+    );
+  };
+
+  // Method to get weather for all 5 trip points
+  getWeather = weatherRequestInfo => {
+    const weatherArray = [];
+    Object.keys(weatherRequestInfo).forEach(pointName => {
+      const point = weatherRequestInfo[pointName];
+      weatherArray.push(
+        this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName)
+      );
+    });
+    Promise.all(weatherArray).then(res => {
+      res.map(object => {
+        const weatherResults = res.map(object => {
+          return object.data;
+        });
+        // const weatherMarkerData = this.state.weatherResults;
+        // weatherMarkerData.push(object.data);
+
+        // const receivedResults = weatherMarkerData;
+        const gotAllWeather = weatherResults.length === 5;
+        // debugger
+        this.setState({
+          weatherResults: weatherResults,
+          receivedAllWeatherData: gotAllWeather,
+        });
+      });
+    });
+  };
+
+  // Method to get middle point between any two established points
+  getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
+    const p1 = new window.google.maps.LatLng(p1Lat, p1Lng);
+    const p2 = new window.google.maps.LatLng(p2Lat, p2Lng);
+    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(
+      p1,
+      window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
+      window.google.maps.geometry.spherical.computeHeading(p1, p2)
+    );
+    // console.log("Point coordinates found", middleLatLng);
+    return middleLatLng;
+  };
+
+
+  //Method to handle change in Google Places autocomplete entry field
+  handleChange = (address, id) => {
+    //Continuously update this.state.address to match what is put into input box (just text)
+    const currentId = id;
+    const tempObj = {};
+    tempObj.address = address;
+    this.setState({ [currentId]: tempObj });
+  };
+
+  //Method to handle select of suggested autocomplete place value
+  handleSelect = (address, placeId, id) => {
+    //Store displayed text value of address (properly formatted)
+    const currentId = id;
+    const tempObj = this.state[currentId];
+    tempObj.address = address;
+    this.setState({
+      [currentId]: tempObj
+    });
+
+    //Run address through Google Maps geocode function
+    geocodeByAddress(address)
+      .then((results) => {
+        //Returns object that contains results with formatted address, place ID, etc.
+        const dataObject = {
+          placeID: results[0].place_id,
+          address: results[0].formatted_address
+        };
+        console.log("data object in geocode", dataObject);
+        this.setState({ [currentId]: dataObject });
+
+        // Run results from geocodeByAddress through function that gets latitude and longitude based on address
+        return getLatLng(results[0]);
+      })
+      .then((latLng) => {
+        //Update data object to include latitude and longitude data
+        const updatedDataObject = this.state[currentId];
+        updatedDataObject.latitude = latLng.lat;
+        updatedDataObject.longitude = latLng.lng;
+        console.log("updatedDataObject in LatLng", updatedDataObject);
+        this.setState({ [currentId]: updatedDataObject });
+      })
+      .catch((error) => console.error("Error", error));
+  };
+
+  // Method to handle change of date and time input value
+  handleDateTimeChange = (e) => {
+    const unixDate = new Date(e.target.value).getTime();
+    this.setState({
+      originDateTimeInSec: unixDate,
+      originDateTime: e.target.value
+    });
+  };
+
+  // Method to save search results
+  saveSearchResults = (result) => {
+    // Get duration of trip in seconds from returned results object
+    const tripInSeconds = result.routes[0].legs[0].duration.value;
+    // Get origin time (Unix) from state
+    const originTime = this.state.originDateTimeInSec;
+    // console.log("trip in seconds", tripInSeconds, "origin time", originTime);
+    // Add two times together
+    const time = tripInSeconds + originTime;
+    // Get destination time in correct format using moment.js
+    const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
+    // console.log("origin time", originTime, "destination time", destinationTime);
+
+    // Set trip data and destination date/time in state
+    this.setState({
+      tripData: result,
+      destinationDateTime: destinationTime
+    });
+  };
+
+  // Method to handle submit of new trip form
+  handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("submitted");
+    {
+      if (
+        this.state.originData.latitude &&
+        this.state.originData.longitude &&
+        this.state.destinationData.latitude &&
+        this.state.destinationData.longitude
+      ) {
+        console.log("all vals");
+        this.setState({
+          hasUserSubmitted: true
+        });
+      }
+    }
+  };
+
+  // Method to handle reset of application
+  handleReset = () => {
+    // alert('reset handle run');
+    this.setState({
+      hasUserSubmitted: false,
+      originData: {},
+      destinationData: {},
+      userTripPreferences: {
+        travelMode: "DRIVING",
+        avoidFerries: false,
+        avoidHighways: false,
+        avoidTolls: false
+      },
+      // new
+      directions: null,
+      tripData: null,
+      // reset it to not deal with issue of inability 
+      // to request google maps directions for
+      // time in the past
+      originDateTimeInSec: new Date().getTime() / 1000,
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      destinationDateTime: "",
+      weatherRequestInfo: {},
+      weatherResults: [],
+      receivedAllWeatherData: false,
+      isLabelVisible: [
+        false, false, false, false, false
+      ],
+      areDirectionsVisible: false,
+    });
+  };
+
+  // Method to handle change of any radio input (new trip form), i.e. transportation method
+  handleRadioChange = (e) => {
+    const newObj = this.state.userTripPreferences;
+    this.state.userTripPreferences[e.target.name] = e.target.value;
+    this.setState({
+      userTripPreferences: newObj
+    });
+  };
+
+  // Method to handle change of any checkbox input (new trip form), i.e. customizable travel options
+  handleCheckboxChange = (e) => {
+    const newObj = this.state.userTripPreferences;
+    this.state.userTripPreferences[e.target.name] = !this.state
+      .userTripPreferences[e.target.name];
+    this.setState({
+      userTripPreferences: newObj
+    });
+  };
+
+  // Method to handle click of map marker to show/hide marker
+  handleMarkerClick = markerIndex => {
+    // const markerTitle = marker.wa.target.title;
+    // console.log('ive been clicked', marker);
+    const updatedArray = this.state.isLabelVisible;
+    updatedArray[markerIndex] = !updatedArray[markerIndex];
+    this.setState({
+      isLabelVisible: updatedArray
+    });
+  };
+
+ 
+
+  // Method to remove trip from database
+  removeTrip = (e) => {
+    const tripID = e.target.id;
+    console.log(tripID);
+    const tripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
+    // console.log(tripRef);
+    // const trip = tripRef.child(tripID);
+
+    const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
+    if (confirmation === true) {
+      tripRef.remove();
+    }
+  };
+
+  // Method to change active trip displayed on map
+  changeActiveTrip = (e) => {
+    console.log(e.target.id);
+    const tripID = e.target.id;
+    console.log('list of trips change active', this.state.listOfTrips);
+    this.setState({
+      originData: this.state.listOfTrips[tripID].originData,
+      destinationData: this.state.listOfTrips[tripID].destinationData,
+      originDateTime: this.state.listOfTrips[tripID].originDateTime
+    }, () => {
+      {
+        if (
+          this.state.originData.latitude &&
+          this.state.originData.longitude &&
+          this.state.destinationData.latitude &&
+          this.state.destinationData.longitude
+        ) {
+          console.log("all vals");
+          this.setState({
+            hasUserSubmitted: true
+          });
+        }
+      }
+    })
+    
+    // console.log(this.state.user.uid)
+    // const activeTripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
+    // console.log(activeTripRef);
+    // console.log('origin', activeTripRef.originData, 'destination', activeTripRef.destinationData);
+
+    // Find activetrip info 
+    // Rerun function
+
+    // console.log(activeTripRef);
+
+    
+  }
+
+  // Lifecycle method - component did mount
   componentDidMount() {
     auth.onAuthStateChanged(user => {
       if (user) {
@@ -88,61 +446,7 @@ class App extends Component {
     });
   }
 
-  // function to login
-  logIn = (e) => {
-    if (e.target.id === 'guest') {
-      this.setState({
-        guest: true
-      })
-    } else {
-      auth.signInWithPopup(provider).then(result => {
-        console.log(result);
-        this.setState(
-          {
-            user: result.user,
-            guest: false
-          }
-        );
-      });
-    }
-
-  };
-
-  // function to logout
-  logOut = () => {
-    auth.signOut().then(() => {
-      this.setState({
-        user: null,
-        guest: false
-      });
-    });
-  };
-
-  saveTripToDB = () => {
-    const tripName = window.prompt("Please enter a name for your trip.");
-    alert('Trip successfully saved!');
-    if (this.props.user === null) {
-      return;
-    }
-    const tripInfo = {
-      title: tripName,
-      originData: {
-        address: this.state.originData.address,
-        latitude: this.state.originData.latitude,
-        longitude: this.state.originData.longitude,
-        placeID: this.state.originData.placeID,
-      },
-      destinationData: {
-        address: this.state.destinationData.address,
-        latitude: this.state.destinationData.latitude,
-        longitude: this.state.destinationData.longitude,
-        placeID: this.state.destinationData.placeID,
-      },
-      originDateTime: this.state.originDateTime
-    }
-    this.dbRef.push(tripInfo);
-  }
-
+  // Lifecycle method - component did update
   componentDidUpdate(previousProps, previousState) {
     // only calculate the middle points when the tripData first gets into the App state
     if (
@@ -220,279 +524,6 @@ class App extends Component {
       this.getWeather(weatherRequestInfo);
 
     }
-  }
-  // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
-  // change the hardcoded long & lat below, prob this will receive parameters with the location info
-
-  getWeatherForPoint = (lat, lng, datetime, pointName) => {
-    const dateTimeFormatted = `${datetime}:00`;
-    let weatherRequestURL = `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${apiKeys.darkSky}/`;
-    // adding relevant parameters for the request
-    weatherRequestURL += `${lat},${lng},${dateTimeFormatted}`;
-
-    // send the weather request to the API
-    return (
-      axios
-        .get(weatherRequestURL, {
-          method: "GET",
-          contentType: "json"
-        })
-        // .then(res => {
-        //   // console.log(`Got weather data successfully for ${pointName}`);
-        //   // console.log(res.data);
-        //   this.setState({
-        //     weatherResults: {
-        //       ...this.state.weatherResults,
-        //       [pointName]: res.data
-        //     }
-        //   });
-        // })
-        .catch(error => {
-          console.log(`Error when getting weather for ${pointName}: ${error}`);
-        })
-    );
-  };
-
-  // gets weather for all the points
-  getWeather = weatherRequestInfo => {
-    const weatherArray = [];
-    Object.keys(weatherRequestInfo).forEach(pointName => {
-      const point = weatherRequestInfo[pointName];
-      weatherArray.push(
-        this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName)
-      );
-    });
-    Promise.all(weatherArray).then(res => {
-      res.map(object => {
-        const weatherResults = res.map(object => {
-          return object.data;
-        });
-        // const weatherMarkerData = this.state.weatherResults;
-        // weatherMarkerData.push(object.data);
-
-        // const receivedResults = weatherMarkerData;
-        const gotAllWeather = weatherResults.length === 5;
-        // debugger
-        this.setState({
-          weatherResults: weatherResults,
-          receivedAllWeatherData: gotAllWeather,
-        });
-      });
-    });
-  };
-
-  getMiddlePoint = (p1Lat, p1Lng, p2Lat, p2Lng) => {
-    const p1 = new window.google.maps.LatLng(p1Lat, p1Lng);
-    const p2 = new window.google.maps.LatLng(p2Lat, p2Lng);
-    const middleLatLng = window.google.maps.geometry.spherical.computeOffset(
-      p1,
-      window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
-      window.google.maps.geometry.spherical.computeHeading(p1, p2)
-    );
-    // console.log("Point coordinates found", middleLatLng);
-    return middleLatLng;
-  };
-  //Method to handle change in Google Places autocomplete entry field
-  handleChange = (address, id) => {
-    //Continuously update this.state.address to match what is put into input box (just text)
-    const currentId = id;
-    const tempObj = {};
-    tempObj.address = address;
-    this.setState({ [currentId]: tempObj });
-  };
-
-  //Method to handle select of suggested value
-  handleSelect = (address, placeId, id) => {
-    //Store displayed text value of address (properly formatted)
-    const currentId = id;
-    const tempObj = this.state[currentId];
-    tempObj.address = address;
-    this.setState({
-      [currentId]: tempObj
-    });
-
-    //Run address through Google Maps geocode function
-    geocodeByAddress(address)
-      .then((results) => {
-        //Returns object that contains results with formatted address, place ID, etc.
-        const dataObject = {
-          placeID: results[0].place_id,
-          address: results[0].formatted_address
-        };
-        console.log("data object in geocode", dataObject);
-        this.setState({ [currentId]: dataObject });
-
-        // Run results from geocodeByAddress through function that gets latitude and longitude based on address
-        return getLatLng(results[0]);
-      })
-      .then((latLng) => {
-        //Update data object to include latitude and longitude data
-        const updatedDataObject = this.state[currentId];
-        updatedDataObject.latitude = latLng.lat;
-        updatedDataObject.longitude = latLng.lng;
-        console.log("updatedDataObject in LatLng", updatedDataObject);
-        this.setState({ [currentId]: updatedDataObject });
-      })
-      .catch((error) => console.error("Error", error));
-  };
-
-  handleDateTimeChange = (e) => {
-    const unixDate = new Date(e.target.value).getTime();
-    this.setState({
-      originDateTimeInSec: unixDate,
-      originDateTime: e.target.value
-    });
-  };
-
-  saveSearchResults = (result) => {
-    // Get duration of trip in seconds from returned results object
-    const tripInSeconds = result.routes[0].legs[0].duration.value;
-    // Get origin time (Unix) from state
-    const originTime = this.state.originDateTimeInSec;
-    // console.log("trip in seconds", tripInSeconds, "origin time", originTime);
-    // Add two times together
-    const time = tripInSeconds + originTime;
-    // Get destination time in correct format using moment.js
-    const destinationTime = moment.unix(time).format("YYYY-MM-DDTHH:mm");
-    // console.log("origin time", originTime, "destination time", destinationTime);
-
-    // Set trip data and destination date/time in state
-    this.setState({
-      tripData: result,
-      destinationDateTime: destinationTime
-    });
-  };
-
-  handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("submitted");
-    {
-      if (
-        this.state.originData.latitude &&
-        this.state.originData.longitude &&
-        this.state.destinationData.latitude &&
-        this.state.destinationData.longitude
-      ) {
-        console.log("all vals");
-        this.setState({
-          hasUserSubmitted: true
-        });
-      }
-    }
-  };
-
-  handleReset = () => {
-    // alert('reset handle run');
-    this.setState({
-      hasUserSubmitted: false,
-      originData: {},
-      destinationData: {},
-      userTripPreferences: {
-        travelMode: "DRIVING",
-        avoidFerries: false,
-        avoidHighways: false,
-        avoidTolls: false
-      },
-      // new
-      directions: null,
-      tripData: null,
-      // reset it to not deal with issue of inability 
-      // to request google maps directions for
-      // time in the past
-      originDateTimeInSec: new Date().getTime() / 1000,
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-      destinationDateTime: "",
-      weatherRequestInfo: {},
-      weatherResults: [],
-      receivedAllWeatherData: false,
-      isLabelVisible: [
-        false, false, false, false, false
-      ],
-      areDirectionsVisible: false,
-    });
-  };
-
-  handleRadioChange = (e) => {
-    const newObj = this.state.userTripPreferences;
-    this.state.userTripPreferences[e.target.name] = e.target.value;
-    this.setState({
-      userTripPreferences: newObj
-    });
-  };
-
-  handleCheckboxChange = (e) => {
-    const newObj = this.state.userTripPreferences;
-    this.state.userTripPreferences[e.target.name] = !this.state
-      .userTripPreferences[e.target.name];
-    this.setState({
-      userTripPreferences: newObj
-    });
-  };
-
-  handleMarkerClick = markerIndex => {
-    // const markerTitle = marker.wa.target.title;
-    // console.log('ive been clicked', marker);
-    const updatedArray = this.state.isLabelVisible;
-    updatedArray[markerIndex] = !updatedArray[markerIndex];
-    this.setState({
-      isLabelVisible: updatedArray
-    });
-  };
-
-  continueAsGuest = () => {
-    this.setState({
-      guest: true
-    });
-  };
-
-  removeTrip = (e) => {
-    const tripID = e.target.id;
-    console.log(tripID);
-    const tripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
-    // console.log(tripRef);
-    // const trip = tripRef.child(tripID);
-
-    const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
-    if (confirmation === true) {
-      tripRef.remove();
-    }
-  };
-
-  changeActiveTrip = (e) => {
-    console.log(e.target.id);
-    const tripID = e.target.id;
-    console.log('list of trips change active', this.state.listOfTrips);
-    this.setState({
-      originData: this.state.listOfTrips[tripID].originData,
-      destinationData: this.state.listOfTrips[tripID].destinationData,
-      originDateTime: this.state.listOfTrips[tripID].originDateTime
-    }, () => {
-      {
-        if (
-          this.state.originData.latitude &&
-          this.state.originData.longitude &&
-          this.state.destinationData.latitude &&
-          this.state.destinationData.longitude
-        ) {
-          console.log("all vals");
-          this.setState({
-            hasUserSubmitted: true
-          });
-        }
-      }
-    })
-    
-    // console.log(this.state.user.uid)
-    // const activeTripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
-    // console.log(activeTripRef);
-    // console.log('origin', activeTripRef.originData, 'destination', activeTripRef.destinationData);
-
-    // Find activetrip info 
-    // Rerun function
-
-    // console.log(activeTripRef);
-
-    
   }
 
   render() {
