@@ -285,10 +285,20 @@ class App extends Component {
       this.state.destinationData.latitude &&
       this.state.destinationData.longitude
     ) {
+      // const currentDateTime = new Date().getTime() / 1000;
+      // console.log(currentDateTime);
+      // console.log(this.state.originDateTimeInSec);
+      // When user submits, check if origin date/time is in the past, if yes, set it to current time
+      // if (currentDateTime > this.state.originDateTimeInSec) {
+      //   this.setState({
+      //     originDateTimeInSec: new Date().getTime() / 1000,
+      //     originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      //   })
+      // }
       this.setState({
-        hasUserSubmitted: true
-      });
-    }
+        hasUserSubmitted: true,
+      })
+    };
   };
 
   // Method to handle reset of application
@@ -347,19 +357,6 @@ class App extends Component {
     this.setState({
       isLabelVisible: updatedArray
     });
-  };
-
-  // Method to remove trip from database
-  removeTrip = (e) => {
-    // Store id of selected trip
-    const tripID = e.target.id;
-    // Establish reference to trip in Firebase database of logged in user
-    const tripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
-    // Trigger confirm prompt with deletion warning; if true (i.e. user selects "OK"), remove trip from database
-    const confirmation = window.confirm("Are you sure you want to delete this trip? Once deleted, a trip cannot be recovered.")
-    if (confirmation === true) {
-      tripRef.remove();
-    }
   };
 
   // Method to change active trip displayed on map
