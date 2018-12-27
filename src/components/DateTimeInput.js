@@ -1,4 +1,7 @@
+// Import React
 import React, { Component } from "react";
+
+// Import all styles
 import '../styles/DateTimeInput.css';
 
 //Component begins
@@ -13,8 +16,6 @@ class DateTimeInput extends Component {
           name="date-time-input"
           value={this.props.dateString}
           onChange={this.props.handleDateTimeChange}
-          // min="2018-06-07T00:00"
-          // max="2018-06-14T00:00"
         />
 
       </div>

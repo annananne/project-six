@@ -1,16 +1,23 @@
+// Import React, axios, React Router
 import React, { Component } from "react";
-import firebase from "../firebase.js";
-import moment from 'moment';
 import { Link } from "react-router-dom";
+
+// Import Firebase
+import firebase from "../firebase.js";
+
+// Import moment package
+import moment from 'moment';
+
+// Import all styles
 import "../styles/TripList.css";
+
+// Import SVG images
 import tripListImg from "../assets/tripdashboardicon.svg";
 
-//Font Awesome
+// Import Font Awesome and add icons to library
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
-
-
 library.add(faChevronLeft, faTimes);
 
 
@@ -47,8 +54,6 @@ class TripList extends Component {
     const {
       listOfTrips,
     } = this.props;
-
-
     return (
       <div className="tripList section">
         <div class="wrapper clearfix">

@@ -64,7 +64,7 @@ class SidebarMain extends Component {
           </div>
           
           
-          </div>
+        </div>
         <div className="footer-buttons">
           <button className="button"
             // disabled={user === null}
