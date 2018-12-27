@@ -2,7 +2,6 @@ import React from "react";
 import {
   compose,
   withProps,
-  withHandlers,
   withState,
   lifecycle
 } from "recompose";
@@ -146,8 +145,10 @@ const MapWithADirectionsRenderer = compose(
               directions: result,
               markerInfo: this.props.weatherResults
             });
-          } else {
-            console.error(`error fetching directions ${result}`);
+          } else if (status === "ZERO_RESULTS") {
+            console.log('error fetching directions', status, result);
+            alert("Error: no results. Please try again.");
+            return;
           }
         }
       );
@@ -188,8 +189,10 @@ const MapWithADirectionsRenderer = compose(
               console.log(result);
               this.props.saveSearchResults(result);
               this.setState({ directions: result });
-            } else {
-              console.error(`error fetching directions ${result}`);
+            } else if (status === "ZERO_RESULTS") {
+              console.log('error fetching directions', status, result);
+              alert("Error: no results. Please try again.");
+              return;
             }
           }
         );

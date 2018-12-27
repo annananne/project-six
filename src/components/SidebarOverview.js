@@ -45,11 +45,6 @@ const convertMillibarsToKPa = (milibarNum) => {
   return Math.round(result * 100) / 100
 }
 
-
-const formatAsPercentage = (num) => {
-
-}
-
 const SidebarOverview = (props) => {
   const {
     weatherData,

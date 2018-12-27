@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PlacesAutocomplete from './PlacesAutocomplete';
-import {
-  geocodeByAddress,
-  getLatLng
-} from "react-places-autocomplete";
+// import {
+//   geocodeByAddress,
+//   getLatLng
+// } from "react-places-autocomplete";
 
 //Component begins
 class LocationSearchInput extends Component {

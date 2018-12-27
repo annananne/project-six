@@ -1,15 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import NewTripForm from "./NewTripForm";
 import CurrentTripInfo from "./CurrentTripInfo";
 
 //Component begins
 const NewTripManager = props => {
-
-  const allW = props.receivedAllWeatherData;
-  // console.log("YEEEEEEEEEEEEEEEES inside NewTripManager");
-  // console.log(allW);
-  // console.log(props.weatherResults);
-  // debugger
 
   // return props.receivedAllWeatherData ? (
   return props.hasUserSubmitted ? (
@@ -38,7 +32,6 @@ const NewTripManager = props => {
     <NewTripForm
       originData={props.originData}
       destinationData={props.destinationData}
-      userTripPreferences={props.userTripPreferences}
       userTripPreferences={props.userTripPreferences}
       originDateTime={props.originDateTime}
       saveSearchResults={props.saveSearchResults}

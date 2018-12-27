@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import SidebarOverview from './SidebarOverview';
-import { Link } from "react-router-dom";
 
 //Component begins
 class SidebarMain extends Component {
@@ -25,10 +24,10 @@ class SidebarMain extends Component {
 
   render() {
     const {
-      directions,
-      routeIndex, // for directions
-      weatherData,
-      handleSavingTripToDB,
+      // directions,
+      // routeIndex, // for directions
+      // weatherData,
+      // handleSavingTripToDB,
       user,
     } = this.props;
 

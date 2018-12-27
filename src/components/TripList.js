@@ -81,7 +81,7 @@ class TripList extends Component {
                     <h3 className="trip-title">{trip.title}</h3>
                     <div className="trip-items-content clearfix">
                     <div>
-                      <img src={tripListImg} alt="An image of a compass behind a cloud" className="trip-icon"/>
+                      <img src={tripListImg} alt="A compass behind a cloud" className="trip-icon"/>
                       <div className="trip-details">
                       <p><span>Origin </span>{trip.originData.address}</p>
                       <p><span>Destination </span>{trip.destinationData.address}</p>

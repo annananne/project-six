@@ -1,8 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import car from "../assets/car.svg";
-import travel from "../assets/travel.svg";
 import newTripImg from "../assets/newtrip.svg";
 import allTripsImg from "../assets/alltrips.svg";
 
