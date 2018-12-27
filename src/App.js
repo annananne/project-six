@@ -53,14 +53,14 @@ class App extends Component {
         avoidTolls: false
       },
       tripData: null, // Object to store routes/directions for trip from Google Maps API call
-      originDateTimeInSec: new Date().getTime() / 1000, // Numerical value of date and time user will leave their origin point (Unix time)
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), // String to store date and time user will leave their origin point
+      originDateTimeInSec: moment(new Date()).add(15, "minutes").valueOf() / 1000, // Numerical value of date and time user will leave their origin point (Unix time) - add 15 minutes to account for user input time
+      originDateTime: moment(new Date()).add(15, "minutes").format("YYYY-MM-DDTHH:mm"), // String to store date and time user will leave their origin point - add 15 minutes to account for user input time
       destinationDateTime: "", // String to store date and time user will arrive at their detination point
       weatherRequestInfo: {}, // Object to store date/time, latitude and longitude of all five equidistant points of journey
       weatherResults: [], // Array to store weather data from API call for all five equidistant points of journey
       receivedAllWeatherData: false, // Boolean to determine whether all weather data has been returned from API
       user: null, // Object to store all user data from Google auth (if user is logged in)
-      guest: false, // Boolean to determine whether user is in guest mode or not
+      guest: null, // Boolean to determine whether user is in guest mode or not
       isLabelVisible: [ // Array to store boolean visibility value for each marker on the map
         false, false, false, false, false
       ],
@@ -110,7 +110,7 @@ class App extends Component {
     // Prompt user to enter a trip name
     const tripName = window.prompt("Please enter a name for your trip.");
     // If user selects cancel, terminate trip save process
-    if (tripName === null) {
+    if (!tripName) {
       return;
       // If user enters valid trip name, then:
     } else {
@@ -202,7 +202,6 @@ class App extends Component {
     // Return latitude and longitude of midpoint
     return middleLatLng;
   };
-
 
   // Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
