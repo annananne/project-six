@@ -1,150 +1,144 @@
+// Import React
 import React from "react";
 
-// Helper function
-// const findAverage = (arr, oneLevelDeep, twoLevelsDeep) => {
-//   const sum = arr.reduce((a, b) => a + b, 0);
-//   return sum / arr.length;
-// }
-
+// 
 const findWeatherAverage = (measurementType, weatherArr) => {
+  // Add up all values in inputted array that match inputted measurement type
   const sum = weatherArr.reduce((sum, item) => {
     return sum + item[measurementType];
   }, 0);
+  // Divide sum by length of weather array to get average
   const result = sum / weatherArr.length;
-  // leave 2 decimal places in.
-  // maybe use toFixed() ?
-  return Math.round(result * 100) / 100
+
+  // Return result rounded to 2 decimal places; error handle for NaN result
+  if (result === NaN) {
+    return null;
+  } else {
+    return Math.round(result * 100) / 100;
+  }
 }
 
-const findMax = (measurementType, weatherArr) => {
-  const values = weatherArr.map(item => item[measurementType])
-  return Math.max(...values)
+// Function to find minimum (lowest) or maximum (highest) temperature (by default returns max)
+const findMinOrMax = (measurementType, weatherArr, minOrMax) => {
+  // Return all values from inputted array that match inputted measurement type
+  const values = weatherArr.map(item => item[measurementType]);
+  // Return min/max value of the array based on string passed through as third variable
+  if (minOrMax = 'min') {
+    return Math.min(...values);
+  } else {
+    return Math.max(...values);
+  }
 }
 
-const findMin = (measurementType, weatherArr) => {
-  const values = weatherArr.map(item => item[measurementType])
-  return Math.min(...values)
+// Function to convert degrees Farenheit to Celsius
+const convertFtoC = (F) => {
+  return Math.ceil((5 / 9) * (F - 32));
 }
 
-const convertFtoC = (f) => {
-  return Math.ceil((5 / 9) * (f - 32));
-}
-
-// also works for: convert Miles Per Hour to Kilometers Per Hour
-
+// Function to convert miles to kilometers; also works for converting miles/h to km/h
 const convertMilesToKilometers = (milesPerHourNumber) => {
   const result = milesPerHourNumber * 1.609344;
-  // leave 2 decimal places in. (?)
+  // Return result rounded to 2 decimal places
   return Math.round(result * 100) / 100;
 }
 
 // needed for pressure calculations
 const convertMillibarsToKPa = (milibarNum) => {
   const result = milibarNum / 10;
-  // leave 2 decimal places in. (?)
   return Math.round(result * 100) / 100
 }
 
-
-const formatAsPercentage = (num) => {
-
-}
-
+// Sidebar overview component begins
 const SidebarOverview = (props) => {
   const {
     weatherData,
   } = props;
 
+  // If no weather data is available, return a message that data is loading
   if (!weatherData || weatherData.length === 0) {
     return <p>Loading weather...</p>;
   }
 
-  // calculate weather values here (AVERAGES)
-  // map weather array with all info to array with just 'currently' objects info
+
+  // Map over weather data array and return only the object containing current weather data details
   const currentWeather = weatherData.map(weatherItem => {
     return weatherItem.currently;
   });
 
   return (
     <div className="SidebarOverview">
+    {/* Average temperature */}
       <div className='weather-record'>
         <p>
           <span>Average temperature</span>
           {`${convertFtoC(findWeatherAverage('temperature', currentWeather))} °C`}
         </p>
       </div>
+      {/* Feels like (average) */}
       <div className='weather-record'>
         <p>
-          <span>Feels like</span>
+          <span>Feels like (average)</span>
           {`${convertFtoC(findWeatherAverage('apparentTemperature', currentWeather))} °C`}
         </p>
       </div>
+      {/* Lowest temperature */}
       <div className='weather-record'>
         <p>
           <span>Lowest temperature</span>
-          {`${convertFtoC(findMin('temperature', currentWeather))} °C`}
+          {`${convertFtoC(findMinOrMax('temperature', currentWeather, 'min'))} °C`}
         </p>
       </div>
+      {/* Highest temperature */}
       <div className='weather-record'>
         <p>
           <span>Highest temperature</span>
-          {`${convertFtoC(findMax('temperature', currentWeather))} °C`}
+          {`${convertFtoC(findMinOrMax('temperature', currentWeather, 'max'))} °C`}
         </p>
       </div>
-      
+      {/* Average wind speed */}
       <div className='weather-record'>
         <p>
           <span>Average wind speed</span>
           {`${convertMilesToKilometers(findWeatherAverage('windSpeed', currentWeather))} km/h`}
         </p>
       </div>
+      {/* Average visibility */}
       <div className='weather-record'>
         <p>
           <span>Average visibility</span>
-          {`${convertMilesToKilometers(findWeatherAverage('visibility', currentWeather))} km` }
+          {/* Verify that there is a visibility value before displaying; if no, display 'N/A' */}
+          {findWeatherAverage('visibility', currentWeather) ? `${convertMilesToKilometers(findWeatherAverage('visibility', currentWeather))} km` : "N/A"}
         </p>
       </div>
+      {/* Average humidity */}
       <div className='weather-record'>
         <p>
           <span>Average humidity</span>
           {`${findWeatherAverage('humidity', currentWeather)*100}%`}
         </p>
       </div>
+      {/* Average pressure */}
       <div className='weather-record'>
         <p>
           <span>Average pressure</span>
           {`${convertMillibarsToKPa(findWeatherAverage('pressure', currentWeather))} kPa`}
         </p>
       </div>
-
+      {/* Average precipitation probability */}
       <div className='weather-record'>
         <p>
-          {/* is this in percentage? */}
           <span>Average precip. probability</span>
-          {`${findWeatherAverage('precipProbability', currentWeather)*100}%`}
+          {/* Verify that there is a precipitation probability value before displaying; if no, display 'N/A' */}
+          {findWeatherAverage('precipProbability', currentWeather) ? `${findWeatherAverage('precipProbability', currentWeather) * 100}%` : "N/A"}
         </p>
       </div>
-      
+      {/* Average UV index */}
       <div className='weather-record'>
         <p>
           <span>Average UV index</span>
           {findWeatherAverage('uvIndex', currentWeather)}
         </p>
       </div>
-      
-      {/* <div className="weather-record">
-        <p className="weather-special-title">Weather summary by point:</p>
-        {
-          currentWeather.map((item, i) => {
-            return (
-              <p key={item.time}>
-                <span>Point {i + 1}: </span>
-                {item.summary}
-              </p>
-            )
-          })
-        }
-      </div> */}
     </div>
   )
 }

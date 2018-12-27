@@ -9,13 +9,13 @@ import PropTypes from "prop-types";
 import debounce from "lodash.debounce";
 import { compose } from "./helpers";
 
-// transform snake_case to camelCase
+// Function to transform snake_case to camelCase
 const formattedSuggestion = structured_formatting => ({
   mainText: structured_formatting.main_text,
   secondaryText: structured_formatting.secondary_text
 })
 
-// Component begins
+// Places autocomplete begins
 class PlacesAutocomplete extends React.Component {
   constructor(props) {
     super(props);

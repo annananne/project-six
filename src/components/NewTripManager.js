@@ -1,17 +1,13 @@
-import React, { Component } from "react";
-import NewTripForm from "./NewTripForm";
+// Import React
+import React from "react";
+
+// Import all components
 import CurrentTripInfo from "./CurrentTripInfo";
+import NewTripForm from "./NewTripForm";
 
-//Component begins
+// New trip manager component begins
 const NewTripManager = props => {
-
-  const allW = props.receivedAllWeatherData;
-  // console.log("YEEEEEEEEEEEEEEEES inside NewTripManager");
-  // console.log(allW);
-  // console.log(props.weatherResults);
-  // debugger
-
-  // return props.receivedAllWeatherData ? (
+  // If user has submitted form, display current trip info component; if not, display new trip form component
   return props.hasUserSubmitted ? (
     <CurrentTripInfo
       userTripPreferences={props.userTripPreferences}
@@ -24,14 +20,9 @@ const NewTripManager = props => {
       receivedAllWeatherData={props.receivedAllWeatherData}
       handleMarkerClick={props.handleMarkerClick}
       isLabelVisible={props.isLabelVisible}
-      areDirectionsVisible={props.areDirectionsVisible}
       handleSidebarChange={props.handleSidebarChange}
-
-      // handler for saving trips to db
       handleSavingTripToDB={props.handleSavingTripToDB}
-
       handleReset={props.handleReset}
-      // new 
       user={props.user}
       
     />
@@ -39,7 +30,6 @@ const NewTripManager = props => {
     <NewTripForm
       originData={props.originData}
       destinationData={props.destinationData}
-      userTripPreferences={props.userTripPreferences}
       userTripPreferences={props.userTripPreferences}
       originDateTime={props.originDateTime}
       saveSearchResults={props.saveSearchResults}
@@ -55,4 +45,5 @@ const NewTripManager = props => {
     />
   );
 };
+
 export default NewTripManager;
