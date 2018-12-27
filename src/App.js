@@ -42,44 +42,42 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      listOfTrips: {},
-      hasUserSubmitted: false,
-      originData: { address: "" },
-      destinationData: { address: "" },
-      directions: null,
-      userTripPreferences: {
+      listOfTrips: {}, // Object to store all user saved trip objects; pulled from Firebase on load of dashboard
+      hasUserSubmitted: false, // Boolean to determine whether user has submitted new trip form
+      originData: { address: "" }, // Object to store all data relating to trip origin point (address, place ID, latitude, longitude)
+      destinationData: { address: "" }, // Object to store all data relating to trip destination point (address, place ID, latitude, longitude)
+      userTripPreferences: { // Object to store user trip preferences
         travelMode: "DRIVING",
         avoidFerries: false,
         avoidHighways: false,
         avoidTolls: false
       },
-      tripData: null,
-      originDateTimeInSec: new Date().getTime() / 1000,
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
-      destinationDateTime: "",
-      weatherRequestInfo: {},
-      weatherResults: [],
-      receivedAllWeatherData: false,
-      user: null,
-      guest: null,
-      isLabelVisible: [
+      tripData: null, // Object to store routes/directions for trip from Google Maps API call
+      originDateTimeInSec: new Date().getTime() / 1000, // Numerical value of date and time user will leave their origin point (Unix time)
+      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"), // String to store date and time user will leave their origin point
+      destinationDateTime: "", // String to store date and time user will arrive at their detination point
+      weatherRequestInfo: {}, // Object to store date/time, latitude and longitude of all five equidistant points of journey
+      weatherResults: [], // Array to store weather data from API call for all five equidistant points of journey
+      receivedAllWeatherData: false, // Boolean to determine whether all weather data has been returned from API
+      user: null, // Object to store all user data from Google auth (if user is logged in)
+      guest: false, // Boolean to determine whether user is in guest mode or not
+      isLabelVisible: [ // Array to store boolean visibility value for each marker on the map
         false, false, false, false, false
       ],
-      areDirectionsVisible: true,
     };
   }
 
-  
-
   // Function to handle user login
   logIn = (e) => {
+    // Check if clicked element is guest button, if yes, set state of guest to true
     if (e.target.id === 'guest') {
       this.setState({
         guest: true
       })
+      // If no:
     } else {
+      // Call Firebase sign in method using Google authorization, then store user info in state and change guest status to "false"
       auth.signInWithPopup(provider).then(result => {
-        console.log(result);
         this.setState(
           {
             user: result.user,
@@ -93,30 +91,31 @@ class App extends Component {
 
   // Function to handle user logout
   logOut = () => {
+    // Call Firebase sign out method, then empty user info object and set state of guest to "true"
     auth.signOut().then(() => {
       this.setState({
         user: null,
-        guest: false
+        guest: true
       });
-    });
-  };
-
-  // Method to allow user to continue as guest
-  continueAsGuest = () => {
-    this.setState({
-      guest: true
     });
   };
 
   // Function to save current trip to Firebase database
   saveTripToDB = () => {
-    if (this.props.user === null) {
+    // If there is no user (i.e. user not logged in), prompt alert to let user know they must log in
+    if (this.state.user === null) {
+      alert("You must log in to save trips to your dashboard.");
       return;
     }
+
+    // Prompt user to enter a trip name
     const tripName = window.prompt("Please enter a name for your trip.");
+    // If user selects cancel, terminate trip save process
     if (tripName === null) {
       return;
+      // If user enters valid trip name, then:
     } else {
+      // Store all info of current trip in a temporary object
       const tripInfo = {
         title: tripName,
         originData: {
@@ -133,12 +132,13 @@ class App extends Component {
         },
         originDateTime: this.state.originDateTime
       }
+      // Push object with trip info to Firebase
       this.dbRef.push(tripInfo);
-      alert('Trip successfully saved!');
+      // Alert user that their trip has been successful saved
+      alert('Your trip has been saved!');
     }
   }
 
-  
 
   // Method to handle weather API call
   // API call to get weather data - uses state values of latitude and longitude //**needs to be able to take in origin or destination data object */
@@ -308,7 +308,6 @@ class App extends Component {
 
   // Method to handle reset of application
   handleReset = () => {
-    // alert('reset handle run');
     this.setState({
       hasUserSubmitted: false,
       originData: {},
@@ -319,12 +318,7 @@ class App extends Component {
         avoidHighways: false,
         avoidTolls: false
       },
-      // new
-      directions: null,
       tripData: null,
-      // reset it to not deal with issue of inability 
-      // to request google maps directions for
-      // time in the past
       originDateTimeInSec: new Date().getTime() / 1000,
       originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
       destinationDateTime: "",
@@ -334,7 +328,6 @@ class App extends Component {
       isLabelVisible: [
         false, false, false, false, false
       ],
-      areDirectionsVisible: false,
     });
   };
 
@@ -368,7 +361,7 @@ class App extends Component {
     });
   };
 
- 
+
 
   // Method to remove trip from database
   removeTrip = (e) => {
@@ -408,7 +401,7 @@ class App extends Component {
         }
       }
     })
-    
+
     // console.log(this.state.user.uid)
     // const activeTripRef = firebase.database().ref(`${this.state.user.uid}/${tripID}`);
     // console.log(activeTripRef);
@@ -419,7 +412,7 @@ class App extends Component {
 
     // console.log(activeTripRef);
 
-    
+
   }
 
   // Lifecycle method - component did mount
@@ -576,9 +569,8 @@ class App extends Component {
                   handleRadioChange={this.handleRadioChange}
                   handleCheckboxChange={this.handleCheckboxChange}
                   weatherResults={this.state.weatherResults}
-                  hasUserSubmitted={this.state.hasUserSubmitted} // new
+                  hasUserSubmitted={this.state.hasUserSubmitted}
                   receivedAllWeatherData={this.state.receivedAllWeatherData}
-                  areDirectionsVisible={this.state.areDirectionsVisible}
                   handleSidebarChange={this.state.handleSidebarChange}
 
                   // new
@@ -590,7 +582,7 @@ class App extends Component {
                 />
               )}
             />
-            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} areDirectionsVisible={this.state.areDirectionsVisible} handleSidebarChange={this.state.handleSidebarChange} />} />
+            <Route path="/tripdetails" render={props => <CurrentTripInfo {...props} markers={this.state.markers} userTripPreferences={this.state.userTripPreferences} handleSidebarChange={this.state.handleSidebarChange} />} />
             <Route path="/alltrips" render={() => (
               <TripList
                 user={this.state.user}

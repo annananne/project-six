@@ -54,13 +54,8 @@ class SidebarMain extends Component {
           <div
             className={`tab-content ${this.state.indexOfTabShown === 0 ? 'tab-content-shown' : ''}`}
             id="right-panel"
-            directions={this.props.directions}
             routeIndex={1}>
           </div>
-          {/* <SidebarDirections  
-          directions={this.props.directions} 
-          routeIndex={this.props.routeIndex}
-          /> */}
 
           {/* case 1 */}
           <div className={`tab-content ${this.state.indexOfTabShown === 1 ? 'tab-content-shown' : ''}`}>
@@ -73,7 +68,7 @@ class SidebarMain extends Component {
           </div>
         <div className="footer-buttons">
           <button className="button"
-            disabled={user === null}
+            // disabled={user === null}
             onClick={this.props.handleSavingTripToDB}
           >
             {user !== null ? 'Save trip' : 'Log in to save trip'}

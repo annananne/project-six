@@ -11,7 +11,6 @@ import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  GoogleMapsEvent,
   DirectionsRenderer
 } from "react-google-maps";
 import SidebarMain from './SidebarMain';
