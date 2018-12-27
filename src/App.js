@@ -50,8 +50,8 @@ class App extends Component {
         avoidTolls: false
       },
       tripData: null,
-      originDateTimeInSec: new Date().getTime() / 1000,
-      originDateTime: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
+      originDateTimeInSec: moment(new Date()).add(15, "minutes").valueOf() / 1000,
+      originDateTime: moment(new Date()).add(15, "minutes").format("YYYY-MM-DDTHH:mm"),
       destinationDateTime: "",
       weatherRequestInfo: {},
       weatherResults: [],
@@ -120,6 +120,13 @@ class App extends Component {
 
   saveTripToDB = () => {
     const tripName = window.prompt("Please enter a name for your trip.");
+    // if user put in an empty tripName or pressed cancel, 
+    // return without saving
+    if (!tripName) {
+      return
+    }
+    // alert('TripName', tripName);
+
     alert('Trip successfully saved!');
     if (this.props.user === null) {
       return;
@@ -149,8 +156,7 @@ class App extends Component {
       this.state.tripData !== previousState.tripData &&
       previousState.tripData === null
     ) {
-      // if (this.state.hasUserSubmitted) {
-      //   alert('runs');
+ 
       // COORDS calculations
       // Calculate point coordinates and prepare them for weather requests
 
@@ -173,6 +179,7 @@ class App extends Component {
 
       // TIME calculations
       const { originDateTime } = this.state;
+
       const originMoment = moment(originDateTime);
       const dateTimeFormat = "YYYY-MM-DDTHH:mm";
       // duration of the trip in seconds
@@ -256,23 +263,20 @@ class App extends Component {
   // gets weather for all the points
   getWeather = weatherRequestInfo => {
     const weatherArray = [];
+
     Object.keys(weatherRequestInfo).forEach(pointName => {
       const point = weatherRequestInfo[pointName];
       weatherArray.push(
         this.getWeatherForPoint(point.lat, point.lng, point.dateTime, pointName)
       );
     });
+
     Promise.all(weatherArray).then(res => {
       res.map(object => {
         const weatherResults = res.map(object => {
           return object.data;
         });
-        // const weatherMarkerData = this.state.weatherResults;
-        // weatherMarkerData.push(object.data);
-
-        // const receivedResults = weatherMarkerData;
         const gotAllWeather = weatherResults.length === 5;
-        // debugger
         this.setState({
           weatherResults: weatherResults,
           receivedAllWeatherData: gotAllWeather,
@@ -289,9 +293,9 @@ class App extends Component {
       window.google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 2,
       window.google.maps.geometry.spherical.computeHeading(p1, p2)
     );
-    // console.log("Point coordinates found", middleLatLng);
     return middleLatLng;
   };
+
   //Method to handle change in Google Places autocomplete entry field
   handleChange = (address, id) => {
     //Continuously update this.state.address to match what is put into input box (just text)
@@ -319,7 +323,7 @@ class App extends Component {
           placeID: results[0].place_id,
           address: results[0].formatted_address
         };
-        console.log("data object in geocode", dataObject);
+        // console.log("data object in geocode", dataObject);
         this.setState({ [currentId]: dataObject });
 
         // Run results from geocodeByAddress through function that gets latitude and longitude based on address
@@ -330,7 +334,7 @@ class App extends Component {
         const updatedDataObject = this.state[currentId];
         updatedDataObject.latitude = latLng.lat;
         updatedDataObject.longitude = latLng.lng;
-        console.log("updatedDataObject in LatLng", updatedDataObject);
+        // console.log("updatedDataObject in LatLng", updatedDataObject);
         this.setState({ [currentId]: updatedDataObject });
       })
       .catch((error) => console.error("Error", error));
@@ -365,7 +369,7 @@ class App extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    console.log("submitted");
+    // console.log("submitted");
     {
       if (
         this.state.originData.latitude &&
@@ -373,7 +377,7 @@ class App extends Component {
         this.state.destinationData.latitude &&
         this.state.destinationData.longitude
       ) {
-        console.log("all vals");
+        // console.log("all vals");
         this.setState({
           hasUserSubmitted: true
         });
@@ -414,7 +418,9 @@ class App extends Component {
 
   handleRadioChange = (e) => {
     const newObj = this.state.userTripPreferences;
+
     this.state.userTripPreferences[e.target.name] = e.target.value;
+
     this.setState({
       userTripPreferences: newObj
     });
