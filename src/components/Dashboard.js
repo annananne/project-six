@@ -15,9 +15,9 @@ const Dashboard = (props) => {
     <div className="wrapper clearfix">
       <div className="clearfix">
         <h2>Dashboard</h2>
-        <button className="button blue-btn">Details</button>
+        <button className="button blue-btn">More info</button>
       </div>
-      <div className="wrapper">
+      <div className="wrapper wrapper--dashboard clearfix">
         {/* Button to link to new trip component */}
         <Link to="/newtrip" className="half-section">
           <div className="dashboard-container">

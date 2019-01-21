@@ -105,51 +105,15 @@ fieldset input {
   margin-left: 13rem;
 }
 
-/* .div-test {
-  padding: 2rem 0;
-  margin: 0;
+@media(max-width: 755px) {
+  .new-trip-form {
+    margin-right: 0;
+  }
+
+  .new-trip-form h2 {
+    margin-right: 0;
+  }
 }
-
-.span-test {
-  margin: 0;
-  display: block;
-} */
-
-
-/* .font-awesome {
-  float: left;
-  width: 20px;
-  margin-top: 1rem;
-  margin-right: 10px;
-  color: var(--backgroundColor);
-}
-
-.icon {
-  margin-top: 10px;
-  font-size: 2rem;
-  width: 100%;
-}
-
-.circle {
-  font-size: 1.5rem;
-  margin-left: 1px;
-}
-
-.dotdots {
-  margin-left: 5px;
-}
-
-.markymark {
-  margin-left: 1px;
-}
-
-.circle:hover, .markymark:hover {
-  color: var(--accentColor);
-}
-
-.location-search-input-wrapper {
-  margin: 0 3rem;
-} */
 
 
 
