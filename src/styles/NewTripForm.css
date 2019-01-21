@@ -55,6 +55,10 @@ fieldset input {
   letter-spacing: 1px;
 }
 
+.transportation-method {
+  display: inline-block;
+}
+
 .form-label {
   font-size: 1.2rem;
   text-transform: uppercase;
@@ -70,8 +74,9 @@ fieldset input {
   /* border-bottom: 1.25px solid var(--backgroundColor); */
   margin: 0.5rem 0 1.5rem;
   padding: 1rem;
-  width: 50%;
+  width: 65%;
   letter-spacing: 0.1rem;
+  min-width: 290px;
 }
 
 .option-label {
@@ -105,13 +110,23 @@ fieldset input {
   margin-left: 13rem;
 }
 
-@media(max-width: 755px) {
+@media(max-width: 825px) {
   .new-trip-form {
     margin-right: 0;
   }
 
   .new-trip-form h2 {
     margin-right: 0;
+  }
+
+  .half-section.image {
+    display: none;
+  }
+
+  .half-section.clearfix {
+    width: 100%;
+    float: none;
+    text-align: center;
   }
 }
 

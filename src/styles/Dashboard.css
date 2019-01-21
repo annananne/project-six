@@ -71,7 +71,7 @@
     width: 100%;
   }
 
-  .half-section {
+  .dashboard .half-section {
     height: 350px;
   }
 }
@@ -104,18 +104,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-  }
-}
-
-@media(max-width: 755px) {
-  .half-section.image {
-    display: none;
-  }
-
-  .half-section.clearfix {
-    width: 100%;
-    float: none;
-    text-align: center;
   }
 }
 
