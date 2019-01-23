@@ -44,6 +44,14 @@ class TripList extends Component {
     }
   };
 
+  shorten = title => {
+    let newTitle = title;
+    if (title.length > 10) {
+      newTitle = `${title.substr(0, 15)}...`;
+    }
+    return newTitle;
+  }
+
   render() {
     const {
       listOfTrips,
@@ -57,7 +65,7 @@ class TripList extends Component {
             <p>Dashboard</p>
           </Link>
           {/* Saved trips section */}
-          <h2>Your saved trips</h2>
+          <h2>All trips</h2>
           <section className="display-trips">
             <ul>
               {/* Map over trip list and return a li for each of the trips in the user's database */}
@@ -76,7 +84,7 @@ class TripList extends Component {
                       <FontAwesomeIcon icon="times" className="icon" id={tripKey} style={{ 'margin-left': '0.5rem' }} />
                     </button>
                     {/* Trip title */}
-                    <h3 className="trip-title">{trip.title}</h3>
+                    <h3 className="trip-title">{this.shorten(trip.title)}</h3>
                     {/* Trip details content */}
                     <div className="trip-items-content clearfix">
                       <div>

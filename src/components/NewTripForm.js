@@ -49,12 +49,12 @@ class NewTripForm extends Component {
                 <label htmlFor="transportation" className="form-label">Choose your method of transportation</label>
                 <fieldset id="transportation" className="clearfix">
                   {/* Radio button/label for driving */}
-                  <li>
+                  <li className="transportation-method">
                     <label htmlFor="driving" className={this.props.userTripPreferences.travelMode === "DRIVING" ? 'option-label active-label' : 'option-label'}>Driving</label>
                     <input type="radio" id="driving" name="travelMode" value="DRIVING" onChange={this.props.handleRadioChange} checked={this.props.userTripPreferences.travelMode === "DRIVING"
                     } />
                   </li>
-                  <li>
+                  <li className="transportation-method">
                     {/* Radio button/label for bicycling */}
                     <label htmlFor="bicycling" className={this.props.userTripPreferences.travelMode === "BICYCLING" ? 'option-label active-label' : 'option-label'}>Bicycling</label>
                     <input type="radio" id="bicycling" name="travelMode" value="BICYCLING" onChange={this.props.handleRadioChange} checked={this.props.userTripPreferences.travelMode === "BICYCLING"} />

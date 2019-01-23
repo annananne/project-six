@@ -25,6 +25,7 @@ import SidebarMain from './SidebarMain';
 
 // Import all styles
 import '../styles/CurrentTripInfo.css';
+import '../styles/Map.css';
 
 // Import SVG images
 import target from '../assets/target.svg';
@@ -117,7 +118,7 @@ const MapWithADirectionsRenderer = compose(
       loadingElement: <div style={{ height: `calc(100vh - 70px)` }} />,
       containerElement: <div style={{ height: `calc(100vh - 70px)` }} />,
       mapElement: (
-        <div style={{ height: `calc(100vh - 70px)`, minHeight: `350px`, width: `65%`, float: 'left', display: 'block' }} />
+        <div className="google-map"/>
       ),
     }
   }),
@@ -259,15 +260,15 @@ const MapWithADirectionsRenderer = compose(
                     padding: "0 15px",
                     textAlign: "left",
                     width: "250px",
-                    height: "250px",
-                    overflow: "scroll"
+                    height: "225px"
                   }}
                   labelVisible={props.isLabelVisible[i]}
                   onClick={() => { props.handleMarkerClick(i) }}
                   icon={target}
+                  className="map-marker"
                 >
                   <div>
-                    <p>
+                    <p className="marker-item">
                       {result.currently.summary}<span style={{ fontSize: '12px', opacity: '0.75' }}> ({Math.round(result.latitude * 100) / 100}, {Math.round(result.longitude * 100) / 100})</span>
                     </p>
                     <p>
