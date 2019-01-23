@@ -18,6 +18,8 @@
 }
 
 .mainNav-right {
+  display: flex;
+  align-items: center;
   float: right;
 }
 
@@ -53,6 +55,12 @@
   }
 
   .title--wide {
+    display: none;
+  }
+}
+
+@media (max-width: 450px) {
+  .mainNav-right .link {
     display: none;
   }
 }

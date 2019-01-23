@@ -15,7 +15,7 @@ const Dashboard = (props) => {
     <div className="wrapper clearfix">
       <div className="clearfix">
         <h2>Dashboard</h2>
-        <button className="button blue-btn">More info</button>
+        {/* <button className="button blue-btn">More info</button> */}
       </div>
       <div className="wrapper wrapper--dashboard clearfix">
         {/* Button to link to new trip component */}

@@ -82,6 +82,12 @@ ul {
   padding: 0;
 }
 
+p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin: 1rem 0;
+}
+
 .no-display {
   display: none;
 }
@@ -194,3 +200,8 @@ ul {
   color: var(--lightText);
 }
 
+@media(max-width: 400px) {
+  h2 {
+    font-size: 5rem;
+  }
+}

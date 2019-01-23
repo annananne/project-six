@@ -52,7 +52,7 @@ class SidebarMain extends Component {
           <button
             className={`tab-content ${this.state.indexOfTabShown === 1 ? 'selected main-button sidebar-tab-button option-label' : 'main-button sidebar-tab-button option-label'}`}
             onClick={this.handleShowWeatherSummary}
-          >Weather Summary
+          >Summary
           </button>
         </div>
 

@@ -112,4 +112,54 @@
   display: block;
   clear: both;
   padding: 1rem 4rem;
+  opacity: 0.5;
+  outline: none;
+}
+
+.tripList .blue-btn:hover {
+  background: none;
+  border: 2px solid var(--backgroundColor);
+  background: none;
+  color: var(--backgroundColor);
+  cursor: default;
+}
+
+@media(max-width: 750px) {
+  .trip-icon {
+    display: none;
+  }
+}
+
+
+@media(max-width: 615px) {
+  .trip-title {
+    margin-left: 0;
+    margin-top: 4rem;
+    font-size: 2.5rem;
+    padding-bottom: 0;
+  }
+
+  .trip-details p {
+    float: none;
+    display: flex;
+    flex-direction: column;
+    text-align: center; 
+    margin: 1rem 0 2rem;
+  }
+
+  .trip-details p span {
+    margin: 1rem auto 2rem;
+  }
+
+  .trip-items .blue-btn {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .tripList h2 {
+      display: block;
+      float: none;
+      text-align: center;
+  }
 }

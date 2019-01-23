@@ -1,6 +1,8 @@
 .dashboard {
   background: var(--lightText);
   height: calc(100vh - 75px);
+  display: flex;
+  align-items: center;
 }
 
 .dashboard h2 {
@@ -110,6 +112,10 @@
 @media(max-width: 580px) {
   .dashboard-image img {
     height: 80px;
+  }
+
+  .dashboard h2 {
+    margin-top: 0;
   }
 
   .dashboard .half-section {
